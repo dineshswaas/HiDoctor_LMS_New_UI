@@ -310,8 +310,9 @@
             android:layout_above="@+id/bottommenusection"
             android:layout_alignParentBottom="false"
             android:text="@string/versionname"
+            android:textStyle="italic"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="17sp" />
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             xmlns:customviews="http://schemas.android.com/apk/res-auto"
