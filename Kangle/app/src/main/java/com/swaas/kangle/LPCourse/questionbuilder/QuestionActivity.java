@@ -132,6 +132,10 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         if (getIntent() != null){
 
             questionandanswerlist = (ArrayList<QuestionAndAnswerModel>) getIntent().getSerializableExtra("value");
+            if (questionandanswerlist.size() > 0)
+            {
+                PreferenceUtils.setQuestionAnswerList("key",questionandanswerlist,QuestionActivity.this);
+            }
             courseId = getIntent().getIntExtra(Constants.Course_Id,0);
             publishId =  getIntent().getIntExtra(Constants.Publish_Id,0);
             SectionId = getIntent().getIntExtra(Constants.Section_Id,0);
@@ -238,12 +242,12 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         if (questionandanswerlist.size()>0){
 
             Checknetworkandupload(UploadAnswerProcess(questionandanswerlist),true,false, false);
-
+            PreferenceUtils.setQuestionAnswerList("key",null,QuestionActivity.this);
         }
 
     }
 
-    private String UploadAnswerProcess(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
+    public String UploadAnswerProcess(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
 
         AnwerUploadModel answerupload =  new AnwerUploadModel();
         answerupload.setLstCourseUserAnswers(new Gson().toJson(getCourseUserAnswer(questionandanswerlist)));
@@ -716,6 +720,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         if (questionandanswerlist.size()>0){
             Checknetworkandupload(UploadAnswerProcess(questionandanswerlist), false, true, false);
+            PreferenceUtils.setQuestionAnswerList("key",null,QuestionActivity.this);
         }
 
     }

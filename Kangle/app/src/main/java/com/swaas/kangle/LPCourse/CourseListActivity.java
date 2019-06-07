@@ -50,6 +50,13 @@ import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.CourseWebView;
 import com.swaas.kangle.DashboardActivity;
 import com.swaas.kangle.EmptyRecyclerView;
+import com.swaas.kangle.LPCourse.model.AnwerUploadModel;
+import com.swaas.kangle.LPCourse.model.CourseUserAnswers;
+import com.swaas.kangle.LPCourse.model.CourseUserAssessDet;
+import com.swaas.kangle.LPCourse.model.CourseUserAssessHeader;
+import com.swaas.kangle.LPCourse.model.QuestionAndAnswerModel;
+import com.swaas.kangle.LPCourse.model.QuestionCourseListModel;
+import com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
@@ -72,6 +79,7 @@ import com.swaas.kangle.utils.iOSDialogClickListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,6 +90,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity.compareArrays;
 
 /**
  * Created by saiprasath on 8/10/2017.
@@ -178,7 +188,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
 
     View notificationsec,chatviewsec;
     TextView notificationcount,chatcount;
-
+    int QuestionLoadCount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -1140,11 +1150,14 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             emptyimage.setImageResource(R.drawable.interenet_error_image);
             emptymessage.setText(getString(R.string.oops_no_result) +getString(R.string.enable_network));
         }
-
+        if (PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key")!=null && PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key").size() > 0){
+            QuestionActivity questionActivity = new QuestionActivity();
+            ArrayList<QuestionAndAnswerModel> list = PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key");
+            Checknetworkandupload(UploadAnswerProcess(list),false,false,true);
+            QuestionLoadCount = list.get(0).getLstCourse().get(0).getQuestionLoadCount();
+            PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
+        }
         checkForAppUpdates();
-
-
-
     }
 
     private void checkForAppUpdates() {
@@ -1887,4 +1900,278 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             mEmptyView.setVisibility(View.GONE);
         }
     }
+
+    public String UploadAnswerProcess(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
+
+        AnwerUploadModel answerupload =  new AnwerUploadModel();
+        answerupload.setLstCourseUserAnswers(new Gson().toJson(getCourseUserAnswer(questionandanswerlist)));
+        answerupload.setLstCourseUserAssessHeader(new Gson().toJson(getCourseUserAssetHeader(questionandanswerlist)));
+        answerupload.setLstCourseUserAssessDet(new Gson().toJson(getCourseAssetDetails(questionandanswerlist)));
+        Log.d("test",new Gson().toJson(answerupload));
+        return new Gson().toJson(answerupload);
+
+    }
+
+    private List<CourseUserAssessHeader> getCourseUserAssetHeader(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
+
+        List<CourseUserAssessHeader> courseuserAssessHeaderList = new ArrayList<>();
+        CourseUserAssessHeader courseAssetHeader = new CourseUserAssessHeader();
+
+        courseAssetHeader.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+        QuestionCourseListModel questioncoursemodel = questionandanswerlist.get(0).getLstCourse().get(0);
+        courseAssetHeader.Course_ID = questioncoursemodel.getCourse_Id();
+        courseAssetHeader.Course_Section_User_Exam_Id = 1;
+        courseAssetHeader.Course_User_Assignment_Id = questionandanswerlist.get(0).getCourseAssignmentId();
+        courseAssetHeader.Couse_User_Section_Mapping_Id = questionandanswerlist.get(0).getSectionMapId();
+        courseAssetHeader.Section_ID = questionandanswerlist.get(0).getSectionId();
+        courseAssetHeader.User_Id = PreferenceUtils.getUserId(this);
+        courseAssetHeader.Publish_ID = questioncoursemodel.getPublish_ID();
+        courseAssetHeader.Achieved_Percentage = 0;
+        courseAssetHeader.Pass_Percentage = String.valueOf(questioncoursemodel.getPass_Percentage());
+
+        if (courseAssetHeader.Achieved_Percentage >= questioncoursemodel.getPass_Percentage()) {
+            courseAssetHeader.Is_Qualified = 1;
+        } else {
+
+            courseAssetHeader.Is_Qualified = 0;
+
+        }
+        courseAssetHeader.Local_TimeZone = new Date().toString();
+        //courseAssetHeader.Offset_Value = CommonUtils.getUtcOffset();
+        courseAssetHeader.Offset_Value = CommonUtils.getUtcOffsetincluded10k();
+        courseuserAssessHeaderList.add(courseAssetHeader);
+
+        return courseuserAssessHeaderList;
+    }
+
+    private List<CourseUserAnswers> getCourseUserAnswer(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
+
+
+        List<CourseUserAnswers> courseuseranswerList =  new ArrayList<>();
+        for (QuestionAndAnswerModel questionandanswermodel : questionandanswerlist){
+
+            if (questionandanswermodel.getQuestionModel().getQuestion_Type() != 1){
+
+                CourseUserAnswers courseuseranswer = new CourseUserAnswers();
+                if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 6)
+                {
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                }
+                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 0)
+                {
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                }
+                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() !=2){
+
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+
+                }else {
+
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.Answer_Id = questionandanswermodel.getChoosenAnswerId();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+
+                }
+                courseuseranswerList.add(courseuseranswer);
+
+            }else {
+
+                if (questionandanswermodel.getChoosenAnswerId()!=null){
+
+                    String [] choosenanswerid = questionandanswermodel.getChoosenAnswerId().split(",");
+
+                    for (int i=0; i< choosenanswerid.length; i++){
+
+                        CourseUserAnswers courseanswer = new CourseUserAnswers();
+                        courseanswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                        courseanswer.User_Id = PreferenceUtils.getUserId(this);
+                        courseanswer.Answer_Id = choosenanswerid[i];
+                        courseanswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                        courseuseranswerList.add(courseanswer);
+                    }
+                }
+
+            }
+
+        }
+
+        return courseuseranswerList;
+
+    }
+
+
+
+    private List<CourseUserAssessDet> getCourseAssetDetails(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
+
+        List<CourseUserAssessDet> courseuserassetdetails = new ArrayList<>();
+
+        for (QuestionAndAnswerModel questionanswermodel : questionandanswerlist) {
+
+            CourseUserAssessDet courseuserasset = new CourseUserAssessDet();
+            courseuserasset.Question_Type = questionanswermodel.getQuestionModel().Question_Type;
+            courseuserasset.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+            if (questionanswermodel.getQuestionModel().getQuestion_Type() != 1) {
+
+                if (questionanswermodel.getChoosenAnswer() != null){
+                    courseuserasset.Count_of_User_Answers = 1;
+                }else {
+                    courseuserasset.Count_of_User_Answers = 0;
+                }
+                if (questionanswermodel.getChoosenAnswer() != null && questionanswermodel.getChoosenAnswer().length() > 0) {
+
+                    if (questionanswermodel.getChoosenAnswer().equalsIgnoreCase(questionanswermodel.getCorrectAnswer())) {
+                        courseuserasset.Is_Correct = true;
+                        courseuserasset.Count_Of_User_Correct_Answers = 1;
+                    } else {
+                        courseuserasset.Is_Correct = false;
+                        courseuserasset.Count_Of_User_Correct_Answers = 0;
+
+                    }
+
+                }
+
+                QuestionCourseListModel CourseHeader = questionanswermodel.getLstCourse().get(0);
+                courseuserasset.Course_ID = CourseHeader.getCourse_Id();
+                courseuserasset.User_Id = PreferenceUtils.getUserId(this);
+                courseuserasset.Publish_ID = CourseHeader.getPublish_ID();
+                courseuserasset.Section_Id = questionanswermodel.getSectionId();
+                courseuserasset.Question_ID = String.valueOf(questionanswermodel.getQuestionModel().getQuestion_Id());
+                courseuserasset.Couse_User_Section_Mapping_Id = questionanswermodel.getSectionMapId();
+                courseuserasset.Course_User_Assignment_Id = questionanswermodel.getCourseAssignmentId();
+                courseuserasset.Negative_Mark = questionanswermodel.getQuestionModel().getNegative_Mark();
+                courseuserassetdetails.add(courseuserasset);
+
+            } else {
+
+                if (questionanswermodel.getChoosenAnswer() != null && questionanswermodel.getChoosenAnswer().length() > 0
+                        && questionanswermodel.getCorrectAnswer() != null && questionanswermodel.getCorrectAnswer().length() > 0) {
+
+                    String[] choosenanswerlist = questionanswermodel.getChoosenAnswer().split(",");
+                    String[] coreectanserlist = questionanswermodel.getCorrectAnswer().split(",");
+
+                    if (choosenanswerlist!=null){
+                        courseuserasset.Count_of_User_Answers = choosenanswerlist.length;
+                    }
+
+                    if (compareArrays(choosenanswerlist, coreectanserlist)) {
+                        courseuserasset.Is_Correct = true;
+                        courseuserasset.Count_Of_User_Correct_Answers = coreectanserlist.length;
+                    } else {
+                        courseuserasset.Is_Correct = false;
+                        courseuserasset.Count_Of_User_Correct_Answers =  getUserCorrectAnswer(questionanswermodel);
+                    }
+                }
+
+                QuestionCourseListModel CourseHeader = questionanswermodel.getLstCourse().get(0);
+                courseuserasset.Course_ID = CourseHeader.getCourse_Id();
+                courseuserasset.User_Id = PreferenceUtils.getUserId(this);
+                courseuserasset.Publish_ID = CourseHeader.getPublish_ID();
+                courseuserasset.Section_Id = questionanswermodel.getSectionId();
+                courseuserasset.Question_ID = String.valueOf(questionanswermodel.getQuestionModel().getQuestion_Id());
+                courseuserasset.Couse_User_Section_Mapping_Id = questionanswermodel.getSectionMapId();
+                courseuserasset.Course_User_Assignment_Id = questionanswermodel.getCourseAssignmentId();
+                courseuserasset.Negative_Mark = questionanswermodel.getQuestionModel().getNegative_Mark();
+                courseuserassetdetails.add(courseuserasset);
+
+            }
+
+        }
+
+        return courseuserassetdetails;
+
+    }
+    private int getUserCorrectAnswer(QuestionAndAnswerModel questionanswermodel) {
+
+        int correctanswercount = 0;
+
+
+        if (questionanswermodel.getChoosenAnswer()!=null){
+
+            String[] choosenanswer = questionanswermodel.getChoosenAnswer().split(",");
+            String[] correctanswer = questionanswermodel.getCorrectAnswer().split(",");
+
+            if (choosenanswer!=null && choosenanswer.length>0){
+
+                for (int i=0; i<choosenanswer.length;i++){
+
+                    String choosenanswerresult = choosenanswer[i];
+
+                    for (int j=0;j<correctanswer.length;j++){
+                        if (choosenanswerresult.equals(correctanswer[j])){
+                            correctanswercount = correctanswercount+1;
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        return correctanswercount;
+    }
+    public void Checknetworkandupload(final String AnswerModelString, final boolean isLastQuestion, final boolean isTimeout, final boolean isBackpressed){
+
+        if(NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
+            if (!isBackpressed){
+                showProgressDialog();
+            }
+            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+            LPCourseService lpService = retrofitAPI.create(LPCourseService.class);
+            int CompanyId  = PreferenceUtils.getCompnayId(this);
+            String  SubdomainName = PreferenceUtils.getSubdomainName(this);
+            int UserId = PreferenceUtils.getUserId(this);
+            Gson gsonget = new Gson();
+            AnwerUploadModel answermodel = gsonget.fromJson(AnswerModelString,AnwerUploadModel.class);
+            Call call = lpService.insertTestCourseResponse(SubdomainName,CompanyId,UserId,QuestionLoadCount,isLastQuestion,isTimeout,answermodel);
+            call.enqueue(new Callback<String>() {
+
+                @Override
+                public void onResponse(Response<String> response, Retrofit retrofit) {
+                    String courseAssetListModel= response.body();
+                    if (courseAssetListModel != null) {
+
+                        if (!isBackpressed){
+                            dismissProgressDialog();
+                            if (courseAssetListModel.contains("COMPLETED")){
+                                if (isTimeout){
+                                   // ShowAlert(getResources().getString(R.string.time_Out),getResources().getString(R.string.warning),false);
+                                }else {
+                                    //ShowAlert(getResources().getString(R.string.finished),"",false);
+
+                                }
+                            }else {
+
+                                Log.d("error","error");
+                            }
+
+                        }
+                        //COMPLETED~1~Your course has been partially submitted.~549
+                    }
+                }
+                @Override
+                public void onFailure(Throwable t) {
+
+                  /*  testResultRepository.insertTestRecord(AnswerModelString,CalculatePercentage(),QuestionLoadCount,isLastQuestion+"",isTimeout+"");
+                    ShowAlert(getResources().getString(R.string.testsavedoffline),getResources().getString(R.string.warning),true);*/
+                    Log.d(t.toString(),"Error");
+                }
+            });
+        }else{
+
+//            testResultRepository.insertTestRecord(AnswerModelString,CalculatePercentage(),QuestionLoadCount,isLastQuestion+"",isTimeout+"");
+//            ShowAlert(getResources().getString(R.string.testsavedoffline),getResources().getString(R.string.warning),true);
+        }
+    }
+
 }

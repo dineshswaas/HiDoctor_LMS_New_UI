@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.swaas.kangle.LPCourse.model.QuestionAndAnswerModel;
 import com.swaas.kangle.models.ThemeModel;
 
 import java.lang.reflect.Type;
@@ -51,6 +52,7 @@ public class PreferenceUtils {
     private static final String USERNAME = "username";
     private static final String IS_FORCE_UPDATE_AVAILABLE = "force_update_available";
     private static final String IS_FORCE_UPDATE_VERSION = "force_update_version";
+    private static final String QUESTION_ANSWER_LIST = "question_answer_list";
 
     public static boolean getNWEAvisible(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
@@ -441,23 +443,34 @@ public class PreferenceUtils {
         editor.putString(TASK_ALLOW_COMPLETE,allowChild);
         editor.commit();
     }
- /*   public static void saveArrayListTheme(Context context, List<ThemeModel> list, String key){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(String.valueOf(ThemeModel), Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+    public static  <T> void setQuestionAnswerList(String key, List<T> list,Context context){
         Gson gson = new Gson();
-        String json = gson.toJson(ThemeModel);
-        prefsEditor.putString("MyObject", json);
-        prefsEditor.commit();
-        prefsEditor.apply();     // This line is IMPORTANT !!!
+        String json = gson.toJson(list);
+        setlist(key, json,context);    // This line is IMPORTANT !!!
     }
+    public static void setlist(String key, String value,Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(QUESTION_ANSWER_LIST), Context.MODE_PRIVATE);
+        if (sharedPref != null) {
+            SharedPreferences.Editor prefsEditor = sharedPref.edit();
+            prefsEditor.putString(key, value);
+            prefsEditor.commit();
+        }
+    }
+    public static ArrayList<QuestionAndAnswerModel> getquestionanswerlist(Context context, String key){
+        SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(QUESTION_ANSWER_LIST), Context.MODE_PRIVATE);
+        if (sharedPref != null) {
 
-    public static ArrayList<ThemeModel> getArrayListTheme(Context context, String key){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(String.valueOf(ThemeModel), Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("key", "");
-        ThemeModel obj = gson.fromJson(json, ThemeModel.class);
-        return gson.fromJson(json, (Type) obj);
-    }*/
+            Gson gson = new Gson();
+            List<QuestionAndAnswerModel> themeModels;
+
+            String string = sharedPref.getString(key, null);
+            Type type = new TypeToken<List<QuestionAndAnswerModel>>() {
+            }.getType();
+            themeModels = gson.fromJson(string, type);
+            return (ArrayList<QuestionAndAnswerModel>) themeModels;
+        }
+        return null;
+    }
 
     public static  <T> void setTheme(String key, List<T> list,Context context) {
         Gson gson = new Gson();

@@ -736,6 +736,7 @@ public class SectionActivity extends AppCompatActivity {
                             intentToQuestionActivity.putExtra("SectionName",selectedSectionName);
                             intentToQuestionActivity.putExtra(Constants.Course_Thumbnail, CourseThumbnail);
                             startActivity(intentToQuestionActivity);
+
                         }else{
                             Toast.makeText(SectionActivity.this,getResources().getString(R.string.noQuestions),Toast.LENGTH_SHORT).show();
                         }
