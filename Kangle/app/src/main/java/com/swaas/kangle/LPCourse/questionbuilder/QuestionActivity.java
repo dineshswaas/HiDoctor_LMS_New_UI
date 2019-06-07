@@ -295,8 +295,21 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             if (questionandanswermodel.getQuestionModel().getQuestion_Type() != 1){
 
                 CourseUserAnswers courseuseranswer = new CourseUserAnswers();
-
-                if (questionandanswermodel.getQuestionModel().getQuestion_Type() !=2){
+                if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 6)
+                {
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                }
+                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 0)
+                {
+                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                }
+                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() !=2){
 
                     courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
                     courseuseranswer.Text = questionandanswermodel.getChoosenAnswer();

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.koushikdutta.ion.Ion;
@@ -355,7 +356,59 @@ public class MultiPleQuestionPerPage extends RecyclerView.Adapter<MultiPleQuesti
                 holder.mMutiple_question_option_holder.addView(cb[0]);
             }
 
-        }else  {
+        }
+       else if (questionAndAnswerModel.getQuestionModel().getQuestion_Type() == 6)
+        {
+            final EditText editText = new EditText(mContext);
+            // editText.setPadding(30,30,30,30);
+            editText.setSingleLine(false);
+            editText.setHint(R.string.defaulttext);
+            editText.setBackgroundColor(Color.parseColor("#d1d1d3"));
+            editText.setScroller(new Scroller(mContext));
+            editText.setVerticalScrollBarEnabled(true);
+            editText.setCursorVisible(true);
+            editText.requestFocus();
+            editText.setSelection(0);
+            editText.setMinLines(15);
+            editText.setGravity(Gravity.TOP);
+            editText.setLongClickable(false);
+
+            holder.mMutiple_question_option_holder.removeAllViews();
+
+            for(QuestionAnswerListModel answermodel : questionAndAnswerModel.getLstAnswer()) {
+                questionAndAnswerModel.setCorrectAnswer(answermodel.Answer_Text);
+            }
+
+            if (questionAndAnswerModel.getChoosenAnswer()!=null && questionAndAnswerModel.getChoosenAnswer().length()>0){
+
+                editText.setText(questionAndAnswerModel.getChoosenAnswer());
+            }
+
+
+
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                    questionAndAnswerModel.setChoosenAnswer(editText.getText().toString());
+
+                }
+            });
+
+
+            holder.mMutiple_question_option_holder.addView(editText);
+        }
+        else  {
 
             EditText editText = new EditText(mContext);
             editText.setPadding(30,30,30,30);

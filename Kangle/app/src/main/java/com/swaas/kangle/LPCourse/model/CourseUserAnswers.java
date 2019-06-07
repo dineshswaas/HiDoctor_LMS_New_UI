@@ -18,6 +18,8 @@ public class CourseUserAnswers implements Serializable {
 
     public String Answer_Id;
 
+    public String User_Answer_Text;
+
     public String getCompany_Id() {
         return Company_Id;
     }
@@ -50,6 +52,13 @@ public class CourseUserAnswers implements Serializable {
         Answer_Id = answer_Id;
     }
 
+    public String getUser_Answer_Text() {
+        return User_Answer_Text;
+    }
+
+    public void setUser_Answer_Text(String user_Answer_Text) {
+        User_Answer_Text = user_Answer_Text;
+    }
 
     public String getText() {
         return Text;

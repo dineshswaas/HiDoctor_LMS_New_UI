@@ -435,5 +435,6 @@
     <string name="mark_complete">Lengkap</string>
     <string name="chat">Chat</string>
     <string name="Chat">Chat</string>
+    <string name="defaulttext">Type your Essay Here</string>
 
 </resources>

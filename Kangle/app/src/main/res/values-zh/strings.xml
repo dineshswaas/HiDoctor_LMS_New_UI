@@ -437,5 +437,6 @@
     <string name="mark_complete">已完成</string>
     <string name="chat">Chat</string>
     <string name="Chat">Chat</string>
+    <string name="defaulttext">Type your Essay Here</string>
 
 </resources>
