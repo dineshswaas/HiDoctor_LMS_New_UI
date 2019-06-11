@@ -41,12 +41,15 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
     SectionRecyclerHolder sectionRecyclerHolder;
     private boolean isAlreadyComplted=false;
     private boolean isSequenceEnabled ;
+    private boolean isreportEnabled = false;
 
     //public SectionAdapter(Context ctxt, List<SectionModel> sectionModels, boolean isSequenceEnabled){
-    public SectionAdapter(Context ctxt, List<SectionModel> sectionModels){
+    public SectionAdapter(Context ctxt, List<SectionModel> sectionModels, boolean b){
         this.context = ctxt;
         this.sectionModelList = sectionModels;
         mActivity = (SectionActivity) ctxt;
+        isreportEnabled = b;
+
         //this.isSequenceEnabled = isSequenceEnabled;
     }
     public void setOnItemClickListener(MyClickListener myClickListener){
@@ -643,7 +646,12 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
                 mActivity.gotoSectionchecklistreportlist(sectionModel.getSection_Id());
             }
         });
-
+        if (isreportEnabled == true)
+        {
+            holder.reportsbutton.setVisibility(View.GONE);
+        }
+        holder.detailssectionlayout.setVisibility(View.VISIBLE);
+        holder.showmandatory.setVisibility(View.INVISIBLE);
     }
 
 

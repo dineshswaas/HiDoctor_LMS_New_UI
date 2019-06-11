@@ -29,7 +29,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -208,6 +209,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".LPCourse.Certificatewebview"/>
         <activity android:name=".ChatWebView"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".LPCourse.Report.AnswerPage"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 

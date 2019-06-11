@@ -228,9 +228,9 @@
     <string name="resume_course">RESUME</string>
     <string name="no_tags_available">No Tags Available</string>
 
-    <string name="please_enter_username">Please enter your username</string>
-    <string name="please_enter_companyname">Please enter companyname</string>
-    <string name="please_enter_password">Please enter password</string>
+    <string name="please_enter_username">Please enter your Username</string>
+    <string name="please_enter_companyname">Please enter Companyname</string>
+    <string name="please_enter_password">Please enter Password</string>
     <string name="open">Open</string>
 
     //Checklist Strings
@@ -434,7 +434,7 @@
     <string name="high">High</string>
     <string name="are_you_sure_download">Are you sure you want to download</string>
     <string name="filename">File Name:</string>
-    <string name="newpasswordcannot">New password cannot be same as old password</string>
+    <string name="newpasswordcannot">New password cannot be same as Old password</string>
     <string name="passworddoesnot">New password and Confirm password does not match.</string>
     <string name="library">Library</string>
     <string name="last1week">Last 1 week</string>
@@ -467,5 +467,6 @@
     <string name="chat">Chat</string>
     <string name="Chat">Chat</string>
     <string name="update_alert">A new version of HiDoctor LMS available for download. This update will not affect your app settings.</string>
-    <string name="defaulttext">Type your Essay Here</string>
+    <string name="defaulttext">Type your essay here</string>
+    <string name="Marksheet">Marksheet</string>
 </resources>

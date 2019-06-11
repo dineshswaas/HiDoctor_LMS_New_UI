@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:id="@+id/question_timer_holder"
         android:layout_height="wrap_content"
-        android:minHeight="100dp"
+        android:minHeight="50dp"
         android:background="@color/black_semi_transparent">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dimen_sp_18"
+            android:textSize="@dimen/dimen_sp_14"
             android:text="Section Name "
             android:textColor="@color/white"
             android:id="@+id/section_name_text"
@@ -28,29 +28,33 @@
 
         <LinearLayout
             android:id="@+id/questiontime"
-            android:layout_width="match_parent"
+            android:layout_width="134dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="10dp"
-            android:layout_below="@+id/section_name_text">
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/section_name_text">
+            <!--android:layout_below="@+id/section_name_text"-->
+
 
             <TextView
+                android:id="@+id/time_expiry_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/dimen_sp_14"
                 android:text="@string/attempt_expires_at"
                 android:textColor="@color/white"
-                android:id="@+id/time_expiry_text"/>
+                android:textSize="@dimen/dimen_sp_12" />
 
             <TextView
+                android:id="@+id/question_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/padding_twenty"
-                android:textStyle="bold"
                 android:text="20:00"
                 android:textColor="@color/white"
-                android:id="@+id/question_time_text"/>
+                android:textSize="@dimen/dimen_sp_14"
+                android:textStyle="bold"
+                />
 
 
         </LinearLayout>

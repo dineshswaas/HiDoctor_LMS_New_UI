@@ -1296,20 +1296,20 @@ public class TaskListActivity extends AppCompatActivity {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if(landingobj != null) {
-                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
                     assetpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     assetpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getCourse().equalsIgnoreCase("L")) {
+                if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
-                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
+                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if(landingobj.getCourse().equalsIgnoreCase("A")){
+                } else if(!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")){
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //lpcourse.setVisibility(View.VISIBLE);
@@ -1317,13 +1317,13 @@ public class TaskListActivity extends AppCompatActivity {
                 }else{
                     lpcourse.setVisibility(View.GONE);
                 }
-                if (landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
                     chklistpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     chklistpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getTask().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
                     taskpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{

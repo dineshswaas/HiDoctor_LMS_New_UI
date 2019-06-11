@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ import com.swaas.kangle.LPCourse.questionbuilder.CustomDialogClass;
 import com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity;
 import com.swaas.kangle.R;
 import com.swaas.kangle.utils.Constants;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -366,12 +369,13 @@ public class MultiPleQuestionPerPage extends RecyclerView.Adapter<MultiPleQuesti
             editText.setBackgroundColor(Color.parseColor("#d1d1d3"));
             editText.setScroller(new Scroller(mContext));
             editText.setVerticalScrollBarEnabled(true);
-            editText.setCursorVisible(true);
-            editText.requestFocus();
-            editText.setSelection(0);
-            editText.setMinLines(15);
+            //editText.setCursorVisible(true);
+            //editText.requestFocus();
+            //editText.setSelection(0);
+            editText.setMinLines(7);
             editText.setGravity(Gravity.TOP);
             editText.setLongClickable(false);
+
 
             holder.mMutiple_question_option_holder.removeAllViews();
 
@@ -480,14 +484,15 @@ public class MultiPleQuestionPerPage extends RecyclerView.Adapter<MultiPleQuesti
     public class MyMultiPleQuestionViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mQuestion_text,mDescriptionTextQuestion;
-        private LinearLayout mMutiple_question_option_holder,mHintLayoutHolder;
+        private LinearLayout mMutiple_question_option_holder;
+        private RelativeLayout mHintLayoutHolder;
         private ImageView mQuestionImageview;
         public MyMultiPleQuestionViewHolder(View itemView) {
             super(itemView);
 
             mQuestion_text = (TextView) itemView.findViewById(R.id.question_text);
             mMutiple_question_option_holder = (LinearLayout) itemView.findViewById(R.id.mutilple_question_option_holder);
-            mHintLayoutHolder = (LinearLayout) itemView.findViewById(R.id.hint_layout_holder);
+            mHintLayoutHolder = (RelativeLayout) itemView.findViewById(R.id.hint_layout_holder);
             mQuestionImageview = (ImageView) itemView.findViewById(R.id.question_image);
             mDescriptionTextQuestion = (TextView) itemView.findViewById(R.id.question_description_text);
 

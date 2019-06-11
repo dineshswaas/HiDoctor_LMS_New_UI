@@ -15,6 +15,7 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -271,8 +272,8 @@ public class LoginActivity extends AppCompatActivity {
                             PreferenceUtils.setUserId(mContext, apiResponse.getUser_Id());
                             PreferenceUtils.setSubdomainName(mContext, company);
                             PreferenceUtils.setUsername(mContext,name);
-                            getMenus();
-                            //getMenusNewApi();
+                            //getMenus();
+                            getMenusNewApi();
                         } else {
                             loading.setVisibility(View.INVISIBLE);
                             if(apiResponse.getAdditional_Context_More().equalsIgnoreCase("USER_NAME")){
@@ -646,8 +647,24 @@ public class LoginActivity extends AppCompatActivity {
         User userobj = gsonget.fromJson(PreferenceUtils.getUser(mContext), User.class);
         Log.d("retriveddata", userobj.toString());
         Crashlytics.log(PreferenceUtils.getUserId(mContext) + " - " + PreferenceUtils.getSubdomainName(mContext));
-        Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
-        startActivity(intentLandinActivity);
+        Gson gsongetlanding = new Gson();
+        LandingPageAccess landingobj = gsongetlanding.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+        if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
+            Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+            startActivity(intentLandinActivity);
+        } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
+
+            Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+            startActivity(intentLandinActivity);
+        } else if(!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")){
+            Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+            startActivity(intentLandinActivity);
+        }
+        else
+        {
+            Intent intentLandinActivity = new Intent(getApplicationContext(), AssetListActivity.class);
+            startActivity(intentLandinActivity);
+        }
         finish();
     }
 

@@ -126,5 +126,9 @@ public interface LPCourseService {
                                                                          @Path("userId") int courseId,
                                                                          @Path("courseId") int userId,
                                                                          @Path("Section_Id") int PublishId);
+    @GET("LPCourseAPI/TestEvaluation/{courseId}/{userId}/{companyId}")
+    Call<ArrayList<LPCourseReportSummaryModel>> getCourseFullcourseReportList(@Path("courseId") int userId,
+                                                                              @Path("userId") int courseId,
+                                                                              @Path("companyId") int companyId);
 
 }

@@ -410,8 +410,22 @@
                             android:gravity="center"
                             android:text="@string/evaluation_report"
                             android:textColor="@color/white"
-                            android:textSize="12dp"
+                            android:textSize="15sp"
                             android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/reportsbutton"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="25dp"
+                            android:background="@drawable/rounded_taco_button"
+                            android:text="@string/Report"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:layout_below="@id/splitview"
+                            android:visibility="gone"/>
 
 
                         <LinearLayout
@@ -434,7 +448,9 @@
                                 android:textColor="@color/black"
                                 android:visibility="visible" />
 
+
                         </LinearLayout>
+
 
                     </RelativeLayout>
 

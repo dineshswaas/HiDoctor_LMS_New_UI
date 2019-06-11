@@ -408,6 +408,8 @@
                                     android:textSize="12dp"
                                     android:layout_marginBottom="5dp"/>
 
+
+
                                 <TextView
                                     android:id="@+id/text_description"
                                     android:layout_width="match_parent"
@@ -419,7 +421,19 @@
                                     android:visibility="visible" />
 
                             </LinearLayout>
-
+                            <TextView
+                                android:id="@+id/reportsbutton"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:background="@drawable/rounded_taco_button"
+                                android:text="@string/Report"
+                                android:textColor="@color/white"
+                                android:gravity="center"
+                                android:layout_below="@id/desccattaglayout"
+                                android:visibility="gone"/>
                         </RelativeLayout>
 
                         <LinearLayout

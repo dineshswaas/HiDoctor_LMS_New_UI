@@ -56,6 +56,7 @@ public class SectionModel implements Serializable {
     public int Section_Ref_Id;
 
     public int Section_Checklist_Count;
+    public String Evaluation_Mode;
 
     public int getSection_Checklist_Count() {
         return Section_Checklist_Count;
@@ -468,5 +469,13 @@ public class SectionModel implements Serializable {
 
     public void setCourseExtend(boolean courseExtend) {
         isCourseExtend = courseExtend;
+    }
+
+    public String getEvaluation_Mode() {
+        return Evaluation_Mode;
+    }
+
+    public void setEvaluation_Mode(String evaluation_Mode) {
+        Evaluation_Mode = evaluation_Mode;
     }
 }

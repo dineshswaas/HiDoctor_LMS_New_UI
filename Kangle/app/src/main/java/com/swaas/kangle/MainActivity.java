@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.swaas.kangle.API.model.LandingPageAccess;
+import com.swaas.kangle.API.model.User;
 import com.swaas.kangle.API.service.UserService;
 import com.swaas.kangle.LPCourse.CourseListActivity;
 import com.swaas.kangle.db.RetrofitAPIBuilder;
@@ -61,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
             if(PreferenceUtils.getUser(MainActivity.this) != null){
                 if (!PreferenceUtils.getUser(MainActivity.this).isEmpty()) {
                     if (NetworkUtils.checkIfNetworkAvailable(mContext)) {
-                        getMenus();
-                        //getMenusNewApi();
+                        //getMenus();
+                        getMenusNewApi();
                     } else {
 
                         SetTheme();
@@ -205,9 +208,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void gotoActivity(){
-        Intent intent = new Intent(MainActivity.this, CourseListActivity.class);
-        startActivity(intent);
-        finish();
+
+            Gson gsonget = new Gson();
+            User userobj = gsonget.fromJson(PreferenceUtils.getUser(mContext), User.class);
+            Log.d("retriveddata", userobj.toString());
+            Crashlytics.log(PreferenceUtils.getUserId(mContext) + " - " + PreferenceUtils.getSubdomainName(mContext));
+            Gson gsongetlanding = new Gson();
+            LandingPageAccess landingobj = gsongetlanding.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
+                Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+                startActivity(intentLandinActivity);
+            } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
+
+                Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+                startActivity(intentLandinActivity);
+            } else if(!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")){
+                Intent intentLandinActivity = new Intent(getApplicationContext(), CourseListActivity.class);
+                startActivity(intentLandinActivity);
+            }
+            else
+            {
+                Intent intentLandinActivity = new Intent(getApplicationContext(), AssetListActivity.class);
+                startActivity(intentLandinActivity);
+            }
+            finish();
     }
 
     //New Theme Setup

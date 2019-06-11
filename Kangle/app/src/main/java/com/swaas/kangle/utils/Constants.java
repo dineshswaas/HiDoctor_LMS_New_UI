@@ -35,6 +35,7 @@ public class Constants {
     public static final String LIST = "list";
     public static final String POSITION = "position";
     public static final String From_Question = "from_question";
+    public static final String Evaluation_Mode = "Evaluation_Mode" ;
 
     public static String Course_Status = "CourseStatus";
     public static String moduleName = "moduleName";

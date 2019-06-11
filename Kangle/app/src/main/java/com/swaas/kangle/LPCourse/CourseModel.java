@@ -71,8 +71,8 @@ public class CourseModel implements Serializable {
     public int Ref_Id;
 
     public int Course_Checklist_Count;
-
-
+    public String Evaluation_Mode;
+    public int Manual_Evaluation_Status;
     public List<CourseSectionProgressModel> sectionDetails;
 
 
@@ -545,5 +545,21 @@ public class CourseModel implements Serializable {
 
     public void setCourse_Checklist_Count(int course_Checklist_Count) {
         Course_Checklist_Count = course_Checklist_Count;
+    }
+
+    public String getEvaluation_Mode() {
+        return Evaluation_Mode;
+    }
+
+    public void setEvaluation_Mode(String evaluation_Mode) {
+        Evaluation_Mode = evaluation_Mode;
+    }
+
+    public int getManual_Evaluation_Status() {
+        return Manual_Evaluation_Status;
+    }
+
+    public void setManual_Evaluation_Status(int manual_Evaluation_Status) {
+        Manual_Evaluation_Status = manual_Evaluation_Status;
     }
 }

@@ -17,47 +17,66 @@
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/question_background"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-
-                <TextView
-                    android:layout_width="match_parent"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Who is the godfather of technology? "
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:id="@+id/question_text"
-                    android:textSize="@dimen/dimen_sp_16"
-                    android:padding="@dimen/padding_ten"
-                    />
+                    android:layout_gravity="left"
+                    android:layout_toLeftOf="@+id/hint_layout_holder">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/question_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="left"
+                        android:layout_marginEnd="10dp"
+                        android:padding="@dimen/padding_ten"
+                        android:text="Who is the godfather of technology? "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/dimen_sp_16"
+                        android:textStyle="bold" />
+                </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="5dp"
-                android:id="@+id/hint_layout_holder"
-                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp"
+                    android:id="@+id/hint_layout_holder"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
+                    android:layout_alignParentRight="true"
+                    >
 
                 <ImageView
+                    android:id="@+id/btn_hint"
                     android:layout_width="@dimen/dimen_30"
                     android:layout_height="@dimen/dimen_30"
-                    android:id="@+id/btn_hint"
                     android:layout_gravity="right|bottom"
                     android:src="@drawable/ic_info_black_24dp"
-                    android:tint="@color/colorPrimary"/>
+                    android:tint="@color/colorPrimary"
+                    />
+                </RelativeLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
+
+
+
+
+
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +97,7 @@
                 android:layout_height="@dimen/dimen_120"
                 android:id="@+id/question_image"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/mutilple_question_option_holder"

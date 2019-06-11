@@ -24,6 +24,7 @@ import com.koushikdutta.ion.Ion;
 import com.swaas.kangle.API.model.LandingPageAccess;
 import com.swaas.kangle.EmptyRecyclerView;
 import com.swaas.kangle.LPCourse.Report.LPCourseReportActivity;
+import com.swaas.kangle.LPCourse.Report.LPCourseReportSummaryActivity;
 import com.swaas.kangle.LPCourse.model.QuestionAndAnswerModel;
 import com.swaas.kangle.LPCourse.model.QuestionAnswerListModel;
 import com.swaas.kangle.LPCourse.model.QuestionBaseModel;
@@ -98,6 +99,8 @@ public class SectionActivity extends AppCompatActivity {
 
     CustomFontTextView no_of_assets,no_of_sections,no_of_questions,no_of_checklist;
     TextView enddatetime;
+    Boolean isReportEnabled,ispending;
+    TextView reportbtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,12 +128,16 @@ public class SectionActivity extends AppCompatActivity {
             tagvalue = getIntent().getStringExtra("Tags");
             Course_Status_INT = getIntent().getIntExtra("Course_Status_INT",0);
             //isSequenceEnabled =  getIntent().getBooleanExtra(Constants.ISSEQUENCEENABLED,false);
+            isReportEnabled = getIntent().getBooleanExtra(Constants.Evaluation_Mode,false);
+            ispending = getIntent().getBooleanExtra("Show pending for evaluation",false);
         }
         setUpRecyclerView();
         setthemeforView();
         //getListOfSections();
 
         onClickListeners();
+        desccattaglayout.setVisibility(View.VISIBLE);
+        expanddes_cat.setVisibility(View.GONE);
     }
 
     @Override
@@ -174,6 +181,7 @@ public class SectionActivity extends AppCompatActivity {
         checklist_sec = (LinearLayout) findViewById(R.id.no_of_checklist_sec);
         enddatetime = (TextView) findViewById(R.id.enddatetime);
 //        certificate.setEnabled(false);
+        reportbtn = (TextView) findViewById(R.id.reportsbutton);
 
     }
 
@@ -223,7 +231,8 @@ public class SectionActivity extends AppCompatActivity {
         no_of_questions.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
         no_of_checklist.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
         enddatetime.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
-
+        reportbtn.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
+        reportbtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
         loadData();
     }
 
@@ -271,6 +280,16 @@ public class SectionActivity extends AppCompatActivity {
                 if(cs.getEvaluation_Type() == 1 && cs.getEvaluation_Status() == 1){
                     completion_status.setText(" "+getResources().getString(R.string.completed_course));
                     completion_status.setTextColor(Color.parseColor(Constants.COMPLETED_COLOR));
+                    if (isReportEnabled) {
+                        reportbtn.setVisibility(View.VISIBLE);
+                        reportbtn.setText(R.string.Marksheet);
+                    }
+                     if (ispending)
+                    {
+                        reportbtn.setText(R.string.pending_for_evaluation);
+                        reportbtn.setEnabled(false);
+                        reportbtn.setAlpha((float) 0.5);
+                    }
                 }else{
                     completion_status.setText(" "+getResources().getString(R.string.pending_for_evaluation));
                     completion_status.setTextColor(Color.parseColor(Constants.PENDING_APPROVAl_COLOR));
@@ -278,6 +297,16 @@ public class SectionActivity extends AppCompatActivity {
             }else{
                 completion_status.setText(" "+getResources().getString(R.string.completed_course));
                 completion_status.setTextColor(Color.parseColor(Constants.COMPLETED_COLOR));
+                if (isReportEnabled) {
+                    reportbtn.setVisibility(View.VISIBLE);
+                    reportbtn.setText(R.string.Marksheet);
+                }
+                 if (ispending)
+                {
+                    reportbtn.setText(R.string.pending_for_evaluation);
+                    reportbtn.setEnabled(false);
+                    reportbtn.setAlpha((float) 0.5);
+                }
             }
             completecertificate.setVisibility(View.VISIBLE);
         }else if(Course_Status_INT == Constants.COURSE_EXPIRED){
@@ -324,6 +353,17 @@ public class SectionActivity extends AppCompatActivity {
             }
         });
 
+        reportbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,LPCourseReportSummaryActivity.class);
+                intent.putExtra("iscourseReport",true);
+                intent.putExtra("courseID",CourseId);
+                intent.putExtra("showfullsummary",2);
+                //intent.putExtra("showattemptcount",courseModel.getAttempt_Number());
+                startActivity(intent);
+            }
+        });
         checklistReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -430,7 +470,7 @@ public class SectionActivity extends AppCompatActivity {
                         sectionModelList = courseListModel;
                         //sectionAdapter = new SectionAdapter(mContext,sectionModelList,isSequenceEnabled);
                         setProgressList();
-                        sectionAdapter = new SectionAdapter(mContext,sectionModelList);
+                        sectionAdapter = new SectionAdapter(mContext,sectionModelList,isReportEnabled);
                         recyclerView.setAdapter(sectionAdapter);
                         if(!isFinishing())
                             dismissProgressDialog();
@@ -449,6 +489,7 @@ public class SectionActivity extends AppCompatActivity {
                         }*/
                     } else {
                         //courseListModel is null
+                        dismissProgressDialog();
                         recyclerView.setEmptyView(mEmptyView);
                         Toast.makeText(mContext, "Section List is null", Toast.LENGTH_SHORT).show();
                     }
@@ -735,6 +776,13 @@ public class SectionActivity extends AppCompatActivity {
                             intentToQuestionActivity.putExtra("SectionDate", sectionModelList.get(0).getValid_To());
                             intentToQuestionActivity.putExtra("SectionName",selectedSectionName);
                             intentToQuestionActivity.putExtra(Constants.Course_Thumbnail, CourseThumbnail);
+                            if (isReportEnabled) {
+                                intentToQuestionActivity.putExtra(Constants.Evaluation_Mode, true);
+                            }
+                            else
+                            {
+                                intentToQuestionActivity.putExtra(Constants.Evaluation_Mode, false);
+                            }
                             startActivity(intentToQuestionActivity);
 
                         }else{

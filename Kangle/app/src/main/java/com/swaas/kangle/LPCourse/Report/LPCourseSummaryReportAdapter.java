@@ -1,12 +1,14 @@
 package com.swaas.kangle.LPCourse.Report;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swaas.kangle.LPCourse.model.LPCourseReportSummaryModel;
@@ -65,6 +67,17 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
                 myClickListener.onItemClick(courseReportModel.getExplanation());
             }
         });
+        holder.section.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent intent = new Intent(context,AnswerPage.class);
+               intent.putExtra("course",courseReportModel.getCourse_Name());
+                intent.putExtra("question",courseReportModel.getQuestion_Text());
+                intent.putExtra("answer",courseReportModel.getAnswer_Text());
+                intent.putExtra("section",courseReportModel.getSection_Name());
+               context.startActivity(intent);
+            }
+        });
 
         if(position == courseReportModelList.size()-1) {
             holder.end_line.setVisibility(View.GONE);
@@ -92,6 +105,7 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
         final ImageView showsummary,result_icon;
         final TextView questiontitle;
         final View result,end_line;
+        final RelativeLayout section;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -101,6 +115,7 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
             showsummary = (ImageView) itemView.findViewById(R.id.viewsummary_icon);
             questiontitle = (TextView) itemView.findViewById(R.id.attemptdate);
             end_line = itemView.findViewById(R.id.end_line);
+            section = itemView.findViewById(R.id.section_linear_layout);
         }
     }
 

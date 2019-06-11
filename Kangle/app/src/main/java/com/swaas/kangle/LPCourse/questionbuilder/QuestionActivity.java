@@ -76,7 +76,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     RelativeLayout question_timer_holder;
     MultiPleQuestionPerPage multiPleQuestionPerPage;
-
+    Boolean isMannualCourse = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +98,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         mBtnSubmit.setOnClickListener(this);
         setthemeforView();
         GetQuestionList();
+        isMannualCourse =  getIntent().getBooleanExtra(Constants.Evaluation_Mode,false);
         if(isSingleQuestionPerPage){
 
             mMutipleQuestionOptionHolder.setVisibility(View.GONE);
@@ -227,7 +228,15 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 if(offline){
                     StartDashboardActivtiy();
                 }else {
-                    StartReportActiity();
+                    if (isMannualCourse)
+                    {
+                        StartDashboardActivtiy();
+                    }
+                    else
+                    {
+                        StartReportActiity();
+                    }
+
                 }
 
             }

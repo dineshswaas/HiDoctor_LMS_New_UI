@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,7 +114,7 @@ public class MoreMenuActivity extends AppCompatActivity {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if (landingobj != null) {
-                if (landingobj.getChat().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChat()) && landingobj.getChat().equalsIgnoreCase("Y")) {
                     chat.setVisibility(View.VISIBLE);
                 }
 
@@ -225,20 +226,20 @@ public class MoreMenuActivity extends AppCompatActivity {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if(landingobj != null) {
-                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
                     assetpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     assetpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getCourse().equalsIgnoreCase("L")) {
+                if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
-                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
+                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if(landingobj.getCourse().equalsIgnoreCase("A")){
+                } else if(!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")){
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //lpcourse.setVisibility(View.VISIBLE);
@@ -246,13 +247,13 @@ public class MoreMenuActivity extends AppCompatActivity {
                 }else{
                     lpcourse.setVisibility(View.GONE);
                 }
-                if (landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
                     chklistpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     chklistpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getTask().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
                     taskpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{

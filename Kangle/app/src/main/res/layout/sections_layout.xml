@@ -503,7 +503,7 @@
             <ImageView
                 android:id="@+id/showmandatory"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="10dp"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/ic_keyboard_arrow_down_black_36dp"/>

@@ -25,6 +25,7 @@ import com.swaas.kangle.db.RetrofitAPIBuilder;
 import com.swaas.kangle.preferences.PreferenceUtils;
 import com.swaas.kangle.utils.CommonUtils;
 import com.swaas.kangle.utils.Constants;
+import com.swaas.kangle.utils.DateHelper;
 import com.swaas.kangle.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -60,6 +61,11 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
     RelativeLayout questionsdetails;
     TextView scoreText,noQuestionText,noQuestionsattendedtext,
             correctanswerquestiontext,negativemarkstext,resultqualifiedtext,ques;
+    Boolean iscourseReport = false;
+    int courseID = 0;
+    RelativeLayout mark;
+    TextView obtainedmarks,totalmarks;
+    float obtainedmark,totalmark = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +83,20 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
             ExamId = getIntent().getIntExtra(Constants.Exam_Id,0);
             showsummary = getIntent().getIntExtra("showfullsummary",0);
             attemptcountvalue = getIntent().getIntExtra("showattemptcount",0);
+            iscourseReport = getIntent().getBooleanExtra("iscourseReport",false);
+            courseID = getIntent().getIntExtra("courseID",0);
+
         }
         setUpRecyclerView();
         setthemeforView();
-
-        getReportforSection();
+        if (iscourseReport == true)
+        {
+            getReportforCourse();
+            mark.setVisibility(View.VISIBLE);
+        }
+        else {
+            getReportforSection();
+        }
         onClickListeners();
     }
 
@@ -115,6 +130,9 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
         negativemarkstext = (TextView) findViewById(R.id.negativemarkstext);
         resultqualifiedtext = (TextView) findViewById(R.id.resultqualifiedtext);
         ques = (TextView) findViewById(R.id.ques);
+        mark = findViewById(R.id.mark);
+        obtainedmarks = (TextView) findViewById(R.id.obtained);
+        totalmarks =(TextView) findViewById(R.id.total);
     }
 
     private void setUpRecyclerView() {
@@ -197,8 +215,82 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
         }
     }
 
+    public void getReportforCourse(){
+
+        if(NetworkUtils.checkIfNetworkAvailable(mContext)) {
+            showProgressDialog();
+            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+            LPCourseService userService = retrofitAPI.create(LPCourseService.class);
+
+            //String offsetFromUtc = CommonUtils.getUtcOffset();
+            String offsetFromUtc = CommonUtils.getUtcOffsetincluded10k();
+            Log.d("getUTC", offsetFromUtc);
+            int CompanyId = PreferenceUtils.getCompnayId(mContext);
+            int userID = PreferenceUtils.getUserId(mContext);
+            Log.d("CompanyId", String.valueOf(CompanyId));
+            String SubdomainName = PreferenceUtils.getSubdomainName(mContext);
+            Call call = userService.getCourseFullcourseReportList(courseID,userID,CompanyId);
+            call.enqueue(new Callback<ArrayList<LPCourseReportSummaryModel>>() {
+
+                @Override
+                public void onResponse(Response<ArrayList<LPCourseReportSummaryModel>> response, Retrofit retrofit) {
+                    List<LPCourseReportSummaryModel> courseListModel = response.body();
+                    if (courseListModel != null && courseListModel.size() > 0) {
+                        reportList = courseListModel;
+                        courseName.setText(reportList.get(0).getCourse_Name());
+                        SectionName.setText(reportList.get(0).getSection_Name());
+                        userName.setText(reportList.get(0).getUser_Name()+" ("+reportList.get(0).getEmployee_Name()+")");
+                        DateHelper datehelper = new DateHelper();
+                        Dateoftest.setText((mContext.getResources().getString(R.string.attended_on) +" "+datehelper.getDisplayFormatwithUTC(reportList.get(0).getSection_Exam_End_Time(),"yyyy-MM-dd'T'hh:mm:ss")).substring(0,24));
+                       // Dateoftest.setText(mContext.getResources().getString(R.string.attended_on) +" "+reportList.get(0).getFormatted_Section_Exam_Start_Time());
+                        loadaadapterData();
+                        dismissProgressDialog();
+                        calculateReport();
+                        calculatemark();
+                        if (iscourseReport == true)
+                        {
+                            obtainedmarks.setText(String.valueOf(obtainedmark));
+                            totalmarks.setText(String.valueOf(totalmark));
+                        }
+                    } else {
+                        carddetails.setVisibility(View.GONE);
+                        mEmptyView.setVisibility(View.VISIBLE);
+                        questionsdetails.setVisibility(View.GONE);
+                        dismissProgressDialog();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d(t.toString(), "Error");
+                    mEmptyView.setVisibility(View.VISIBLE);
+                    questionsdetails.setVisibility(View.GONE);
+                    dismissProgressDialog();
+                }
+            });
+
+        }
+    }
+
+    private void calculatemark() {
+        if (reportList != null && reportList.size() > 0) {
+            for (LPCourseReportSummaryModel model : reportList) {
+                obtainedmark = obtainedmark + model.getMarks_Given();
+                totalmark = totalmark + model.getMarks_Allotted();
+            }
+        }
+    }
+
+
     public void loadaadapterData(){
-        attemptcount.setText(mContext.getResources().getString(R.string.Attempt)+" : "+String.valueOf(attemptcountvalue));
+        if (attemptcountvalue == 0)
+        {
+            attemptcount.setVisibility(View.GONE);
+        }
+        else
+        {
+            attemptcount.setText(mContext.getResources().getString(R.string.Attempt)+" : "+String.valueOf(attemptcountvalue));
+        }
         for(LPCourseReportSummaryModel model : reportList){
             if(model.getQuestion_Text() != null && model.getQuestion_Text().length() > 0){
                 noOfQuestionsAttempted++;

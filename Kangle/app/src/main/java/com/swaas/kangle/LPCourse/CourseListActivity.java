@@ -414,20 +414,20 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if(landingobj != null) {
-                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
                     assetpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     assetpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getCourse().equalsIgnoreCase("L")) {
+                if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
-                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
+                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if(landingobj.getCourse().equalsIgnoreCase("A")){
+                } else if(!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")){
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //lpcourse.setVisibility(View.VISIBLE);
@@ -435,13 +435,13 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                 }else{
                     lpcourse.setVisibility(View.GONE);
                 }
-                if (landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
                     chklistpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
                     chklistpage.setVisibility(View.GONE);
                 }
-                if (landingobj.getTask().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
                     taskpage.setVisibility(View.VISIBLE);
                     count += 1;
                 }else{
@@ -1331,6 +1331,22 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         bundle.putSerializable("value", courseModel);
         intent.putExtras(bundle);
         intent.putExtra(Constants.Is_From_DashBoard,false);
+        if (courseModel.getEvaluation_Mode()!=null && courseModel.getEvaluation_Mode().equalsIgnoreCase("MANUAL"))
+        {
+            if (courseModel.getManual_Evaluation_Status() == 1) {
+                intent.putExtra(Constants.Evaluation_Mode, true);
+
+            }
+            else
+            {
+                intent.putExtra(Constants.Evaluation_Mode, true);
+                intent.putExtra("Show pending for evaluation",true);
+            }
+        }
+        else
+        {
+            intent.putExtra(Constants.Evaluation_Mode,false);
+        }
         //intent.putExtra(Constants.ISSEQUENCEENABLED,isSequenceEnabled);
         startActivity(intent);
     }
