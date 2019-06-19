@@ -122,7 +122,7 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
     ChecklistCatTagFilterRepository checklistCatTagFilterRepository;
     List<CheckListModel> digitalAssetsMasterListfilterd;
     View tabsection;
-
+    TextView course,asset,checklist,task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +150,20 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
         PreferenceUtils.setVisibleActivityName(mContext,"Checklist");
 
         getnotificationcount();
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if (landingobj != null) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                    notificationsec.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    notificationsec.setVisibility(View.GONE);
+                }
+            }
+        }
+
     }
 
     public void getnotificationcount(){
@@ -271,6 +285,35 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
         filterheadingtext = (TextView)findViewById(R.id.filterheadingtext);
         tickfilter = (ImageView) findViewById(R.id.tickfilter);
         tabsection =  findViewById(R.id.tabsection);
+        course = (TextView) findViewById(R.id.coursetext);
+        asset = (TextView) findViewById(R.id.assettext);
+        checklist = (TextView) findViewById(R.id.checklisttext);
+        task = (TextView) findViewById(R.id.tasktext);
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if(landingobj != null) {
+
+                if (!TextUtils.isEmpty(landingobj.getCourseText()))
+                {
+                    course.setText(landingobj.getCourseText());
+                }
+                if (!TextUtils.isEmpty(landingobj.getAssetText()))
+                {
+                    asset.setText(landingobj.getAssetText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getChecklistText()))
+                {
+                    checklist.setText(landingobj.getChecklistText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getTaskText()))
+                {
+                    task.setText(landingobj.getTaskText());
+                }
+            }
+        }
     }
 
     private void setUpRecyclerView() {
@@ -555,7 +598,7 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
         header.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
         mainnestedView.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
         pos2.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-        higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+        //higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
 
         onetimetext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
         dailytext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));

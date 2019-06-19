@@ -22,6 +22,14 @@ public class LandingPageAccess implements Serializable{
     public int Prep_Count;
     public String Checklist;
     public String TaskEnable;
+    public String Notification;
+    public String Report;
+    public String CourseText;
+    public String AssetText;
+    public String ChecklistText;
+    public String TaskText;
+    public String ReportText;
+
 
     public String getChat() {
         return Chat;
@@ -133,5 +141,61 @@ public class LandingPageAccess implements Serializable{
 
     public void setTask(String task) {
         TaskEnable = task;
+    }
+
+    public String getNotification() {
+        return Notification;
+    }
+
+    public void setNotification(String notification) {
+        Notification = notification;
+    }
+
+    public String getReport() {
+        return Report;
+    }
+
+    public void setReport(String report) {
+        Report = report;
+    }
+
+    public String getCourseText() {
+        return CourseText;
+    }
+
+    public void setCourseText(String courseText) {
+        CourseText = courseText;
+    }
+
+    public String getAssetText() {
+        return AssetText;
+    }
+
+    public void setAssetText(String assetText) {
+        AssetText = assetText;
+    }
+
+    public String getChecklistText() {
+        return ChecklistText;
+    }
+
+    public void setChecklistText(String checklistText) {
+        ChecklistText = checklistText;
+    }
+
+    public String getTaskText() {
+        return TaskText;
+    }
+
+    public void setTaskText(String taskText) {
+        TaskText = taskText;
+    }
+
+    public String getReportText() {
+        return ReportText;
+    }
+
+    public void setReportText(String reportText) {
+        ReportText = reportText;
     }
 }

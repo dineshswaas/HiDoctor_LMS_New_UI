@@ -123,6 +123,7 @@ public class TaskListActivity extends AppCompatActivity {
     ImageView icon_search,closesearch;
     SearchView msearchtext;
     SearchManager searchManager;
+    TextView course,asset,checklist,task;
 
 
     @Override
@@ -154,6 +155,22 @@ public class TaskListActivity extends AppCompatActivity {
             getAdminlevelUserlistApi();
         }
         //getMyListRecords();
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if (landingobj != null) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                    notificationsec.setVisibility(View.VISIBLE);
+
+                }
+                else
+                {
+                    notificationsec.setVisibility(View.GONE);
+
+                }
+            }
+        }
+
     }
 
     public void initializeView(){
@@ -239,6 +256,35 @@ public class TaskListActivity extends AppCompatActivity {
         InprogressCheck = (CheckBox) findViewById(R.id.InprogressCheck);
         reviewCheck = (CheckBox) findViewById(R.id.reviewCheck);
         completedCheck = (CheckBox) findViewById(R.id.completedCheck);
+        course = (TextView) findViewById(R.id.coursetext);
+        asset = (TextView) findViewById(R.id.assettext);
+        checklist = (TextView) findViewById(R.id.checklisttext);
+        task = (TextView) findViewById(R.id.tasktext);
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if(landingobj != null) {
+
+                if (!TextUtils.isEmpty(landingobj.getCourseText()))
+                {
+                    course.setText(landingobj.getCourseText());
+                }
+                if (!TextUtils.isEmpty(landingobj.getAssetText()))
+                {
+                    asset.setText(landingobj.getAssetText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getChecklistText()))
+                {
+                    checklist.setText(landingobj.getChecklistText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getTaskText()))
+                {
+                    task.setText(landingobj.getTaskText());
+                }
+            }
+        }
     }
 
     public void setUpRecyclerView(){
@@ -266,7 +312,7 @@ public class TaskListActivity extends AppCompatActivity {
         header.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
         parent_view.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
         pos3.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-        higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+       // higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         Reviewtext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
         my_teamtext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
         my_teamarrow.setColorFilter(Color.parseColor(Constants.TEXT_COLOR));

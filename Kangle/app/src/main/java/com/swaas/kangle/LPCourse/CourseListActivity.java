@@ -78,6 +78,8 @@ import com.swaas.kangle.utils.iOSDialogBuilder;
 import com.swaas.kangle.utils.iOSDialogClickListener;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +87,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -189,6 +192,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
     View notificationsec,chatviewsec;
     TextView notificationcount,chatcount;
     int QuestionLoadCount;
+    TextView course,asset,checklist,task;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -228,6 +232,20 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         //getListOfCourses();
         onClickListeners();
         showApplyButton();
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if (landingobj != null) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                    notificationsec.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    notificationsec.setVisibility(View.GONE);
+                }
+            }
+        }
+
     }
 
     public void getnotificationcount(){
@@ -339,6 +357,35 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         chatviewsec = findViewById(R.id.chatviewsec);
         notificationcount = (TextView) findViewById(R.id.notificationcount);
         chatcount = (TextView) findViewById(R.id.chatcount);
+        course = (TextView) findViewById(R.id.coursetext);
+        asset = (TextView) findViewById(R.id.assettext);
+        checklist = (TextView) findViewById(R.id.checklisttext);
+        task = (TextView) findViewById(R.id.tasktext);
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
+            Gson gsonget = new Gson();
+            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
+            if(landingobj != null) {
+
+                if (!TextUtils.isEmpty(landingobj.getCourseText()))
+                {
+                    course.setText(landingobj.getCourseText());
+                }
+                if (!TextUtils.isEmpty(landingobj.getAssetText()))
+                {
+                    asset.setText(landingobj.getAssetText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getChecklistText()))
+                {
+                    checklist.setText(landingobj.getChecklistText());
+                }
+
+                if (!TextUtils.isEmpty(landingobj.getTaskText()))
+                {
+                    task.setText(landingobj.getTaskText());
+                }
+            }
+        }
 
     }
 
@@ -362,7 +409,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-        higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+        course.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         //pos0.setColorFilter(ContextCompat.getColor(mContext, Integer.parseInt(String.valueOf(companycolor))), android.graphics.PorterDuff.Mode.MULTIPLY);
 
@@ -1155,7 +1202,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             ArrayList<QuestionAndAnswerModel> list = PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key");
             Checknetworkandupload(UploadAnswerProcess(list),false,false,true);
             QuestionLoadCount = list.get(0).getLstCourse().get(0).getQuestionLoadCount();
-            PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
+           // PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
         }
         checkForAppUpdates();
     }
@@ -1333,11 +1380,27 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         intent.putExtra(Constants.Is_From_DashBoard,false);
         if (courseModel.getEvaluation_Mode()!=null && courseModel.getEvaluation_Mode().equalsIgnoreCase("MANUAL"))
         {
-            if (courseModel.getManual_Evaluation_Status() == 1) {
-                intent.putExtra(Constants.Evaluation_Mode, true);
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+            Date date = null;
+            try {
 
+                String DateAsString = courseModel.getMinimum_Duration();
+                //String kept = DateAsString.substring( 0, DateAsString.indexOf("."));
+                date = sdf.parse(DateAsString);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            else
+            long TimeAsMilli;
+            long  hoursAsMilli = TimeUnit.HOURS.toMillis(date.getHours());
+            long minutesAsMilli  =  TimeUnit.MINUTES.toMillis(date.getMinutes());
+            long secondsAsMilli = TimeUnit.SECONDS.toMillis(date.getSeconds());
+            TimeAsMilli = hoursAsMilli+minutesAsMilli+secondsAsMilli;
+            intent.putExtra("Timer",TimeAsMilli);
+            PreferenceUtils.setTimer(mContext,TimeAsMilli);
+            intent.putExtra(Constants.Evaluation_Mode, true);
+
+            if(courseModel.getManual_Evaluation_Status()==0 && !(courseModel.getCourse_Status_Value()==Constants.YET_TO_START))
             {
                 intent.putExtra(Constants.Evaluation_Mode, true);
                 intent.putExtra("Show pending for evaluation",true);
@@ -1347,7 +1410,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         {
             intent.putExtra(Constants.Evaluation_Mode,false);
         }
-        //intent.putExtra(Constants.ISSEQUENCEENABLED,isSequenceEnabled);
+
         startActivity(intent);
     }
 
@@ -2160,6 +2223,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                         if (!isBackpressed){
                             dismissProgressDialog();
                             if (courseAssetListModel.contains("COMPLETED")){
+                                PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
                                 if (isTimeout){
                                    // ShowAlert(getResources().getString(R.string.time_Out),getResources().getString(R.string.warning),false);
                                 }else {

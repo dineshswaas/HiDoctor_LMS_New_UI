@@ -12,6 +12,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -214,7 +215,7 @@ public class ViewTaskActivity extends AppCompatActivity implements SeekbarChange
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if (landingobj != null) {
-                if (landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
                     checklist.setVisibility(View.VISIBLE);
                     question.setVisibility(View.VISIBLE);
                 }

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -165,7 +166,7 @@ public class NotificationActivity extends AppCompatActivity {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if (landingobj != null) {
-                if (landingobj.getTask().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
                     checkTask.setVisibility(View.VISIBLE);
                 }
                 else

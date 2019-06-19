@@ -337,6 +337,11 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
             }
         });
 
+            if ( courseModel.getEvaluation_Mode()!=null && courseModel.getManual_Evaluation_Status() == 0 && courseModel.getEvaluation_Mode().equalsIgnoreCase("MANUAL") && !(courseModel.getCourse_Status_Value() == Constants.YET_TO_START))
+            {
+                holder.mCourseEndTime.setText(" "+context.getResources().getString(R.string.pending_for_evaluation));
+                holder.mCourseEndTime.setTextColor(Color.parseColor(Constants.PENDING_APPROVAl_COLOR));
+            }
 
         final List<CourseSectionProgressModel> sectionModelList = courseModel.getSectionDetails();
         if(sectionModelList != null){
@@ -352,19 +357,27 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
                 final View labl = new View(context);
                 labl.setLayoutParams(params);
                 labl.setPadding(10, 0, 10, 10);
-                //labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
-                if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.INPROGRESS))) {
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_bluecolor));
-                } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.COMPLETED))) {
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
-                } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.MAX_ATTEMPTS_REACHED))) {
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_red));
-                } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.COURSE_EXPIRED))) {
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_red));
-                } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.PARTIALLY_COMPLETED))) {
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
-                } else{
-                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_grey));
+                if (courseModel.getEvaluation_Mode()!=null && courseModel.getEvaluation_Mode().equalsIgnoreCase("MANUAL")
+                        && !(secmodel.getSection_Status_Value().equals(String.valueOf(Constants.YET_TO_START)))
+                         && courseModel.getManual_Evaluation_Status()==0)
+                {
+                    labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_orange));
+                }
+                else {
+                    //labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
+                    if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.INPROGRESS))) {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_bluecolor));
+                    } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.COMPLETED))) {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
+                    } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.MAX_ATTEMPTS_REACHED))) {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_red));
+                    } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.COURSE_EXPIRED))) {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_red));
+                    } else if (secmodel.getSection_Status_Value().equals(String.valueOf(Constants.PARTIALLY_COMPLETED))) {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_green));
+                    } else {
+                        labl.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_allcorners_grey));
+                    }
                 }
                 l3.addView(labl);
             }

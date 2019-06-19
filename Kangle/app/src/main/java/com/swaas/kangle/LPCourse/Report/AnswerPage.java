@@ -20,11 +20,11 @@ public class AnswerPage extends AppCompatActivity {
 
     ImageView companylogo;
     Context mContext;
-    TextView coursename1,question,questiontext,asnwer,answertext,SectionName;
+    TextView coursename1,question,questiontext,asnwer,answertext,SectionName,obtained,total;
     CoordinatorLayout activity_list;
-    View header;
-    RelativeLayout answerblock;
-    String coursename,questionname,answername,sectioname;
+    View header,divider;
+    RelativeLayout answerblock,mark;
+    String coursename,questionname,answername,sectioname,obtainedm,totalm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,8 @@ public class AnswerPage extends AppCompatActivity {
             questionname =  getIntent().getStringExtra("question");
             answername =  getIntent().getStringExtra("answer");
             sectioname = getIntent().getStringExtra("section");
+            obtainedm = String.valueOf((int)getIntent().getFloatExtra("obtained",0));
+            totalm = String.valueOf((int)getIntent().getFloatExtra("total",0));
         }
 
         initialiseviews();
@@ -47,6 +49,8 @@ public class AnswerPage extends AppCompatActivity {
         questiontext.setText(questionname);
         answertext.setText(answername);
         SectionName.setText(sectioname);
+        obtained.setText(obtainedm);
+        total.setText(totalm);
         companylogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +71,10 @@ public class AnswerPage extends AppCompatActivity {
         asnwer = (TextView) findViewById(R.id.asnwer);
         answertext = (TextView) findViewById(R.id.answertext);
         answerblock = (RelativeLayout) findViewById(R.id.answerblock);
+        obtained =(TextView) findViewById(R.id.obtained);
+        total = (TextView) findViewById(R.id.total);
+        mark = (RelativeLayout) findViewById(R.id.mark);
+        divider = findViewById(R.id.divider);
 
     }
     public void setthemeforView(){
@@ -87,6 +95,10 @@ public class AnswerPage extends AppCompatActivity {
         shape.setColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
         shape.setCornerRadius(25);
         answerblock.setBackground(shape);
+        mark.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        obtained.setTextColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+        total.setTextColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+        divider.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
     }
 
     @Override

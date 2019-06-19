@@ -145,10 +145,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Response<List<LandingPageAccess>> response, Retrofit retrofit) {
                     List<LandingPageAccess> apiResponse = response.body();
                     if (apiResponse != null) {
-                        Gson gson = new Gson();
-                        String landingobj = gson.toJson(apiResponse.get(0));
-                        PreferenceUtils.setLandingPageAccess(mContext, landingobj);
-                        SetTheme();
+                        LandingPageAccess landingpage = new LandingPageAccess();
+                        if (apiResponse.get(0).getChat().equalsIgnoreCase("y"))
+                        {
+                            landingpage.setChat("Y");
+                        }
                     } else {
                         Log.d("retrofit", "error 2");
                     }
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 List<MenuModel> apiResponse = response.body();
                 if (apiResponse != null) {
                     converttoLandingObject(apiResponse);
+                    getMenus();
                 } else {
                     Log.d("retrofit", "error 2");
                 }
@@ -189,15 +191,32 @@ public class MainActivity extends AppCompatActivity {
         for(MenuModel m : menu){
             if(m.getMenu_id() == 1){
                 landingpage.setLibrary("Y");
+                landingpage.setAssetText(m.getUpdated_label());
             }
             if(m.getMenu_id() == 2){
                 landingpage.setCourse("L");
+                landingpage.setCourseText(m.getUpdated_label());
             }
             if(m.getMenu_id() == 3){
                 landingpage.setChecklist("Y");
+                landingpage.setChecklistText(m.getUpdated_label());
             }
-            if(m.getMenu_id() == 4){
+            if(m.getMenu_id() == 8){
                 landingpage.setTask("Y");
+                landingpage.setTaskText(m.getUpdated_label());
+            }
+            if (m.getMenu_id() == 9)
+            {
+                landingpage.setChat("Y");
+            }
+            if (m.getMenu_id() == 12)
+            {
+                landingpage.setNotification("Y");
+            }
+            if (m.getMenu_id() == 4)
+            {
+                landingpage.setReport("Y");
+                landingpage.setReportText(m.getUpdated_label());
             }
         }
         Gson gson = new Gson();

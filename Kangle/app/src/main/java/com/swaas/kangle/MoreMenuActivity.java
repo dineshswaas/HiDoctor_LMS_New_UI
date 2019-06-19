@@ -110,12 +110,16 @@ public class MoreMenuActivity extends AppCompatActivity {
         logout_icn = (ImageView)findViewById(R.id.logout_icn);
         chat_icon = (ImageView)findViewById(R.id.chat_icon);
         chat.setVisibility(View.GONE);
+        report.setVisibility(View.GONE);
         if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if (landingobj != null) {
                 if (!TextUtils.isEmpty(landingobj.getChat()) && landingobj.getChat().equalsIgnoreCase("Y")) {
                     chat.setVisibility(View.VISIBLE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getReport()) && landingobj.getReport().equalsIgnoreCase("Y")) {
+                    report.setVisibility(View.VISIBLE);
                 }
 
             }

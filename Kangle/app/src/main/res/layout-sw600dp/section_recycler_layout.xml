@@ -44,6 +44,78 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/question_timer_holder"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:background="@color/black_semi_transparent"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dimen_sp_14"
+            android:text="Section Name "
+            android:textColor="@color/white"
+            android:id="@+id/section_name_text"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:maxLines="3"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"/>
+
+        <LinearLayout
+            android:id="@+id/questiontime"
+            android:layout_width="134dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/section_name_text"
+            android:background="@drawable/border">
+            <!--android:layout_below="@+id/section_name_text"-->
+
+
+            <TextView
+                android:id="@+id/time_expiry_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attempt_expires_at"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_sp_12"
+                android:padding="5dp"
+                android:layout_gravity="right"/>
+
+            <TextView
+                android:id="@+id/question_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_sp_14"
+                android:textStyle="bold"
+                android:layout_gravity="right"
+                />
+
+
+        </LinearLayout>
+
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/questiontime"
+            android:src="@drawable/ic_question_timer"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -73,7 +145,7 @@
                     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="350dp"
                         android:id="@+id/cardViewLayout"
                         app:cardElevation="2dp"
                         android:layout_marginLeft="@dimen/padding_five"
@@ -168,6 +240,7 @@
 
                                     </RelativeLayout>
 
+
                                     <TextView
                                         android:id="@+id/enddatetime"
                                         android:layout_width="match_parent"
@@ -183,6 +256,7 @@
                                 <RelativeLayout
                                     android:layout_width="0dp"
                                     android:layout_weight="1"
+                                    android:id="@+id/one"
                                     android:layout_height="wrap_content">
 
                                     <RelativeLayout
@@ -372,7 +446,10 @@
 
                                 </RelativeLayout>
 
+
                             </LinearLayout>
+
+
 
                             <ImageView
                                 android:id="@+id/expanddes_cat"
@@ -381,7 +458,8 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_alignParentRight="true"
                                 android:layout_alignParentBottom="true"
-                                android:src="@drawable/ic_keyboard_arrow_down_black_36dp"/>
+                                android:src="@drawable/ic_keyboard_arrow_down_black_36dp"
+                                android:visibility="gone"/>
 
                             <LinearLayout
                                 android:id="@+id/desccattaglayout"
@@ -404,38 +482,42 @@
                                     android:text="@string/Report"
                                     android:textColor="@color/white"
                                     android:gravity="center"
-                                    android:visibility="gone"
+                                    android:visibility="visible"
                                     android:textSize="12dp"
                                     android:layout_marginBottom="5dp"/>
 
 
-
-                                <TextView
-                                    android:id="@+id/text_description"
-                                    android:layout_width="match_parent"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginTop="4dp"
-                                    android:textColor="@color/black"
-                                    android:layout_height="wrap_content"
-                                    android:text="description enterd value"
-                                    android:visibility="visible" />
-
                             </LinearLayout>
+                            <TextView
+                                android:id="@+id/text_description"
+                                android:layout_width="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="4dp"
+                                android:textColor="@color/black"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_below="@id/splitview"
+                                android:layout_height="wrap_content"
+                                android:text="description enterd value"
+                                android:visibility="visible"
+                                android:layout_marginBottom="0dp"/>
                             <TextView
                                 android:id="@+id/reportsbutton"
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:layout_marginTop="5dp"
+                                android:layout_below="@id/text_description"
                                 android:layout_marginLeft="20dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_marginRight="20dp"
                                 android:background="@drawable/rounded_taco_button"
+                                android:gravity="center"
                                 android:text="@string/Report"
                                 android:textColor="@color/white"
-                                android:gravity="center"
-                                android:layout_below="@id/desccattaglayout"
-                                android:visibility="gone"/>
-                        </RelativeLayout>
+                                android:layout_marginBottom="20dp"
+                                android:visibility="gone" />
 
+
+                        </RelativeLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

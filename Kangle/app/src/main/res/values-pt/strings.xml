@@ -438,5 +438,8 @@
     <string name="Chat">Chat</string>
     <string name="defaulttext">Type your Essay Here</string>
     <string name="Marksheet">Marksheet</string>
+    <string name="course_completed">Course Assignment completed succesfully !</string>
+    <string name="Are_you_sure_back">Are you sure you want to cancel taking the Assesment</string>
+    <string name="your_application_will_force_close_reopen_to_use_application">Your Application will force close.Reopen to use Application.</string>
 
 </resources>

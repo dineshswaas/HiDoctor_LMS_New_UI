@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -129,21 +130,21 @@ public class UserReportActivity extends AppCompatActivity {
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
             if (landingobj != null) {
-                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
                     asset_sec.setVisibility(View.VISIBLE);
                 }
-                if (landingobj.getCourse().equalsIgnoreCase("A")) {
+                if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")) {
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
+                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if (landingobj.getCourse().equalsIgnoreCase("L")) {
+                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
                     course_sec.setVisibility(View.VISIBLE);
                 }
-                if (landingobj.getTask().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
                     task_sec.setVisibility(View.VISIBLE);
                 }
 
-                if (landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
                     checklist_sec.setVisibility(View.VISIBLE);
                 }
             }

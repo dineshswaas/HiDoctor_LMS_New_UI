@@ -28,11 +28,14 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
     List<LPCourseReportSummaryModel> courseReportModelList;
     private static MyClickListener myClickListener;
     DateHelper datehelper;
+    Boolean issummary;
 
-    public LPCourseSummaryReportAdapter(Context context, List<LPCourseReportSummaryModel> courseModels) {
+    public LPCourseSummaryReportAdapter(Context context, List<LPCourseReportSummaryModel> courseModels, Boolean iscourseReport) {
         this.context = context;
         this.courseReportModelList = courseModels;
         datehelper = new DateHelper();
+        this.issummary = iscourseReport;
+
     }
 
     @Override
@@ -52,8 +55,13 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
             //holder.result.setBackgroundColor(context.getResources().getColor(R.color.buttoncolor));
             holder.result_icon.setImageResource(R.drawable.ic_check_circle_black_48dp);
         } else {
+
             //holder.result.setBackgroundColor(context.getResources().getColor(R.color.red));
             holder.result_icon.setImageResource(R.drawable.ic_cancel_black_48dp);
+            if (courseReportModel.getQuestion_Type()==6)
+            {
+                holder.result_icon.setImageResource(R.drawable.ic_check_circle_black_48dp);
+            }
         }
 
         if(!courseReportModel.getExplanation().equalsIgnoreCase("")){
@@ -75,12 +83,24 @@ public class LPCourseSummaryReportAdapter extends RecyclerView.Adapter<LPCourseS
                 intent.putExtra("question",courseReportModel.getQuestion_Text());
                 intent.putExtra("answer",courseReportModel.getAnswer_Text());
                 intent.putExtra("section",courseReportModel.getSection_Name());
+                intent.putExtra("obtained",courseReportModel.getMarks_Given());
+                intent.putExtra("total",courseReportModel.getMarks_Allotted());
                context.startActivity(intent);
             }
         });
 
         if(position == courseReportModelList.size()-1) {
             holder.end_line.setVisibility(View.GONE);
+        }
+        if(issummary)
+        {
+            holder.showsummary.setImageResource(R.drawable.ic_navigate_next_white_36dp);
+            holder.showsummary.setEnabled(false);
+            holder.showsummary.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.section.setEnabled(false);
         }
     }
 

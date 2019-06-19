@@ -73,6 +73,7 @@ public class CourseModel implements Serializable {
     public int Course_Checklist_Count;
     public String Evaluation_Mode;
     public int Manual_Evaluation_Status;
+    public String Minimum_Duration;
     public List<CourseSectionProgressModel> sectionDetails;
 
 
@@ -561,5 +562,13 @@ public class CourseModel implements Serializable {
 
     public void setManual_Evaluation_Status(int manual_Evaluation_Status) {
         Manual_Evaluation_Status = manual_Evaluation_Status;
+    }
+
+    public String getMinimum_Duration() {
+        return Minimum_Duration;
+    }
+
+    public void setMinimum_Duration(String minimum_Duration) {
+        Minimum_Duration = minimum_Duration;
     }
 }

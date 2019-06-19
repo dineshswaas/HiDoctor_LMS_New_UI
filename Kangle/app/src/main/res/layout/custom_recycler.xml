@@ -779,7 +779,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/higlighttext"
+                        android:id="@+id/coursetext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/coursetitle"
@@ -821,6 +821,7 @@
                         android:visibility="visible"
                         android:layout_below="@+id/assetsecimage"
                         android:textColor="@color/checklist_darkgrey"
+                        android:id="@+id/assettext"
                         android:textSize="9dp"/>
 
 
@@ -857,7 +858,8 @@
                         android:visibility="visible"
                         android:layout_below="@+id/chklistimage"
                         android:textColor="@color/checklist_darkgrey"
-                        android:textSize="9dp"/>
+                        android:textSize="9dp"
+                        android:id="@+id/checklisttext"/>
 
                 </RelativeLayout>
 
@@ -884,7 +886,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/higlighttext"
+                        android:id="@+id/tasktext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/reportsecimage"

@@ -65,7 +65,7 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
     int courseID = 0;
     RelativeLayout mark;
     TextView obtainedmarks,totalmarks;
-    float obtainedmark,totalmark = 0;
+    int obtainedmark,totalmark = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -275,8 +275,9 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
     private void calculatemark() {
         if (reportList != null && reportList.size() > 0) {
             for (LPCourseReportSummaryModel model : reportList) {
-                obtainedmark = obtainedmark + model.getMarks_Given();
-                totalmark = totalmark + model.getMarks_Allotted();
+                obtainedmark = (int) (obtainedmark + model.getMarks_Given());
+                //totalmark = totalmark + model.getMarks_Allotted();
+                totalmark = (int) model.getTotal_Marks();
             }
         }
     }
@@ -313,7 +314,7 @@ public class LPCourseReportSummaryActivity extends AppCompatActivity {
                 questionsdetails.setVisibility(View.GONE);
             }
 
-            lpCourseReportSummaryAdapter = new LPCourseSummaryReportAdapter(mContext, newreportlist);
+            lpCourseReportSummaryAdapter = new LPCourseSummaryReportAdapter(mContext, newreportlist,iscourseReport);
             recyclerView.setAdapter(lpCourseReportSummaryAdapter);
             loadadapterclick();
         }

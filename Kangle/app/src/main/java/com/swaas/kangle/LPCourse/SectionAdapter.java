@@ -1,6 +1,7 @@
 package com.swaas.kangle.LPCourse;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -42,7 +43,8 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
     private boolean isAlreadyComplted=false;
     private boolean isSequenceEnabled ;
     private boolean isreportEnabled = false;
-
+    int count = 0;
+    int count1= 0;
     //public SectionAdapter(Context ctxt, List<SectionModel> sectionModels, boolean isSequenceEnabled){
     public SectionAdapter(Context ctxt, List<SectionModel> sectionModels, boolean b){
         this.context = ctxt;
@@ -68,7 +70,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
         setthemeforView(holder);
 
         isSequenceEnabled = sectionModelList.get(0).is_Course_Section_Mandatory();
-        if (isSequenceEnabled){
+        if (isSequenceEnabled  && !isreportEnabled){
 
             if (position > 0){
 
@@ -159,6 +161,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
                         //holder.taketest.setVisibility(View.VISIBLE);
                         if(sectionModel.getNo_Of_Visible_Questions() > 0){
                             holder.takeTextbutton.setVisibility(View.VISIBLE);
+                            holder.takeTextbutton.setEnabled(true);
                             holder.disabletakeTextbutton.setVisibility(View.GONE);
                         }else{
                             holder.takeTextbutton.setVisibility(View.GONE);
@@ -178,6 +181,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
                         holder.status_text.setTextColor(Color.parseColor(Constants.INPROGRESS_COLOR));
                         if(sectionModel.getNo_Of_Visible_Questions() > 0){
                             holder.takeTextbutton.setVisibility(View.VISIBLE);
+                            holder.takeTextbutton.setEnabled(true);
                             holder.disabletakeTextbutton.setVisibility(View.GONE);
                         }else{
                             holder.takeTextbutton.setVisibility(View.GONE);
@@ -294,6 +298,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
                         if(sectionModel.getNo_Of_Visible_Questions() > 0){
                             holder.takeTextbutton.setVisibility(View.VISIBLE);
                             holder.disabletakeTextbutton.setVisibility(View.GONE);
+                            holder.takeTextbutton.setEnabled(true);
                         }else{
                             holder.takeTextbutton.setVisibility(View.GONE);
                             holder.disabletakeTextbutton.setVisibility(View.GONE);
@@ -568,8 +573,10 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
         holder.takeTextbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.takeTextbutton.setEnabled(false);
                 myClickListener.onTakeTestClick(sectionModel.getSection_Name(),sectionModel.getSection_Id(),sectionModel.getCourse_User_Assignment_Id(),sectionModel.getCouse_User_Section_Mapping_Id());
             }
+
         });
 
         holder.reportbtn.setOnClickListener(new View.OnClickListener() {
@@ -649,9 +656,74 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionR
         if (isreportEnabled == true)
         {
             holder.reportsbutton.setVisibility(View.GONE);
+            holder.status_text.setVisibility(View.GONE);
+            holder.mSectionLaoutCard.setOnClickListener(null);
+            //holder.prerequsite.setVisibility(View.GONE);
+            holder.attemptspending.setVisibility(View.GONE);
+            holder.takeTextbutton.setText(R.string.take_assignment);
+            int pos = position -1;
+            if(!(sectionModelList.get(position).getSection_Status_Value() == Constants.YET_TO_START)){
+
+                holder.mSectionLaoutCard.clearAnimation();
+                holder.mPlaybtn.setEnabled(true);
+                holder.showmandatory.setEnabled(true);
+                holder.reportbtn.setEnabled(true);
+                holder.taketest.setEnabled(true);
+                holder.mSectionLaoutCard.setEnabled(true);
+                holder.status_text.setVisibility(View.GONE);
+                holder.mSectionLaoutCard.setVisibility(View.GONE);
+                holder.prerequsite.setVisibility(View.GONE);
+                holder.attemptspending.setVisibility(View.GONE);
+
+            }
+            else if (  pos>-1 && (!(sectionModelList.get(pos).getSection_Status_Value() == Constants.YET_TO_START))
+                    && (sectionModelList.get(position).getSection_Status_Value() == Constants.YET_TO_START) )
+            {
+                holder.mSectionLaoutCard.clearAnimation();
+                holder.mPlaybtn.setEnabled(true);
+                holder.showmandatory.setEnabled(true);
+                holder.reportbtn.setEnabled(true);
+                holder.taketest.setEnabled(true);
+                holder.mSectionLaoutCard.setEnabled(true);
+                holder.status_text.setVisibility(View.GONE);
+                holder.mSectionLaoutCard.setVisibility(View.VISIBLE);
+                // holder.prerequsite.setVisibility(View.GONE);
+                holder.attemptspending.setVisibility(View.GONE);
+            }
+             if ((sectionModelList.get(position).getSection_Status_Value() == Constants.YET_TO_START) && pos>-1 && (sectionModelList.get(position-1).getSection_Status_Value() == Constants.YET_TO_START))
+            {
+                holder.taketest.setVisibility(View.GONE);
+            }
+
+            for (int i = 0; i < sectionModelList.size();i++)
+            {
+                if (sectionModelList.get(i).getSection_Status_Value()== Constants.YET_TO_START)
+                {
+                    count = count +1;
+                }
+                if (!(sectionModelList.get(i).getSection_Status_Value() == Constants.YET_TO_START))
+                {
+                    count1 = count+1;
+                }
+
+            }
+            if (count == 0 )
+            {
+               //  mActivity.StartTimer(0);
+                 //mActivity.reportbtn.setVisibility(View.VISIBLE);
+                 //mActivity.reportbtn.setText(R.string.pending_for_evaluation);
+                 //mActivity.reportbtn.setEnabled(false);
+                 //mActivity.reportbtn.setAlpha((float) 0.5);
+                 //mActivity.reportbtn.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
+                 //mActivity.reportbtn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+                 mActivity.question_timer_holder.setVisibility(View.GONE);
+                 mActivity.isbackallowed = true;
+            }
+
         }
         holder.detailssectionlayout.setVisibility(View.VISIBLE);
         holder.showmandatory.setVisibility(View.INVISIBLE);
+
     }
 
 

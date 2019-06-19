@@ -39,6 +39,7 @@ public class LPCourseReportSummaryModel implements Serializable {
     private String Explanation;
     private float Marks_Given;
     private float Marks_Allotted;
+    private float Total_Marks;
     private String Answer_Text;
 
     public String getEmployee_Name() {
@@ -295,5 +296,13 @@ public class LPCourseReportSummaryModel implements Serializable {
 
     public void setAnswer_Text(String answer_Text) {
         Answer_Text = answer_Text;
+    }
+
+    public float getTotal_Marks() {
+        return Total_Marks;
+    }
+
+    public void setTotal_Marks(float total_Marks) {
+        Total_Marks = total_Marks;
     }
 }

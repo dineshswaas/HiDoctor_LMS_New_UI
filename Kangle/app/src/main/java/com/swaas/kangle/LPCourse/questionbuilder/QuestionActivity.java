@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -114,9 +115,14 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             mMutipleQuestionRecycleView.setAdapter(multiPleQuestionPerPage);
 
         }
+        if (isMannualCourse)
+        {
 
-        StartTimer(TimeAsMilli);
-
+            StartTimer(PreferenceUtils.getTimer(QuestionActivity.this));
+        }
+        else {
+            StartTimer(TimeAsMilli);
+        }
 
 
     }
@@ -147,9 +153,12 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             Date date = null;
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
             try {
-
+                String kept;
                 String DateAsString = questionandanswerlist.get(0).getLstCourse().get(0).getDuration();
-                String kept = DateAsString.substring( 0, DateAsString.indexOf("."));
+                kept = DateAsString.substring( 0, DateAsString.indexOf("."));
+                if (!TextUtils.isEmpty(getIntent().getStringExtra("Timer"))) {
+                    kept = getIntent().getStringExtra("Timer");
+                }
                 date = sdf.parse(kept);
 
             } catch (ParseException e) {
@@ -191,10 +200,32 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
 
+                if (isMannualCourse)
+                {
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+                    Date date = null;
+                    try {
+
+                        String DateAsString = String.valueOf(mTimerText.getText());
+                        //String kept = DateAsString.substring( 0, DateAsString.indexOf("."));
+                        date = sdf.parse(DateAsString);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long TimeAsMilli;
+                    long  hoursAsMilli = TimeUnit.HOURS.toMillis(date.getHours());
+                    long minutesAsMilli  =  TimeUnit.MINUTES.toMillis(date.getMinutes());
+                    long secondsAsMilli = TimeUnit.SECONDS.toMillis(date.getSeconds());
+                    TimeAsMilli = hoursAsMilli+minutesAsMilli+secondsAsMilli;
+                    PreferenceUtils.setTimer(QuestionActivity.this,TimeAsMilli);
+                }
+
             }
 
             @Override
             public void onFinish() {
+//                PreferenceUtils.setTimer(QuestionActivity.this,TimeAsMilli);
                 mTimerText.setText("00:00:00");
                 OnTimeOutOccured();
 
@@ -230,7 +261,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 }else {
                     if (isMannualCourse)
                     {
-                        StartDashboardActivtiy();
+                        QuestionActivity.this.finish();
                     }
                     else
                     {
@@ -251,7 +282,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         if (questionandanswerlist.size()>0){
 
             Checknetworkandupload(UploadAnswerProcess(questionandanswerlist),true,false, false);
-            PreferenceUtils.setQuestionAnswerList("key",null,QuestionActivity.this);
+
         }
 
     }
@@ -287,7 +318,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             if (courseAssetHeader.Achieved_Percentage >= questioncoursemodel.getPass_Percentage()) {
                 courseAssetHeader.Is_Qualified = 1;
             } else {
-
                 courseAssetHeader.Is_Qualified = 0;
 
             }
@@ -320,6 +350,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
                     courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
                     courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.Answer_Id = questionandanswermodel.getChoosenAnswerId();
                     courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
                 }
                 else if (questionandanswermodel.getQuestionModel().getQuestion_Type() !=2){
@@ -327,13 +358,36 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
                     courseuseranswer.Text = questionandanswermodel.getChoosenAnswer();
                     courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    courseuseranswer.Answer_Id = questionandanswermodel.getChoosenAnswerId();
                     courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                    if(questionandanswermodel.getChoosenAnswer()==null)
+                    {
+                        for (int i=0;i<questionandanswermodel.getLstAnswer().size();i++)
+                        {
+                            if (courseuseranswer.User_Answer_Text == questionandanswermodel.getLstAnswer().get(i).getAnswer_Text())
+                            {
+                                courseuseranswer.Answer_Id = String.valueOf(questionandanswermodel.getLstAnswer().get(i).getAnswer_Id());
+                            }
+                        }
+                    }
 
                 }else {
 
                     courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
                     courseuseranswer.Answer_Id = questionandanswermodel.getChoosenAnswerId();
                     courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
+                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
+                    if(questionandanswermodel.getChoosenAnswer()==null)
+                    {
+                        for (int i=0;i<questionandanswermodel.getLstAnswer().size();i++)
+                        {
+                        if (courseuseranswer.User_Answer_Text == questionandanswermodel.getLstAnswer().get(i).getAnswer_Text())
+                        {
+                            courseuseranswer.Answer_Id = String.valueOf(questionandanswermodel.getLstAnswer().get(i).getAnswer_Id());
+                        }
+                        }
+                    }
                     courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
 
                 }
@@ -350,8 +404,19 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                         CourseUserAnswers courseanswer = new CourseUserAnswers();
                         courseanswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
                         courseanswer.User_Id = PreferenceUtils.getUserId(this);
+                        courseanswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
                         courseanswer.Answer_Id = choosenanswerid[i];
                         courseanswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
+                        if(questionandanswermodel.getChoosenAnswer()==null)
+                        {
+                            for (int j=0;i<questionandanswermodel.getLstAnswer().size();j++)
+                            {
+                                if (courseanswer.User_Answer_Text == questionandanswermodel.getLstAnswer().get(j).getAnswer_Text())
+                                {
+                                    courseanswer.Answer_Id = String.valueOf(questionandanswermodel.getLstAnswer().get(j).getAnswer_Id());
+                                }
+                            }
+                        }
                         courseuseranswerList.add(courseanswer);
                     }
                 }
@@ -375,6 +440,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             CourseUserAssessDet courseuserasset = new CourseUserAssessDet();
             courseuserasset.Question_Type = questionanswermodel.getQuestionModel().Question_Type;
             courseuserasset.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
+
+
             if (questionanswermodel.getQuestionModel().getQuestion_Type() != 1) {
 
                 if (questionanswermodel.getChoosenAnswer() != null){
@@ -387,7 +454,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     if (questionanswermodel.getChoosenAnswer().equalsIgnoreCase(questionanswermodel.getCorrectAnswer())) {
                         courseuserasset.Is_Correct = true;
                         courseuserasset.Count_Of_User_Correct_Answers = 1;
-                    } else {
+                    }
+                    else {
+                        if(questionanswermodel.getQuestionModel().getQuestion_Type() == 6)
+                        {
+                            courseuserasset.Is_Correct = true;
+                            courseuserasset.Count_Of_User_Correct_Answers = 1;
+                        }
                         courseuserasset.Is_Correct = false;
                         courseuserasset.Count_Of_User_Correct_Answers = 0;
 
@@ -406,7 +479,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 courseuserasset.Negative_Mark = questionanswermodel.getQuestionModel().getNegative_Mark();
                 courseuserassetdetails.add(courseuserasset);
 
-            } else {
+            }
+            else {
 
                 if (questionanswermodel.getChoosenAnswer() != null && questionanswermodel.getChoosenAnswer().length() > 0
                         && questionanswermodel.getCorrectAnswer() != null && questionanswermodel.getCorrectAnswer().length() > 0) {
@@ -668,6 +742,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                         if (!isBackpressed){
                             dismissProgressDialog();
                             if (courseAssetListModel.contains("COMPLETED")){
+                                PreferenceUtils.setQuestionAnswerList("key",null,QuestionActivity.this);
                                 if (isTimeout){
                                     ShowAlert(getResources().getString(R.string.time_Out),getResources().getString(R.string.warning),false);
                                 }else {
@@ -729,7 +804,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         if (questionandanswerlist.size()>0){
             Checknetworkandupload(UploadAnswerProcess(questionandanswerlist), false, true, false);
-            PreferenceUtils.setQuestionAnswerList("key",null,QuestionActivity.this);
+
         }
 
     }

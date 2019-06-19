@@ -85,7 +85,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/header"
-            android:background="@drawable/border">
+            android:background="@drawable/border"
+            android:padding="20dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -203,7 +204,8 @@
                         android:layout_below="@id/attemptcount"
                         android:id="@+id/mark"
                         android:background="@drawable/mark_round"
-                        android:layout_centerHorizontal="true">
+                        android:layout_centerHorizontal="true"
+                        android:visibility="gone">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

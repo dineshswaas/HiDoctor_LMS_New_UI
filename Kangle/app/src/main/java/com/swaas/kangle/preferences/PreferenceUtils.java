@@ -53,6 +53,7 @@ public class PreferenceUtils {
     private static final String IS_FORCE_UPDATE_AVAILABLE = "force_update_available";
     private static final String IS_FORCE_UPDATE_VERSION = "force_update_version";
     private static final String QUESTION_ANSWER_LIST = "question_answer_list";
+    private static final String Timer = "timer";
 
     public static boolean getNWEAvisible(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
@@ -539,6 +540,17 @@ public class PreferenceUtils {
         SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(IS_FORCE_UPDATE_VERSION, codeOfContactValue);
+        editor.commit();
+    }
+    public static long getTimer(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
+        long timer = sharedPreferences.getLong(Timer,0);
+        return timer;
+    }
+    public static void setTimer(Context context,long timer){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(Timer,timer);
         editor.commit();
     }
 
