@@ -43,6 +43,7 @@ import com.swaas.kangle.API.model.User;
 import com.swaas.kangle.API.service.AssetService;
 import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.GameActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
 import com.swaas.kangle.Notification.NotificationTempRepository;
@@ -119,7 +120,7 @@ public class AssetListActivity extends AppCompatActivity implements LocationList
 
     boolean isCatTagSectionShown = false;
 
-    View lpcourse,assetpage,chklistpage,profilepage,bottommenusection,taskpage;
+    View lpcourse,assetpage,chklistpage,profilepage,bottommenusection,taskpage,gamepage;
     LinearLayout bottommenus;
     ImageView pos1;
     TextView higlighttext;
@@ -1295,6 +1296,7 @@ public class AssetListActivity extends AppCompatActivity implements LocationList
         profilepage = findViewById(R.id.profilepage);
         pos1 = (ImageView) findViewById(R.id.pos1);
         higlighttext = (TextView) findViewById(R.id.higlighttext);
+        gamepage = findViewById(R.id.gamepage);
     }
 
     public void bottomnavigationonClickevents(){
@@ -1335,6 +1337,16 @@ public class AssetListActivity extends AppCompatActivity implements LocationList
                     count += 1;
                 }else{
                     taskpage.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                        gamepage.setVisibility(View.VISIBLE);
+                        count += 1;
+                    } else {
+                        gamepage.setVisibility(View.GONE);
+                    }
                 }
             }else{
                 bottommenusection.setVisibility(View.GONE);
@@ -1395,6 +1407,17 @@ public class AssetListActivity extends AppCompatActivity implements LocationList
                     Toast.makeText(AssetListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,MoreMenuActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+        gamepage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!NetworkUtils.checkIfNetworkAvailable(AssetListActivity.this)){
+                    Toast.makeText(AssetListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                Intent i = new Intent(mContext, GameActivity.class);
                 startActivity(i);
                 finish();
             }

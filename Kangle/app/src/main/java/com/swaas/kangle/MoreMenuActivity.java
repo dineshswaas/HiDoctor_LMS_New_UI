@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.swaas.kangle.API.model.LandingPageAccess;
 import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.GameActivity;
 import com.swaas.kangle.LPCourse.questionbuilder.db.TestResultRepository;
 import com.swaas.kangle.Reports.UserReportActivity;
 import com.swaas.kangle.TaskModule.TaskListActivity;
@@ -43,7 +44,7 @@ public class MoreMenuActivity extends AppCompatActivity {
 
     Context mContext;
 
-    View lpcourse,assetpage,chklistpage,morepage,taskpage;
+    View lpcourse,assetpage,chklistpage,morepage,taskpage,gamepage;
     LinearLayout bottommenus;
     ImageView pos4;
     TextView higlighttext;
@@ -219,6 +220,7 @@ public class MoreMenuActivity extends AppCompatActivity {
         chklistpage = findViewById(R.id.chklistpage);
         taskpage = findViewById(R.id.reports);
         morepage = findViewById(R.id.morepage);
+        gamepage = findViewById(R.id.gamepage);
 
         pos4 = (ImageView) findViewById(R.id.pos4);
         higlighttext = (TextView) findViewById(R.id.higlighttext);
@@ -262,6 +264,16 @@ public class MoreMenuActivity extends AppCompatActivity {
                     count += 1;
                 }else{
                     taskpage.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                        gamepage.setVisibility(View.VISIBLE);
+                        count += 1;
+                    } else {
+                        gamepage.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -322,6 +334,17 @@ public class MoreMenuActivity extends AppCompatActivity {
                 Intent i = new Intent(mContext,UserProfileActivity.class);
                 startActivity(i);
                 finish();*/
+            }
+        });
+        gamepage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!NetworkUtils.checkIfNetworkAvailable(MoreMenuActivity.this)){
+                    Toast.makeText(MoreMenuActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                Intent i = new Intent(mContext, GameActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }

@@ -150,6 +150,10 @@ public class MainActivity extends AppCompatActivity {
                         {
                             landingpage.setChat("Y");
                         }
+                        if (apiResponse.get(0).getGame().equalsIgnoreCase("Y"))
+                        {
+                            landingpage.setGame("Y");
+                        }
                     } else {
                         Log.d("retrofit", "error 2");
                     }

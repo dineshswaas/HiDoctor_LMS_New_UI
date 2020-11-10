@@ -572,7 +572,7 @@
                 android:id="@+id/bottommenus"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:weightSum="5"
+                android:weightSum="6"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -607,6 +607,40 @@
                         android:layout_below="@+id/coursesecimage"
                         android:textColor="@color/checklist_darkgrey"
                         android:textSize="9dp"/>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/gamepage"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:id="@+id/gameimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/pos01"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/game_image"
+                            />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="GAME"
+                        android:gravity="center"
+                        android:visibility="visible"
+                        android:layout_below="@+id/gameimage"
+                        android:textColor="@color/checklist_darkgrey"
+                        android:textSize="9dp"/>
+
 
                 </RelativeLayout>
 

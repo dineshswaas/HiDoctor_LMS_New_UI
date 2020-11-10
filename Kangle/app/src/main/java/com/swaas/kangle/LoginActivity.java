@@ -537,6 +537,10 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             landingpage.setChat("Y");
                         }
+                        if(apiResponse.get(0).getGame().equalsIgnoreCase("Y"))
+                        {
+                            landingpage.setGame("Y");
+                        }
                         locationPermission();
                     } else {
                         Log.d("retrofit", "error 2");
@@ -613,6 +617,9 @@ public class LoginActivity extends AppCompatActivity {
             {
                 landingpage.setReport("Y");
                 landingpage.setReportText(m.getUpdated_label());
+            }
+            if(m.getMenu_id() == 13) {
+                landingpage.setGame("Y");
             }
         }
         Gson gson = new Gson();

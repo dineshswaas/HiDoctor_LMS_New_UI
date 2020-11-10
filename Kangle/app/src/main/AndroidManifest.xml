@@ -110,6 +110,9 @@
             android:name=".LPCourse.CourseListActivity"
             android:configChanges="orientation|screenSize" />
         <activity
+            android:name=".LPCourse.GameActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
             android:name=".LPCourse.SectionActivity"
             android:configChanges="orientation|screenSize" />
         <activity

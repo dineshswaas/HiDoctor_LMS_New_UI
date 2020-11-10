@@ -29,7 +29,15 @@ public class LandingPageAccess implements Serializable{
     public String ChecklistText;
     public String TaskText;
     public String ReportText;
+    public String Game;
 
+    public String getGame() {
+        return Game;
+    }
+
+    public void setGame(String game) {
+        Game = game;
+    }
 
     public String getChat() {
         return Chat;

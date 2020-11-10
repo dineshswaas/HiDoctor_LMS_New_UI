@@ -34,6 +34,7 @@ import com.swaas.kangle.AssetListActivity;
 import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.EmptyRecyclerView;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.GameActivity;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
@@ -76,7 +77,7 @@ public class TaskListActivity extends AppCompatActivity {
     EmptyRecyclerView myTaskrecycler,myTeamrecycler,reviewrecycler;
     RelativeLayout tasklst_view,content_view;
 
-    View lpcourse,assetpage,chklistpage,profilepage,bottommenusection,taskpage;
+    View lpcourse,assetpage,chklistpage,profilepage,bottommenusection,taskpage,gamepage;
     LinearLayout bottommenus;
     ImageView pos3;
     TextView higlighttext;
@@ -1334,6 +1335,7 @@ public class TaskListActivity extends AppCompatActivity {
         profilepage = findViewById(R.id.profilepage);
         pos3 = (ImageView) findViewById(R.id.pos3);
         higlighttext = (TextView) findViewById(R.id.higlighttext);
+        gamepage =  findViewById(R.id.gamepage);
     }
 
     public void bottomnavigationonClickevents(){
@@ -1374,6 +1376,16 @@ public class TaskListActivity extends AppCompatActivity {
                     count += 1;
                 }else{
                     taskpage.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                        gamepage.setVisibility(View.VISIBLE);
+                        count += 1;
+                    } else {
+                        gamepage.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -1427,6 +1439,18 @@ public class TaskListActivity extends AppCompatActivity {
                     Toast.makeText(TaskListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,MoreMenuActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        gamepage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!NetworkUtils.checkIfNetworkAvailable(TaskListActivity.this)){
+                    Toast.makeText(TaskListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                Intent i = new Intent(mContext, GameActivity.class);
                 startActivity(i);
                 finish();
             }

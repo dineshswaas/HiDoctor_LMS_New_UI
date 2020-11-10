@@ -36,6 +36,7 @@ import com.swaas.kangle.CheckList.adapter.CourseChecklistItemAdapter;
 import com.swaas.kangle.CheckList.model.CheckListModel;
 import com.swaas.kangle.EmptyRecyclerView;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.GameActivity;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
@@ -67,7 +68,7 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
     TextView my_list_text,my_grplist_text,course_checklist_text;
     int checkEnabledTab = 1;
 
-    View lpcourse,assetpage,chklistpage,profilepage,header,taskpage;
+    View lpcourse,assetpage,chklistpage,profilepage,header,taskpage,gamepage;
     LinearLayout bottommenus;
     CardView bottommenusection;
     ImageView pos2;
@@ -1143,6 +1144,7 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
         profilepage = findViewById(R.id.profilepage);
         pos2 = (ImageView) findViewById(R.id.pos2);
         higlighttext = (TextView) findViewById(R.id.higlighttext);
+        gamepage = findViewById(R.id.gamepage);
     }
 
     public void bottomnavigationonClickevents(){
@@ -1183,6 +1185,16 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
                     count += 1;
                 }else{
                     taskpage.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
+
+                        gamepage.setVisibility(View.VISIBLE);
+                        count += 1;
+                    } else {
+                        gamepage.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -1234,6 +1246,7 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
             }
         });
 
+
         profilepage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1241,6 +1254,18 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
                     Toast.makeText(ChecklistLandingActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,MoreMenuActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        gamepage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!NetworkUtils.checkIfNetworkAvailable(ChecklistLandingActivity.this)){
+                    Toast.makeText(ChecklistLandingActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                Intent i = new Intent(mContext, GameActivity.class);
                 startActivity(i);
                 finish();
             }

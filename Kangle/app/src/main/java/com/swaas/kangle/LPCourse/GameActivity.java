@@ -50,13 +50,6 @@ import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.CourseWebView;
 import com.swaas.kangle.DashboardActivity;
 import com.swaas.kangle.EmptyRecyclerView;
-import com.swaas.kangle.LPCourse.model.AnwerUploadModel;
-import com.swaas.kangle.LPCourse.model.CourseUserAnswers;
-import com.swaas.kangle.LPCourse.model.CourseUserAssessDet;
-import com.swaas.kangle.LPCourse.model.CourseUserAssessHeader;
-import com.swaas.kangle.LPCourse.model.QuestionAndAnswerModel;
-import com.swaas.kangle.LPCourse.model.QuestionCourseListModel;
-import com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
@@ -78,29 +71,23 @@ import com.swaas.kangle.utils.iOSDialogBuilder;
 import com.swaas.kangle.utils.iOSDialogClickListener;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-import static com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity.compareArrays;
-
 /**
  * Created by saiprasath on 8/10/2017.
  */
 
-public class CourseListActivity extends AppCompatActivity implements LocationListener {
+public class GameActivity extends AppCompatActivity implements LocationListener {
     CourseListAdapter courseListAdapter;
     CourseCategoryListAdapter categoryListRecyclerAdapter;
     CourseTagsListAdapter tagsListRecyclerAdapter;
@@ -191,14 +178,13 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
 
     View notificationsec,chatviewsec;
     TextView notificationcount,chatcount;
-    int QuestionLoadCount;
-    TextView course,asset,checklist,task;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_recycler);
-        mContext = CourseListActivity.this;
+        mContext = GameActivity.this;
         if(getResources().getBoolean(R.bool.portrait_only)){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
@@ -232,20 +218,6 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         //getListOfCourses();
         onClickListeners();
         showApplyButton();
-        if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
-            Gson gsonget = new Gson();
-            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
-            if (landingobj != null) {
-                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
-                    notificationsec.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    notificationsec.setVisibility(View.GONE);
-                }
-            }
-        }
-
     }
 
     public void getnotificationcount(){
@@ -357,35 +329,6 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         chatviewsec = findViewById(R.id.chatviewsec);
         notificationcount = (TextView) findViewById(R.id.notificationcount);
         chatcount = (TextView) findViewById(R.id.chatcount);
-        course = (TextView) findViewById(R.id.coursetext);
-        asset = (TextView) findViewById(R.id.assettext);
-        checklist = (TextView) findViewById(R.id.checklisttext);
-        task = (TextView) findViewById(R.id.tasktext);
-        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
-            Gson gsonget = new Gson();
-            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
-            if(landingobj != null) {
-
-                if (!TextUtils.isEmpty(landingobj.getCourseText()))
-                {
-                    course.setText(landingobj.getCourseText());
-                }
-                if (!TextUtils.isEmpty(landingobj.getAssetText()))
-                {
-                    asset.setText(landingobj.getAssetText());
-                }
-
-                if (!TextUtils.isEmpty(landingobj.getChecklistText()))
-                {
-                    checklist.setText(landingobj.getChecklistText());
-                }
-
-                if (!TextUtils.isEmpty(landingobj.getTaskText()))
-                {
-                    task.setText(landingobj.getTaskText());
-                }
-            }
-        }
 
     }
 
@@ -409,7 +352,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-        course.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+        higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         //pos0.setColorFilter(ContextCompat.getColor(mContext, Integer.parseInt(String.valueOf(companycolor))), android.graphics.PorterDuff.Mode.MULTIPLY);
 
@@ -458,51 +401,44 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
 
     public void bottomnavigationonClickevents(){
         int count = 1;
-        if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
+        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
             Gson gsonget = new Gson();
             LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
-            if (landingobj != null) {
-                if (!TextUtils.isEmpty(landingobj.getLibrary()) && landingobj.getLibrary().equalsIgnoreCase("Y")) {
+            if(landingobj != null) {
+                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
                     assetpage.setVisibility(View.VISIBLE);
                     count += 1;
-                } else {
+                }else{
                     assetpage.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("L")) {
+                if (landingobj.getCourse().equalsIgnoreCase("L")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
-                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("S")) {
+                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //adCourse.setVisibility(View.VISIBLE);
-                } else if (!TextUtils.isEmpty(landingobj.getCourse()) && landingobj.getCourse().equalsIgnoreCase("A")) {
+                } else if(landingobj.getCourse().equalsIgnoreCase("A")){
                     lpcourse.setVisibility(View.VISIBLE);
                     count += 1;
                     //lpcourse.setVisibility(View.VISIBLE);
                     //lpcourse.setVisibility(View.VISIBLE);
-                } else {
+                }else{
                     lpcourse.setVisibility(View.GONE);
                 }
-
-                if (!TextUtils.isEmpty(landingobj.getChecklist()) && landingobj.getChecklist().equalsIgnoreCase("Y")) {
-
-                    if (landingobj.getChecklist() != null && landingobj.getChecklist().equalsIgnoreCase("Y")) {
-                        chklistpage.setVisibility(View.VISIBLE);
-                        count += 1;
-                    } else {
-                        chklistpage.setVisibility(View.GONE);
-                    }
+                if (landingobj.getChecklist() != null &&landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                    chklistpage.setVisibility(View.VISIBLE);
+                    count += 1;
+                }else{
+                    chklistpage.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
-
-                    if (landingobj.getTask() != null && landingobj.getTask().equalsIgnoreCase("Y")) {
-
-                        taskpage.setVisibility(View.VISIBLE);
-                        count += 1;
-                    } else {
-                        taskpage.setVisibility(View.GONE);
-                    }
+                if (landingobj.getTask() != null && landingobj.getTask().equalsIgnoreCase("Y")) {
+                    taskpage.setVisibility(View.VISIBLE);
+                    count += 1;
+                }else{
+                    taskpage.setVisibility(View.GONE);
                 }
+
                 if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
 
                     if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
@@ -521,12 +457,12 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         lpcourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if(!NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-                    //Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
+                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,CourseListActivity.class);
                 startActivity(i);
-                finish();*/
+                finish();
             }
         });
 
@@ -542,8 +478,8 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         chklistpage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-                    Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
+                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,ChecklistLandingActivity.class);
                 startActivity(i);
@@ -554,8 +490,8 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         taskpage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-                    Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
+                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,TaskListActivity.class);
                 startActivity(i);
@@ -566,8 +502,8 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         profilepage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-                    Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
+                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,MoreMenuActivity.class);
                 //Intent i = new Intent(mContext,NotificationActivity.class);
@@ -579,13 +515,13 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         gamepage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-                    Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                }
-                Intent i = new Intent(mContext,GameActivity.class);
-                //Intent i = new Intent(mContext,NotificationActivity.class);
-                startActivity(i);
-                finish();
+//                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
+//                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//                }
+//                Intent i = new Intent(mContext,GameActivity.class);
+//                //Intent i = new Intent(mContext,NotificationActivity.class);
+//                startActivity(i);
+//                finish();
             }
         });
     }
@@ -597,7 +533,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         if(getResources().getBoolean(R.bool.portrait_only)){
             //recyclerView.setLayoutManager(linearLayoutManager);
             grid = new GridLayoutManager(this,2);
-                recyclerView.setLayoutManager(grid);
+            recyclerView.setLayoutManager(grid);
         }else{
             if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                 /*grid = new GridLayoutManager(this,2);
@@ -1229,19 +1165,16 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             emptyimage.setImageResource(R.drawable.interenet_error_image);
             emptymessage.setText(getString(R.string.oops_no_result) +getString(R.string.enable_network));
         }
-        if (PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key")!=null && PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key").size() > 0){
-            QuestionActivity questionActivity = new QuestionActivity();
-            ArrayList<QuestionAndAnswerModel> list = PreferenceUtils.getquestionanswerlist(CourseListActivity.this,"key");
-            Checknetworkandupload(UploadAnswerProcess(list),false,false,true);
-            QuestionLoadCount = list.get(0).getLstCourse().get(0).getQuestionLoadCount();
-           // PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
-        }
+
         checkForAppUpdates();
+
+
+
     }
 
     private void checkForAppUpdates() {
         Gson gsonget = new Gson();
-        User userobj = gsonget.fromJson(PreferenceUtils.getUser(CourseListActivity.this), User.class);
+        User userobj = gsonget.fromJson(PreferenceUtils.getUser(GameActivity.this), User.class);
         if(TextUtils.isEmpty(PreferenceUtils.getCompanyCode(mContext))){
             PreferenceUtils.setCompanyCode(mContext,userobj.getCompany_Code());
         }
@@ -1273,8 +1206,8 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                     if (appInfo != null && appInfo.size() > 0 &&
                             appInfo.get(0).isUpgradeRequired() == 1) {
                         if (Double.valueOf(packageInfo.versionCode) < Double.valueOf(appInfo.get(0).getVersion())) {
-                            PreferenceUtils.setIsForUpdateVersion(CourseListActivity.this, appInfo.get(0).getVersion());
-                            PreferenceUtils.setIsForUpdateAvailable(CourseListActivity.this, true);
+                            PreferenceUtils.setIsForUpdateVersion(GameActivity.this, appInfo.get(0).getVersion());
+                            PreferenceUtils.setIsForUpdateAvailable(GameActivity.this, true);
                             showForceUpdateAlert();
                         }
                     }
@@ -1286,11 +1219,11 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                 }
             });
         } else {
-            if (PreferenceUtils.getIsForUpdateAvailable(CourseListActivity.this)) {
-                if (packageInfo.versionCode < Integer.parseInt(PreferenceUtils.getIsForUpdateVersion(CourseListActivity.this))) {
+            if (PreferenceUtils.getIsForUpdateAvailable(GameActivity.this)) {
+                if (packageInfo.versionCode < Integer.parseInt(PreferenceUtils.getIsForUpdateVersion(GameActivity.this))) {
                     showForceUpdateAlert();
                 } else {
-                    PreferenceUtils.setIsForUpdateAvailable(CourseListActivity.this, false);
+                    PreferenceUtils.setIsForUpdateAvailable(GameActivity.this, false);
                     //checkAppUpgrade();
                 }
             }/*else{
@@ -1410,39 +1343,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         bundle.putSerializable("value", courseModel);
         intent.putExtras(bundle);
         intent.putExtra(Constants.Is_From_DashBoard,false);
-        if (courseModel.getEvaluation_Mode()!=null && courseModel.getEvaluation_Mode().equalsIgnoreCase("MANUAL"))
-        {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-            Date date = null;
-            try {
-
-                String DateAsString = courseModel.getMinimum_Duration();
-                //String kept = DateAsString.substring( 0, DateAsString.indexOf("."));
-                date = sdf.parse(DateAsString);
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long TimeAsMilli;
-            long  hoursAsMilli = TimeUnit.HOURS.toMillis(date.getHours());
-            long minutesAsMilli  =  TimeUnit.MINUTES.toMillis(date.getMinutes());
-            long secondsAsMilli = TimeUnit.SECONDS.toMillis(date.getSeconds());
-            TimeAsMilli = hoursAsMilli+minutesAsMilli+secondsAsMilli;
-            intent.putExtra("Timer",TimeAsMilli);
-            PreferenceUtils.setTimer(mContext,TimeAsMilli);
-            intent.putExtra(Constants.Evaluation_Mode, true);
-
-            if(courseModel.getManual_Evaluation_Status()==0 && !(courseModel.getCourse_Status_Value()==Constants.YET_TO_START))
-            {
-                intent.putExtra(Constants.Evaluation_Mode, true);
-                intent.putExtra("Show pending for evaluation",true);
-            }
-        }
-        else
-        {
-            intent.putExtra(Constants.Evaluation_Mode,false);
-        }
-
+        //intent.putExtra(Constants.ISSEQUENCEENABLED,isSequenceEnabled);
         startActivity(intent);
     }
 
@@ -2011,279 +1912,4 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             mEmptyView.setVisibility(View.GONE);
         }
     }
-
-    public String UploadAnswerProcess(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
-
-        AnwerUploadModel answerupload =  new AnwerUploadModel();
-        answerupload.setLstCourseUserAnswers(new Gson().toJson(getCourseUserAnswer(questionandanswerlist)));
-        answerupload.setLstCourseUserAssessHeader(new Gson().toJson(getCourseUserAssetHeader(questionandanswerlist)));
-        answerupload.setLstCourseUserAssessDet(new Gson().toJson(getCourseAssetDetails(questionandanswerlist)));
-        Log.d("test",new Gson().toJson(answerupload));
-        return new Gson().toJson(answerupload);
-
-    }
-
-    private List<CourseUserAssessHeader> getCourseUserAssetHeader(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
-
-        List<CourseUserAssessHeader> courseuserAssessHeaderList = new ArrayList<>();
-        CourseUserAssessHeader courseAssetHeader = new CourseUserAssessHeader();
-
-        courseAssetHeader.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-        QuestionCourseListModel questioncoursemodel = questionandanswerlist.get(0).getLstCourse().get(0);
-        courseAssetHeader.Course_ID = questioncoursemodel.getCourse_Id();
-        courseAssetHeader.Course_Section_User_Exam_Id = 1;
-        courseAssetHeader.Course_User_Assignment_Id = questionandanswerlist.get(0).getCourseAssignmentId();
-        courseAssetHeader.Couse_User_Section_Mapping_Id = questionandanswerlist.get(0).getSectionMapId();
-        courseAssetHeader.Section_ID = questionandanswerlist.get(0).getSectionId();
-        courseAssetHeader.User_Id = PreferenceUtils.getUserId(this);
-        courseAssetHeader.Publish_ID = questioncoursemodel.getPublish_ID();
-        courseAssetHeader.Achieved_Percentage = 0;
-        courseAssetHeader.Pass_Percentage = String.valueOf(questioncoursemodel.getPass_Percentage());
-
-        if (courseAssetHeader.Achieved_Percentage >= questioncoursemodel.getPass_Percentage()) {
-            courseAssetHeader.Is_Qualified = 1;
-        } else {
-
-            courseAssetHeader.Is_Qualified = 0;
-
-        }
-        courseAssetHeader.Local_TimeZone = new Date().toString();
-        //courseAssetHeader.Offset_Value = CommonUtils.getUtcOffset();
-        courseAssetHeader.Offset_Value = CommonUtils.getUtcOffsetincluded10k();
-        courseuserAssessHeaderList.add(courseAssetHeader);
-
-        return courseuserAssessHeaderList;
-    }
-
-    private List<CourseUserAnswers> getCourseUserAnswer(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
-
-
-        List<CourseUserAnswers> courseuseranswerList =  new ArrayList<>();
-        for (QuestionAndAnswerModel questionandanswermodel : questionandanswerlist){
-
-            if (questionandanswermodel.getQuestionModel().getQuestion_Type() != 1){
-
-                CourseUserAnswers courseuseranswer = new CourseUserAnswers();
-                if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 6)
-                {
-                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
-                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
-                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
-                }
-                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() == 0)
-                {
-                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-                    courseuseranswer.User_Answer_Text = questionandanswermodel.getChoosenAnswer();
-                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
-                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
-                }
-                else if (questionandanswermodel.getQuestionModel().getQuestion_Type() !=2){
-
-                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-                    courseuseranswer.Text = questionandanswermodel.getChoosenAnswer();
-                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
-                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
-
-                }else {
-
-                    courseuseranswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-                    courseuseranswer.Answer_Id = questionandanswermodel.getChoosenAnswerId();
-                    courseuseranswer.User_Id = PreferenceUtils.getUserId(this);
-                    courseuseranswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
-
-                }
-                courseuseranswerList.add(courseuseranswer);
-
-            }else {
-
-                if (questionandanswermodel.getChoosenAnswerId()!=null){
-
-                    String [] choosenanswerid = questionandanswermodel.getChoosenAnswerId().split(",");
-
-                    for (int i=0; i< choosenanswerid.length; i++){
-
-                        CourseUserAnswers courseanswer = new CourseUserAnswers();
-                        courseanswer.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-                        courseanswer.User_Id = PreferenceUtils.getUserId(this);
-                        courseanswer.Answer_Id = choosenanswerid[i];
-                        courseanswer.Question_Id = String.valueOf(questionandanswermodel.getQuestionModel().getQuestion_Id());
-                        courseuseranswerList.add(courseanswer);
-                    }
-                }
-
-            }
-
-        }
-
-        return courseuseranswerList;
-
-    }
-
-
-
-    private List<CourseUserAssessDet> getCourseAssetDetails(ArrayList<QuestionAndAnswerModel> questionandanswerlist) {
-
-        List<CourseUserAssessDet> courseuserassetdetails = new ArrayList<>();
-
-        for (QuestionAndAnswerModel questionanswermodel : questionandanswerlist) {
-
-            CourseUserAssessDet courseuserasset = new CourseUserAssessDet();
-            courseuserasset.Question_Type = questionanswermodel.getQuestionModel().Question_Type;
-            courseuserasset.Company_Id = String.valueOf(PreferenceUtils.getCompnayId(this));
-            if (questionanswermodel.getQuestionModel().getQuestion_Type() != 1) {
-
-                if (questionanswermodel.getChoosenAnswer() != null){
-                    courseuserasset.Count_of_User_Answers = 1;
-                }else {
-                    courseuserasset.Count_of_User_Answers = 0;
-                }
-                if (questionanswermodel.getChoosenAnswer() != null && questionanswermodel.getChoosenAnswer().length() > 0) {
-
-                    if (questionanswermodel.getChoosenAnswer().equalsIgnoreCase(questionanswermodel.getCorrectAnswer())) {
-                        courseuserasset.Is_Correct = true;
-                        courseuserasset.Count_Of_User_Correct_Answers = 1;
-                    } else {
-                        courseuserasset.Is_Correct = false;
-                        courseuserasset.Count_Of_User_Correct_Answers = 0;
-
-                    }
-
-                }
-
-                QuestionCourseListModel CourseHeader = questionanswermodel.getLstCourse().get(0);
-                courseuserasset.Course_ID = CourseHeader.getCourse_Id();
-                courseuserasset.User_Id = PreferenceUtils.getUserId(this);
-                courseuserasset.Publish_ID = CourseHeader.getPublish_ID();
-                courseuserasset.Section_Id = questionanswermodel.getSectionId();
-                courseuserasset.Question_ID = String.valueOf(questionanswermodel.getQuestionModel().getQuestion_Id());
-                courseuserasset.Couse_User_Section_Mapping_Id = questionanswermodel.getSectionMapId();
-                courseuserasset.Course_User_Assignment_Id = questionanswermodel.getCourseAssignmentId();
-                courseuserasset.Negative_Mark = questionanswermodel.getQuestionModel().getNegative_Mark();
-                courseuserassetdetails.add(courseuserasset);
-
-            } else {
-
-                if (questionanswermodel.getChoosenAnswer() != null && questionanswermodel.getChoosenAnswer().length() > 0
-                        && questionanswermodel.getCorrectAnswer() != null && questionanswermodel.getCorrectAnswer().length() > 0) {
-
-                    String[] choosenanswerlist = questionanswermodel.getChoosenAnswer().split(",");
-                    String[] coreectanserlist = questionanswermodel.getCorrectAnswer().split(",");
-
-                    if (choosenanswerlist!=null){
-                        courseuserasset.Count_of_User_Answers = choosenanswerlist.length;
-                    }
-
-                    if (compareArrays(choosenanswerlist, coreectanserlist)) {
-                        courseuserasset.Is_Correct = true;
-                        courseuserasset.Count_Of_User_Correct_Answers = coreectanserlist.length;
-                    } else {
-                        courseuserasset.Is_Correct = false;
-                        courseuserasset.Count_Of_User_Correct_Answers =  getUserCorrectAnswer(questionanswermodel);
-                    }
-                }
-
-                QuestionCourseListModel CourseHeader = questionanswermodel.getLstCourse().get(0);
-                courseuserasset.Course_ID = CourseHeader.getCourse_Id();
-                courseuserasset.User_Id = PreferenceUtils.getUserId(this);
-                courseuserasset.Publish_ID = CourseHeader.getPublish_ID();
-                courseuserasset.Section_Id = questionanswermodel.getSectionId();
-                courseuserasset.Question_ID = String.valueOf(questionanswermodel.getQuestionModel().getQuestion_Id());
-                courseuserasset.Couse_User_Section_Mapping_Id = questionanswermodel.getSectionMapId();
-                courseuserasset.Course_User_Assignment_Id = questionanswermodel.getCourseAssignmentId();
-                courseuserasset.Negative_Mark = questionanswermodel.getQuestionModel().getNegative_Mark();
-                courseuserassetdetails.add(courseuserasset);
-
-            }
-
-        }
-
-        return courseuserassetdetails;
-
-    }
-    private int getUserCorrectAnswer(QuestionAndAnswerModel questionanswermodel) {
-
-        int correctanswercount = 0;
-
-
-        if (questionanswermodel.getChoosenAnswer()!=null){
-
-            String[] choosenanswer = questionanswermodel.getChoosenAnswer().split(",");
-            String[] correctanswer = questionanswermodel.getCorrectAnswer().split(",");
-
-            if (choosenanswer!=null && choosenanswer.length>0){
-
-                for (int i=0; i<choosenanswer.length;i++){
-
-                    String choosenanswerresult = choosenanswer[i];
-
-                    for (int j=0;j<correctanswer.length;j++){
-                        if (choosenanswerresult.equals(correctanswer[j])){
-                            correctanswercount = correctanswercount+1;
-                        }
-                    }
-
-                }
-
-            }
-
-        }
-
-        return correctanswercount;
-    }
-    public void Checknetworkandupload(final String AnswerModelString, final boolean isLastQuestion, final boolean isTimeout, final boolean isBackpressed){
-
-        if(NetworkUtils.checkIfNetworkAvailable(CourseListActivity.this)){
-            if (!isBackpressed){
-                showProgressDialog();
-            }
-            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
-            LPCourseService lpService = retrofitAPI.create(LPCourseService.class);
-            int CompanyId  = PreferenceUtils.getCompnayId(this);
-            String  SubdomainName = PreferenceUtils.getSubdomainName(this);
-            int UserId = PreferenceUtils.getUserId(this);
-            Gson gsonget = new Gson();
-            AnwerUploadModel answermodel = gsonget.fromJson(AnswerModelString,AnwerUploadModel.class);
-            Call call = lpService.insertTestCourseResponse(SubdomainName,CompanyId,UserId,QuestionLoadCount,isLastQuestion,isTimeout,answermodel);
-            call.enqueue(new Callback<String>() {
-
-                @Override
-                public void onResponse(Response<String> response, Retrofit retrofit) {
-                    String courseAssetListModel= response.body();
-                    if (courseAssetListModel != null) {
-
-                        if (!isBackpressed){
-                            dismissProgressDialog();
-                            if (courseAssetListModel.contains("COMPLETED")){
-                                PreferenceUtils.setQuestionAnswerList("key",null,CourseListActivity.this);
-                                if (isTimeout){
-                                   // ShowAlert(getResources().getString(R.string.time_Out),getResources().getString(R.string.warning),false);
-                                }else {
-                                    //ShowAlert(getResources().getString(R.string.finished),"",false);
-
-                                }
-                            }else {
-
-                                Log.d("error","error");
-                            }
-
-                        }
-                        //COMPLETED~1~Your course has been partially submitted.~549
-                    }
-                }
-                @Override
-                public void onFailure(Throwable t) {
-
-                  /*  testResultRepository.insertTestRecord(AnswerModelString,CalculatePercentage(),QuestionLoadCount,isLastQuestion+"",isTimeout+"");
-                    ShowAlert(getResources().getString(R.string.testsavedoffline),getResources().getString(R.string.warning),true);*/
-                    Log.d(t.toString(),"Error");
-                }
-            });
-        }else{
-
-//            testResultRepository.insertTestRecord(AnswerModelString,CalculatePercentage(),QuestionLoadCount,isLastQuestion+"",isTimeout+"");
-//            ShowAlert(getResources().getString(R.string.testsavedoffline),getResources().getString(R.string.warning),true);
-        }
-    }
-
 }
