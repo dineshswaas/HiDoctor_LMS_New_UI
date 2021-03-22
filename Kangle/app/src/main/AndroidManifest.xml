@@ -215,6 +215,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".LPCourse.Report.AnswerPage"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".LPCourse.HangmanGame"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".LPCourse.LeaderboardActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+
     </application>
 
 

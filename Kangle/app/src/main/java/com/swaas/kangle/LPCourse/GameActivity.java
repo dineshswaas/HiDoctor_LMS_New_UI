@@ -38,9 +38,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.brightcove.player.event.AbstractEvent;
 import com.google.android.gms.location.LocationListener;
 import com.google.gson.Gson;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.builder.Builders;
 import com.swaas.kangle.API.model.AppInfo;
 import com.swaas.kangle.API.model.LandingPageAccess;
 import com.swaas.kangle.API.model.User;
@@ -60,6 +62,7 @@ import com.swaas.kangle.UploadActivity;
 import com.swaas.kangle.db.CourseListTempRepository;
 import com.swaas.kangle.db.Filters.CourseCatTagFilterRepository;
 import com.swaas.kangle.db.RetrofitAPIBuilder;
+import com.swaas.kangle.db.UserTrackertableRepository;
 import com.swaas.kangle.models.APIResponse;
 import com.swaas.kangle.preferences.PreferenceUtils;
 import com.swaas.kangle.utils.CommonUtils;
@@ -74,1303 +77,1127 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-/**
- * Created by saiprasath on 8/10/2017.
- */
-
 public class GameActivity extends AppCompatActivity implements LocationListener {
-    CourseListAdapter courseListAdapter;
-    CourseCategoryListAdapter categoryListRecyclerAdapter;
-    CourseTagsListAdapter tagsListRecyclerAdapter;
-    ImageView companylogo,expandfilter,mCourseFilter;
-    View mEmptyView;
-    EmptyRecyclerView recyclerView;
-    RelativeLayout bottomheader;
-    Context mContext;
-    List<CourseModel> courseModelList = new ArrayList<CourseModel>();
-    HashMap<String, Integer> mCourseMap,mCourseTagsMap;
-    List<String> courseModelsCat;
-
-    ProgressDialog mProgressDialog;
-    CheckBox mCheckInProgress;
-    CheckBox mCheckCompleted;
-    CheckBox mCheckYetToStart;
-    CheckBox mCheckExpired;
-    CheckBox mCheckMaxAttempts;
-    RelativeLayout checkBoxGroupView;
-    boolean completed_checked,yet_to_start_checked,in_progress_checked,expired,max_attempts_reached;
-    AssetAnalyticsUpsynctoServer assetAnalyticsUpsynctoServer;
-    TextView mFilteredCountStatus;
-    PackageInfo packageInfo = null;
-    TextView emptymessage;
-    Dialog prerequsite;
+    private static int firstVisibleInListview;
+    String CATS = "";
+    String TAGS = "";
     RelativeLayout activity_list;
-    GridLayoutManager grid;
-    UploadActivity uploadActivity;
-    public double latitude,longitude;
-    MessageDialog messageDialog;
-    ImageView notification,settings,chatview;
+    TextView applyfilters;
+    AssetAnalyticsUpsynctoServer assetAnalyticsUpsynctoServer;
+    View assetfilterheading;
+    View assetpage;
+    RelativeLayout bottomheader;
+    LinearLayout bottommenus;
+    View bottommenusection;
+    boolean catFiltered;
+    TextView cat_filtered_count;
+    CourseCategoryListAdapterGame categoryListRecyclerAdapter;
+    List<String> catlist;
+    View catselection;
+    EmptyRecyclerView cattag_recyclerView;
+    View cattagmenus;
+    TextView chatcount;
+    ImageView chatview;
+    View chatviewsec;
+    RelativeLayout checkBoxGroupView;
+    View checkInProgress;
+    View checkcompleted;
+    View checkexpired;
+    View checkmax_attempts;
+    View checkyettostart;
+    View chklistpage;
+    TextView clear_assetfilter;
+    View clear_assetfilter_img;
+    TextView clearfilters;
+    ImageView close_filter;
     TextView closehelp;
+    ImageView closesearch;
+    ImageView companylogo;
+    boolean completed_checked;
+    CourseCatTagFilterRepository courseCatTagFilterRepository;
+    CourseListAdapterGame courseListAdapter;
+    CourseListTempRepository courseListTempRepository;
+    List<CourseModel> courseModelList = new ArrayList();
+    List<CourseModel> courseModelListgame = new ArrayList();
+    List<String> courseModelsCat;
+    List<String> courseModelsTags;
+    List<CourseModel> digitalAssetsMasterCategoryLists;
+    List<CourseModel> digitalAssetsMasterListfilterd;
+    List<CourseModel> digitalAssetsMasterTagsLists;
+    ImageView emptyimage;
+    TextView emptymessage;
+    TextView emptytagsview;
+    ImageView expandfilter;
+    boolean expired;
+    TextView filtered_text;
+    RelativeLayout filterheading;
+    TextView filterheadingtext;
+    View filterlay;
+    RelativeLayout filtersection;
+    String fromcatfilter = "";
+    String fromtagfilter = "";
+    View gamepage;
+    GridLayoutManager grid;
+    LinearLayout header;
+    RelativeLayout headersection;
     WebView helpView;
     View helplayout;
-
-    List<String> courseModelsTags;
-
-    boolean isFilterenabled = false;
-    String fromcatfilter = "",fromtagfilter = "";
-
-    View lpcourse,assetpage,chklistpage,profilepage,bottommenusection,taskpage,gamepage;
-    LinearLayout bottommenus;
-    LinearLayout header;
-
-
-    //filter changes
-    RelativeLayout filtersection;
-    TextView clearfilters,applyfilters;
-    ImageView close_filter;
-    EmptyRecyclerView cattag_recyclerView;
-    View catselection,tagselection,filterlay;
-    TextView cat_filtered_count,tags_filtered_count;
-
-    TextView clear_assetfilter,filtered_text;
-    View assetfilterheading;
-
-    boolean tagfiltered,catFiltered;
-    List<String> tagslist,catlist;
-    List<CourseModel> digitalAssetsMasterCategoryLists;
-    List<CourseModel> digitalAssetsMasterTagsLists;
-    String TAGS = "",CATS = "";
-    TextView emptytagsview;
-
-    CourseListTempRepository courseListTempRepository;
-    CourseCatTagFilterRepository courseCatTagFilterRepository;
-    List<CourseModel> digitalAssetsMasterListfilterd;
-
-    private static int firstVisibleInListview;
-
-    View clear_assetfilter_img;
-    ImageView pos0;
     TextView higlighttext;
-
-    View checkInProgress,checkyettostart,checkcompleted,checkexpired,checkmax_attempts;
-
-    TextView filterheadingtext,retrybutton;
-
-    View cattagmenus;
-    ImageView icon_cats,icon_tags,icon_filter,icon_search,closesearch;
-
-    SearchView msearchtext;
-    SearchManager searchManager;
+    ImageView icon_cats;
+    ImageView icon_filter;
+    ImageView icon_search;
+    ImageView icon_tags;
+    boolean in_progress_checked;
+    boolean isFilterenabled = false;
+    public double latitude;
+    public double longitude;
+    View lpcourse;
+    CheckBox mCheckCompleted;
+    CheckBox mCheckExpired;
+    CheckBox mCheckInProgress;
+    CheckBox mCheckMaxAttempts;
+    CheckBox mCheckYetToStart;
+    Context mContext;
+    ImageView mCourseFilter;
+    HashMap<String, Integer> mCourseMap;
+    HashMap<String, Integer> mCourseTagsMap;
+    View mEmptyView;
+    TextView mFilteredCountStatus;
+    ProgressDialog mProgressDialog;
+    boolean max_attempts_reached;
+    MessageDialog messageDialog;
     List<CourseModel> msearchcourse;
+    SearchView msearchtext;
+    ImageView notification;
+    TextView notificationcount;
+    View notificationsec;
+    PackageInfo packageInfo = null;
+    ImageView pos0;
+    Dialog prerequsite;
+    View profilepage;
+    EmptyRecyclerView recyclerView;
+    TextView retrybutton;
+    SearchManager searchManager;
     LinearLayout searchlayout;
+    TextView sectiontext;
+    ImageView settings;
+    boolean tagfiltered;
+    CourseTagsListAdapterGame tagsListRecyclerAdapter;
+    TextView tags_filtered_count;
+    View tagselection;
+    List<String> tagslist;
+    View taskpage;
+    ImageView tickfilter;
+    UploadActivity uploadActivity;
+    boolean yet_to_start_checked;
 
-    RelativeLayout filterheading,headersection;
-    ImageView tickfilter,emptyimage;
+    ImageView gameexpand,hangmangame;
+    RelativeLayout gameheader,gamesectionview;
 
-    View notificationsec,chatviewsec;
-    TextView notificationcount,chatcount;
-
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    /* access modifiers changed from: protected */
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.custom_recycler);
-        mContext = GameActivity.this;
-        if(getResources().getBoolean(R.bool.portrait_only)){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView((int) R.layout.game_recycler);
+        this.mContext = this;
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        assetAnalyticsUpsynctoServer = new AssetAnalyticsUpsynctoServer();
-        assetAnalyticsUpsynctoServer.AssetAnalyticsUpsynctoServer(mContext);
-        uploadActivity = new UploadActivity(mContext);
-
-        courseListTempRepository = new CourseListTempRepository(mContext);
-        courseCatTagFilterRepository = new CourseCatTagFilterRepository(mContext);
-
+        this.assetAnalyticsUpsynctoServer = new AssetAnalyticsUpsynctoServer();
+        this.assetAnalyticsUpsynctoServer.AssetAnalyticsUpsynctoServer(this.mContext);
+        this.uploadActivity = new UploadActivity(this.mContext);
+        this.courseListTempRepository = new CourseListTempRepository(this.mContext);
+        this.courseCatTagFilterRepository = new CourseCatTagFilterRepository(this.mContext);
         initializeView();
         setUpRecyclerView();
         initializebottomnavigation();
         bottomnavigationonClickevents();
         setthemeforView();
-        if(NetworkUtils.checkIfNetworkAvailable(mContext)){
-            if(PreferenceUtils.getCourse_User_Assignment_Id(mContext) != 0 && PreferenceUtils.getCouse_User_Section_Mapping_Id(mContext) != 0) {
-                assetAnalyticsUpsynctoServer.getAnalyticsfromDb(false, PreferenceUtils.getCourse_User_Assignment_Id(mContext), PreferenceUtils.getCouse_User_Section_Mapping_Id(mContext));
-            }else{
-                assetAnalyticsUpsynctoServer.getAnalyticsfromDb(false, 0, 0);
-            }
+        if (!NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            this.emptyimage.setImageResource(R.drawable.no_results);
+            TextView textView = this.emptymessage;
+            textView.setText(getString(R.string.oops_no_result) + getString(R.string.enable_network));
+        } else if (PreferenceUtils.getCourse_User_Assignment_Id(this.mContext) == 0 || PreferenceUtils.getCouse_User_Section_Mapping_Id(this.mContext) == 0) {
+            this.assetAnalyticsUpsynctoServer.getAnalyticsfromDb(false, 0, 0);
+        } else {
+            this.assetAnalyticsUpsynctoServer.getAnalyticsfromDb(false, PreferenceUtils.getCourse_User_Assignment_Id(this.mContext), PreferenceUtils.getCouse_User_Section_Mapping_Id(this.mContext));
         }
-        else
-        {
-            emptyimage.setImageResource(R.drawable.no_results);
-            emptymessage.setText(getString(R.string.oops_no_result) +getString(R.string.enable_network));
-        }
-        uploadActivity.uploadTestTableRecords();
-        tagslist = new ArrayList<>();
-        catlist = new ArrayList<>();
-        //getListOfCourses();
+        this.uploadActivity.uploadTestTableRecords();
+        this.tagslist = new ArrayList();
+        this.catlist = new ArrayList();
         onClickListeners();
         showApplyButton();
     }
 
-    public void getnotificationcount(){
+    public void getnotificationcount() {
         String subdomainName = PreferenceUtils.getSubdomainName(this);
         int CompanyId = PreferenceUtils.getCompnayId(this);
         int UserId = PreferenceUtils.getUserId(this);
-
-        NotificationTempRepository notificationTempRepository = new NotificationTempRepository(mContext);
+        NotificationTempRepository notificationTempRepository = new NotificationTempRepository(this.mContext);
         notificationTempRepository.setGetNotificationDataCBListner(new NotificationTempRepository.GetNotificationDataCBListner() {
-            @Override
             public void GetNotificationDataSuccessCB(ArrayList<NotificationModel> customers) {
-                if(customers != null && customers.size() > 0){
-                    int num = 0;
-                    num = (customers.get(0).getCount() + customers.get(1).getCount());
-                    if(num > 0){
-                        notificationcount.setVisibility(View.VISIBLE);
-                        if(num > 99) {
-                            notificationcount.setText("99+");
-                        }else{
-                            notificationcount.setText(num + "");
+                if (customers != null && customers.size() > 0) {
+                    int num = customers.get(0).getCount() + customers.get(1).getCount();
+                    if (num > 0) {
+                        GameActivity.this.notificationcount.setVisibility(View.VISIBLE);
+                        if (num > 99) {
+                            GameActivity.this.notificationcount.setText("99+");
+                            return;
                         }
-                    }else{
-                        notificationcount.setVisibility(View.GONE);
+                        TextView textView = GameActivity.this.notificationcount;
+                        textView.setText(num + "");
+                        return;
                     }
+                    GameActivity.this.notificationcount.setVisibility(View.GONE);
                 }
             }
 
-            @Override
             public void GetNotificationDataFailureCB(String message) {
-
             }
         });
-
-        notificationTempRepository.getNotificationHubCountFromApi(subdomainName,CompanyId,UserId);
-        chatviewsec.setVisibility(View.GONE);
+        notificationTempRepository.getNotificationHubCountFromApi(subdomainName, CompanyId, UserId);
+        this.chatviewsec.setVisibility(View.GONE);
     }
 
-    public void initializeView(){
-        companylogo = (ImageView) findViewById(R.id.companylogo);
-        mEmptyView = findViewById(R.id.empty_view);
-        recyclerView = (EmptyRecyclerView)findViewById(R.id.recyclerView);
-        expandfilter = (ImageView) findViewById(R.id.icon_expandslider);
-        bottomheader = (RelativeLayout) findViewById(R.id.bottomheader);
-        headersection = (RelativeLayout) findViewById(R.id.headersection);
-        checkBoxGroupView = (RelativeLayout)findViewById(R.id.check_box);
-        mCheckCompleted = (CheckBox)findViewById(R.id.check_completed);
-        mCheckInProgress = (CheckBox)findViewById(R.id.check_in_progress);
-        mCheckYetToStart = (CheckBox)findViewById(R.id.check_yet_to_start);
-        mCheckExpired = (CheckBox)findViewById(R.id.check_expired);
-        mCheckMaxAttempts = (CheckBox)findViewById(R.id.max_attempts);
-        emptymessage = (TextView) findViewById(R.id.emptymessage);
-
-        activity_list = (RelativeLayout)findViewById(R.id.activity_asset_list);
-        settings = (ImageView) findViewById(R.id.settings);
-        messageDialog = new MessageDialog(mContext);
-        notification = (ImageView) findViewById(R.id.notification);
-        chatview = (ImageView) findViewById(R.id.chatview);
-        helpView = (WebView) findViewById(R.id.helpview);
-        helplayout = findViewById(R.id.helplayout);
-        closehelp = (TextView) findViewById(R.id.closehelp);
-
-        header = (LinearLayout) findViewById(R.id.header);
-
-
-        cattag_recyclerView = (EmptyRecyclerView) findViewById(R.id.cattag_recyclerView);
-        filtersection = (RelativeLayout) findViewById(R.id.filtersection);
-        close_filter = (ImageView) findViewById(R.id.close_filter);
-        catselection = findViewById(R.id.catselection);
-        tagselection = findViewById(R.id.tagselection);
-        filterlay = findViewById(R.id.filterlay);
-        clearfilters = (TextView) findViewById(R.id.clearfilters);
-        applyfilters = (TextView) findViewById(R.id.applyfilters);
-
-        assetfilterheading =  findViewById(R.id.assetfilterheading);
-        filtered_text = (TextView) findViewById(R.id.filtered_text);
-        clear_assetfilter = (TextView) findViewById(R.id.clear_assetfilter);
-        mCourseFilter = (ImageView)findViewById(R.id.icon_filter);
-        cat_filtered_count = (TextView) findViewById(R.id.cat_filtered_count);
-        tags_filtered_count = (TextView) findViewById(R.id.tags_filtered_count);
-        mFilteredCountStatus = (TextView)findViewById(R.id.label_filtered_count);
-        emptytagsview = (TextView)findViewById(R.id.emptytagsview);
-
-        checkInProgress = findViewById(R.id.checkInProgress);
-        checkyettostart = findViewById(R.id.checkyettostart);
-        checkcompleted = findViewById(R.id.checkcompleted);
-        checkexpired = findViewById(R.id.checkexpired);
-        checkmax_attempts = findViewById(R.id.checkmax_attempts);
-
-        filterheadingtext = (TextView)findViewById(R.id.filterheadingtext);
-        cattagmenus = findViewById(R.id.cattagmenus);
-        icon_cats = (ImageView)findViewById(R.id.icon_cats);
-        icon_tags = (ImageView)findViewById(R.id.icon_tags);
-        icon_filter = (ImageView) findViewById(R.id.icon_filter);
-
-        searchlayout = (LinearLayout) findViewById(R.id.searchlayout);
-        msearchtext = (SearchView) findViewById(R.id.searchtext);
-        searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        icon_search = (ImageView) findViewById(R.id.icon_search);
-        closesearch = (ImageView) findViewById(R.id.closesearch);
-
-        tickfilter = (ImageView) findViewById(R.id.tickfilter);
-        filterheading = (RelativeLayout) findViewById(R.id.filterheading);
-
-        emptyimage = (ImageView) findViewById(R.id.emptyimage);
-        retrybutton = (TextView) findViewById(R.id.retrybutton);
-
-
-        notificationsec = findViewById(R.id.notificationsec);
-        chatviewsec = findViewById(R.id.chatviewsec);
-        notificationcount = (TextView) findViewById(R.id.notificationcount);
-        chatcount = (TextView) findViewById(R.id.chatcount);
-
+    public void initializeView() {
+        this.companylogo = (ImageView) findViewById(R.id.companylogo);
+        this.mEmptyView = findViewById(R.id.empty_view);
+        this.recyclerView = (EmptyRecyclerView) findViewById(R.id.recyclerView);
+        this.expandfilter = (ImageView) findViewById(R.id.icon_expandslider);
+        this.bottomheader = (RelativeLayout) findViewById(R.id.bottomheader);
+        this.headersection = (RelativeLayout) findViewById(R.id.headersection);
+        this.checkBoxGroupView = (RelativeLayout) findViewById(R.id.check_box);
+        this.mCheckCompleted = (CheckBox) findViewById(R.id.check_completed);
+        this.mCheckInProgress = (CheckBox) findViewById(R.id.check_in_progress);
+        this.mCheckYetToStart = (CheckBox) findViewById(R.id.check_yet_to_start);
+        this.mCheckExpired = (CheckBox) findViewById(R.id.check_expired);
+        this.mCheckMaxAttempts = (CheckBox) findViewById(R.id.max_attempts);
+        this.emptymessage = (TextView) findViewById(R.id.emptymessage);
+        this.activity_list = (RelativeLayout) findViewById(R.id.activity_asset_list);
+        this.settings = (ImageView) findViewById(R.id.settings);
+        this.messageDialog = new MessageDialog(this.mContext);
+        this.notification = (ImageView) findViewById(R.id.notification);
+        this.chatview = (ImageView) findViewById(R.id.chatview);
+        this.helpView = (WebView) findViewById(R.id.helpview);
+        this.helplayout = findViewById(R.id.helplayout);
+        this.closehelp = (TextView) findViewById(R.id.closehelp);
+        this.header = (LinearLayout) findViewById(R.id.header);
+        this.cattag_recyclerView = (EmptyRecyclerView) findViewById(R.id.cattag_recyclerView);
+        this.filtersection = (RelativeLayout) findViewById(R.id.filtersection);
+        this.close_filter = (ImageView) findViewById(R.id.close_filter);
+        this.catselection = findViewById(R.id.catselection);
+        this.tagselection = findViewById(R.id.tagselection);
+        this.filterlay = findViewById(R.id.filterlay);
+        this.clearfilters = (TextView) findViewById(R.id.clearfilters);
+        this.applyfilters = (TextView) findViewById(R.id.applyfilters);
+        this.assetfilterheading = findViewById(R.id.assetfilterheading);
+        this.filtered_text = (TextView) findViewById(R.id.filtered_text);
+        this.clear_assetfilter = (TextView) findViewById(R.id.clear_assetfilter);
+        this.mCourseFilter = (ImageView) findViewById(R.id.icon_filter);
+        this.cat_filtered_count = (TextView) findViewById(R.id.cat_filtered_count);
+        this.tags_filtered_count = (TextView) findViewById(R.id.tags_filtered_count);
+        this.mFilteredCountStatus = (TextView) findViewById(R.id.label_filtered_count);
+        this.emptytagsview = (TextView) findViewById(R.id.emptytagsview);
+        this.checkInProgress = findViewById(R.id.checkInProgress);
+        this.checkyettostart = findViewById(R.id.checkyettostart);
+        this.checkcompleted = findViewById(R.id.checkcompleted);
+        this.checkexpired = findViewById(R.id.checkexpired);
+        this.checkmax_attempts = findViewById(R.id.checkmax_attempts);
+        this.filterheadingtext = (TextView) findViewById(R.id.filterheadingtext);
+        this.cattagmenus = findViewById(R.id.cattagmenus);
+        this.icon_cats = (ImageView) findViewById(R.id.icon_cats);
+        this.icon_tags = (ImageView) findViewById(R.id.icon_tags);
+        this.icon_filter = (ImageView) findViewById(R.id.icon_filter);
+        this.searchlayout = (LinearLayout) findViewById(R.id.searchlayout);
+        this.msearchtext = (SearchView) findViewById(R.id.searchtext);
+        this.searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        this.icon_search = (ImageView) findViewById(R.id.icon_search);
+        this.closesearch = (ImageView) findViewById(R.id.closesearch);
+        this.tickfilter = (ImageView) findViewById(R.id.tickfilter);
+        this.filterheading = (RelativeLayout) findViewById(R.id.filterheading);
+        this.emptyimage = (ImageView) findViewById(R.id.emptyimage);
+        this.retrybutton = (TextView) findViewById(R.id.retrybutton);
+        this.notificationsec = findViewById(R.id.notificationsec);
+        this.chatviewsec = findViewById(R.id.chatviewsec);
+        this.notificationcount = (TextView) findViewById(R.id.notificationcount);
+        this.chatcount = (TextView) findViewById(R.id.chatcount);
+        this.sectiontext = (TextView) findViewById(R.id.section_text);
+        gameheader = findViewById(R.id.gamesectionview);
+        gamesectionview = findViewById(R.id.gameview);
+        gameexpand = (ImageView) findViewById(R.id.gameexpandbutton);
+        hangmangame = (ImageView) findViewById(R.id.hangman);
     }
 
-    public void setthemeforView(){
-
-        header.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
-        activity_list.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-        String landingobj = PreferenceUtils.getLandingPageAccess(mContext);
-        String logo = PreferenceUtils.getClientLogo(mContext);
-        Ion.with(companylogo).placeholder(R.color.topbar).error(R.color.topbar).load(
-                (!TextUtils.isEmpty(logo))? logo : logo);
+    public void setthemeforView() {
+        this.header.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
+        this.activity_list.setBackgroundColor(-7829368);
+        String landingPageAccess = PreferenceUtils.getLandingPageAccess(this.mContext);
+        String logo = PreferenceUtils.getClientLogo(this.mContext);
+        TextUtils.isEmpty(logo);
+        Ion.with(this.companylogo).placeholder((int) R.color.topbar).error((int) R.color.topbar).load(logo);
         File imgFile = new File("/storage/sdcard0/SwaaS LMS/companylogo.jpg");
-
-        if(imgFile.exists()){
-
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-            companylogo.setImageBitmap(myBitmap);
-
+        if (imgFile.exists()) {
+            this.companylogo.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
         }
-        expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-        higlighttext.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
-        clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
-        //pos0.setColorFilter(ContextCompat.getColor(mContext, Integer.parseInt(String.valueOf(companycolor))), android.graphics.PorterDuff.Mode.MULTIPLY);
+        this.expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+        this.clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+        this.mCheckInProgress.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        this.mCheckCompleted.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        this.mCheckYetToStart.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        this.mCheckExpired.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        this.mCheckMaxAttempts.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
+        this.emptymessage.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
+        this.closesearch.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
+        this.closesearch.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.icon_search.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.filtered_text.setTypeface(this.filtered_text.getTypeface(), Typeface.ITALIC);
+        this.filterheading.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
+        this.filterheadingtext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
+        this.close_filter.setColorFilter(Color.parseColor(Constants.TEXT_COLOR));
+        this.assetfilterheading.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
+        this.filtered_text.setTextColor(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.tickfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.emptyimage.setColorFilter(Color.parseColor(Constants.TEXT_COLOR));
+        this.retrybutton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Constants.CARDBACKGROUND_COLOR)));
+        this.retrybutton.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
+        this.notification.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
+        this.chatview.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
 
-        mCheckInProgress.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
-        mCheckCompleted.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
-        mCheckYetToStart.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
-        mCheckExpired.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
-        mCheckMaxAttempts.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
 
-        emptymessage.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
-        closesearch.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
-        closesearch.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        icon_search.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        filtered_text.setTypeface(filtered_text.getTypeface(), Typeface.ITALIC);
 
-        filterheading.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-        filterheadingtext.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
-        close_filter.setColorFilter(Color.parseColor(Constants.TEXT_COLOR));
-
-        assetfilterheading.setBackgroundColor(Color.parseColor(Constants.HEADERBAR_COLOR));
-        filtered_text.setTextColor(Color.parseColor(Constants.TOPBARICON_COLOR));
-        tickfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-
-        emptyimage.setColorFilter(Color.parseColor(Constants.TEXT_COLOR));
-        retrybutton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(Constants.CARDBACKGROUND_COLOR)));
-        retrybutton.setTextColor(Color.parseColor(Constants.TEXT_COLOR));
-
-        notification.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        chatview.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
     }
 
-    public void initializebottomnavigation(){
-        bottommenusection = findViewById(R.id.bottommenusection);
-        bottommenus = (LinearLayout) findViewById(R.id.bottommenus);
-        lpcourse = findViewById(R.id.lpcourse);
-        assetpage = findViewById(R.id.assetpage);
-        chklistpage = findViewById(R.id.chklistpage);
-        taskpage = findViewById(R.id.reports);
-        profilepage = findViewById(R.id.profilepage);
-        clear_assetfilter_img = findViewById(R.id.clear_assetfilter_img);
-
-        pos0 = (ImageView) findViewById(R.id.pos0);
-        higlighttext = (TextView) findViewById(R.id.higlighttext);
-        gamepage = findViewById(R.id.gamepage);
+    public void initializebottomnavigation() {
+        this.bottommenusection = findViewById(R.id.bottommenusection);
+        this.bottommenus = (LinearLayout) findViewById(R.id.bottommenus);
+        this.lpcourse = findViewById(R.id.lpcourse);
+        this.assetpage = findViewById(R.id.assetpage);
+        this.chklistpage = findViewById(R.id.chklistpage);
+        this.taskpage = findViewById(R.id.reports);
+        this.profilepage = findViewById(R.id.profilepage);
+        this.clear_assetfilter_img = findViewById(R.id.clear_assetfilter_img);
+        this.pos0 = (ImageView) findViewById(R.id.pos0);
+        this.higlighttext = (TextView) findViewById(R.id.higlighttext);
+        this.gamepage = findViewById(R.id.gamepage);
     }
 
-    public void bottomnavigationonClickevents(){
+    public void bottomnavigationonClickevents() {
+        LandingPageAccess landingobj;
         int count = 1;
-        if(PreferenceUtils.getLandingPageAccess(mContext) != null){
-            Gson gsonget = new Gson();
-            LandingPageAccess landingobj = gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
-            if(landingobj != null) {
-                if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
-                    assetpage.setVisibility(View.VISIBLE);
-                    count += 1;
-                }else{
-                    assetpage.setVisibility(View.GONE);
-                }
-                if (landingobj.getCourse().equalsIgnoreCase("L")) {
-                    lpcourse.setVisibility(View.VISIBLE);
-                    count += 1;
-                } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
-                    lpcourse.setVisibility(View.VISIBLE);
-                    count += 1;
-                    //adCourse.setVisibility(View.VISIBLE);
-                } else if(landingobj.getCourse().equalsIgnoreCase("A")){
-                    lpcourse.setVisibility(View.VISIBLE);
-                    count += 1;
-                    //lpcourse.setVisibility(View.VISIBLE);
-                    //lpcourse.setVisibility(View.VISIBLE);
-                }else{
-                    lpcourse.setVisibility(View.GONE);
-                }
-                if (landingobj.getChecklist() != null &&landingobj.getChecklist().equalsIgnoreCase("Y")) {
-                    chklistpage.setVisibility(View.VISIBLE);
-                    count += 1;
-                }else{
-                    chklistpage.setVisibility(View.GONE);
-                }
-                if (landingobj.getTask() != null && landingobj.getTask().equalsIgnoreCase("Y")) {
-                    taskpage.setVisibility(View.VISIBLE);
-                    count += 1;
-                }else{
-                    taskpage.setVisibility(View.GONE);
-                }
-
-                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                        gamepage.setVisibility(View.VISIBLE);
-                        count += 1;
-                    } else {
-                        gamepage.setVisibility(View.GONE);
-                    }
+        if (!(PreferenceUtils.getLandingPageAccess(this.mContext) == null || (landingobj = (LandingPageAccess) new Gson().fromJson(PreferenceUtils.getLandingPageAccess(this.mContext), LandingPageAccess.class)) == null)) {
+            if (landingobj.getLibrary().equalsIgnoreCase("Y")) {
+                this.assetpage.setVisibility(View.VISIBLE);
+                count = 1 + 1;
+            } else {
+                this.assetpage.setVisibility(View.GONE);
+            }
+            if (landingobj.getCourse().equalsIgnoreCase("L")) {
+                this.lpcourse.setVisibility(View.VISIBLE);
+                count++;
+            } else if (landingobj.getCourse().equalsIgnoreCase("S")) {
+                this.lpcourse.setVisibility(View.VISIBLE);
+                count++;
+            } else if (landingobj.getCourse().equalsIgnoreCase("A")) {
+                this.lpcourse.setVisibility(View.VISIBLE);
+                count++;
+            } else {
+                this.lpcourse.setVisibility(View.GONE);
+            }
+            if (landingobj.getChecklist() == null || !landingobj.getChecklist().equalsIgnoreCase("Y")) {
+                this.chklistpage.setVisibility(View.GONE);
+            } else {
+                this.chklistpage.setVisibility(View.VISIBLE);
+                count++;
+            }
+            if (landingobj.getTask() == null || !landingobj.getTask().equalsIgnoreCase("Y")) {
+                this.taskpage.setVisibility(View.GONE);
+            } else {
+                this.taskpage.setVisibility(View.VISIBLE);
+                count++;
+            }
+            if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+                if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
+                    this.gamepage.setVisibility(View.GONE);
+                } else {
+                    this.gamepage.setVisibility(View.VISIBLE);
+                    count++;
                 }
             }
         }
 
-        bottommenus.setWeightSum(count);
-
-        lpcourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
-                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                }
-                Intent i = new Intent(mContext,CourseListActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
-        assetpage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent assetview = new Intent(mContext,AssetListActivity.class);
-                startActivity(assetview);
-                finish();
-            }
-        });
-
-        chklistpage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
-                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                }
-                Intent i = new Intent(mContext,ChecklistLandingActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
-        taskpage.setOnClickListener(new View.OnClickListener() {
+        gameheader.setVisibility(View.VISIBLE);
+        gamesectionview.setVisibility(View.GONE);
+        gameexpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
-                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(gamesectionview.getVisibility() == View.GONE) {
+                    gamesectionview.setVisibility(View.VISIBLE);
+                    gameexpand.setImageResource(R.drawable.ic_keyboard_arrow_up_black_36dp);
                 }
-                Intent i = new Intent(mContext,TaskListActivity.class);
-                startActivity(i);
-                finish();
+                else
+                {
+                    gameexpand.setImageResource(R.drawable.ic_keyboard_arrow_down_black_36dp);
+                    gamesectionview.setVisibility(View.GONE);
+                }
             }
         });
-
-        profilepage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
-                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                }
-                Intent i = new Intent(mContext,MoreMenuActivity.class);
-                //Intent i = new Intent(mContext,NotificationActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
-
-        gamepage.setOnClickListener(new View.OnClickListener() {
+        hangmangame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)){
-//                    Toast.makeText(GameActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-//                }
-//                Intent i = new Intent(mContext,GameActivity.class);
-//                //Intent i = new Intent(mContext,NotificationActivity.class);
-//                startActivity(i);
-//                finish();
+                Intent i = new Intent(mContext,HangmanGame.class);
+                startActivity(i);
+            }
+        });
+        this.bottommenus.setWeightSum((float) count);
+        this.lpcourse.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)) {
+                    Toast.makeText(GameActivity.this, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, CourseListActivity.class));
+                GameActivity.this.finish();
+            }
+        });
+        this.assetpage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, AssetListActivity.class));
+                GameActivity.this.finish();
+            }
+        });
+        this.chklistpage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)) {
+                    Toast.makeText(GameActivity.this, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, ChecklistLandingActivity.class));
+                GameActivity.this.finish();
+            }
+        });
+        this.taskpage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)) {
+                    Toast.makeText(GameActivity.this, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, TaskListActivity.class));
+                GameActivity.this.finish();
+            }
+        });
+        this.profilepage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!NetworkUtils.checkIfNetworkAvailable(GameActivity.this)) {
+                    Toast.makeText(GameActivity.this, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+                GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, MoreMenuActivity.class));
+                GameActivity.this.finish();
+            }
+        });
+        this.gamepage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
             }
         });
     }
 
     private void setUpRecyclerView() {
-        recyclerView.setHasFixedSize(true);
-        cattag_recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        if(getResources().getBoolean(R.bool.portrait_only)){
-            //recyclerView.setLayoutManager(linearLayoutManager);
-            grid = new GridLayoutManager(this,2);
-            recyclerView.setLayoutManager(grid);
-        }else{
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                /*grid = new GridLayoutManager(this,2);
-                recyclerView.setLayoutManager(grid);*/
-                //recyclerView.setLayoutManager(linearLayoutManager);
-                grid = new GridLayoutManager(this,5);
-                recyclerView.setLayoutManager(grid);
-            }else{
-                grid = new GridLayoutManager(this,3);
-                recyclerView.setLayoutManager(grid);
-                //recyclerView.setLayoutManager(linearLayoutManager);
-            }
+        this.recyclerView.setHasFixedSize(true);
+        this.cattag_recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, 1, false);
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            this.grid = new GridLayoutManager(this, 2);
+            this.recyclerView.setLayoutManager(this.grid);
+        } else if (getResources().getConfiguration().orientation == 2) {
+            this.grid = new GridLayoutManager(this, 5);
+            this.recyclerView.setLayoutManager(this.grid);
+        } else {
+            this.grid = new GridLayoutManager(this, 3);
+            this.recyclerView.setLayoutManager(this.grid);
         }
-        firstVisibleInListview = grid.findFirstVisibleItemPosition();
-        cattag_recyclerView.setLayoutManager(linearLayoutManager);
+        firstVisibleInListview = this.grid.findFirstVisibleItemPosition();
+        this.cattag_recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setUpRecyclerView();
     }
 
-    public void loadSearchdata(String newText){
-        msearchcourse = new ArrayList<>();
-        msearchcourse = courseModelList;
+    public void loadSearchdata(String newText) {
+        this.msearchcourse = new ArrayList();
+        this.msearchcourse = this.courseModelList;
         List<CourseModel> filteredList = new ArrayList<>();
-        if(msearchcourse.size() > 0) {
-            for (CourseModel row : msearchcourse) {
-                String name = row.getCourse_Name().toLowerCase();
-                if (name.contains(newText.toLowerCase())) {
+        if (this.msearchcourse.size() > 0) {
+            for (CourseModel row : this.msearchcourse) {
+                if (row.getCourse_Name().toLowerCase().contains(newText.toLowerCase())) {
                     filteredList.add(row);
                 }
             }
             if (filteredList.size() > 0) {
-                showhideemptystate(false,"",0);
-                recyclerView.setVisibility(View.VISIBLE);
-                courseListAdapter = new CourseListAdapter(mContext, filteredList);
-                recyclerView.setAdapter(courseListAdapter);
-                courseListAdapter.notifyDataSetChanged();
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                showhideemptystate(true,getResources().getString(R.string.no_result),Constants.NORESULTSNUM);
+                showhideemptystate(false, "", 0);
+                this.recyclerView.setVisibility(View.VISIBLE);
+                this.courseListAdapter = new CourseListAdapterGame(this.mContext, filteredList);
+                this.recyclerView.setAdapter(this.courseListAdapter);
+                this.courseListAdapter.notifyDataSetChanged();
+                return;
             }
-        }else{
-            recyclerView.setVisibility(View.GONE);
-            showhideemptystate(true,getResources().getString(R.string.no_result),Constants.NORESULTSNUM);
+            this.recyclerView.setVisibility(View.GONE);
+            showhideemptystate(true, getResources().getString(R.string.no_result), 2);
+            return;
         }
+        this.recyclerView.setVisibility(View.GONE);
+        showhideemptystate(true, getResources().getString(R.string.no_result), 2);
     }
 
-    public void onClickListeners(){
-        retrybutton.setOnClickListener(new View.OnClickListener() {
-            @Override
+    public void onClickListeners() {
+        this.retrybutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                getListOfCourses();
+                GameActivity.this.getListOfCourses();
             }
         });
-        companylogo.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.companylogo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //onBackPressed();
             }
         });
-
-        closesearch.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.closesearch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                searchlayout.setVisibility(View.GONE);
-                notificationsec.setVisibility(View.VISIBLE);
-                header.setVisibility(View.VISIBLE);
+                GameActivity.this.searchlayout.setVisibility(View.GONE);
+                GameActivity.this.notificationsec.setVisibility(View.VISIBLE);
+                GameActivity.this.header.setVisibility(View.VISIBLE);
             }
         });
-
-        icon_search.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.icon_search.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                searchlayout.setVisibility(View.VISIBLE);
-                notificationsec.setVisibility(View.GONE);
-                header.setVisibility(View.INVISIBLE);
+                GameActivity.this.searchlayout.setVisibility(View.VISIBLE);
+                GameActivity.this.notificationsec.setVisibility(View.GONE);
+                GameActivity.this.header.setVisibility(View.INVISIBLE);
             }
         });
-
-        searchlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.searchlayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
             }
         });
-
-        msearchtext.setSearchableInfo(searchManager.
-                getSearchableInfo(getComponentName()));
-
-        msearchtext.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
+        this.msearchtext.setSearchableInfo(this.searchManager.getSearchableInfo(getComponentName()));
+        this.msearchtext.setOnCloseListener(new SearchView.OnCloseListener() {
             public boolean onClose() {
-                searchlayout.setVisibility(View.GONE);
+                GameActivity.this.searchlayout.setVisibility(View.GONE);
                 return false;
             }
         });
-
-        msearchtext.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
+        this.msearchtext.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
 
-            @Override
             public boolean onQueryTextChange(String newText) {
-                if(newText.length() > 0){
-                    closesearch.setVisibility(View.GONE);
-                }else{
-                    closesearch.setVisibility(View.VISIBLE);
+                if (newText.length() > 0) {
+                    GameActivity.this.closesearch.setVisibility(View.GONE);
+                } else {
+                    GameActivity.this.closesearch.setVisibility(View.VISIBLE);
                 }
-                loadSearchdata(newText);
+                GameActivity.this.loadSearchdata(newText);
                 return false;
             }
         });
-
-        checkInProgress.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.checkInProgress.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(mCheckInProgress.isChecked()){
-                    mCheckInProgress.setChecked(false);
-                }else{
-                    mCheckInProgress.setChecked(true);
+                if (GameActivity.this.mCheckInProgress.isChecked()) {
+                    GameActivity.this.mCheckInProgress.setChecked(false);
+                } else {
+                    GameActivity.this.mCheckInProgress.setChecked(true);
                 }
-                showApplyButton();
+                GameActivity.this.showApplyButton();
             }
         });
-        checkyettostart.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.checkyettostart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(mCheckYetToStart.isChecked()){
-                    mCheckYetToStart.setChecked(false);
-                }else{
-                    mCheckYetToStart.setChecked(true);
+                if (GameActivity.this.mCheckYetToStart.isChecked()) {
+                    GameActivity.this.mCheckYetToStart.setChecked(false);
+                } else {
+                    GameActivity.this.mCheckYetToStart.setChecked(true);
                 }
-                showApplyButton();
+                GameActivity.this.showApplyButton();
             }
         });
-        checkcompleted.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.checkcompleted.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(mCheckCompleted.isChecked()){
-                    mCheckCompleted.setChecked(false);
-                }else{
-                    mCheckCompleted.setChecked(true);
+                if (GameActivity.this.mCheckCompleted.isChecked()) {
+                    GameActivity.this.mCheckCompleted.setChecked(false);
+                } else {
+                    GameActivity.this.mCheckCompleted.setChecked(true);
                 }
-                showApplyButton();
+                GameActivity.this.showApplyButton();
             }
         });
-        checkexpired.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.checkexpired.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(mCheckExpired.isChecked()){
-                    mCheckExpired.setChecked(false);
-                }else{
-                    mCheckExpired.setChecked(true);
+                if (GameActivity.this.mCheckExpired.isChecked()) {
+                    GameActivity.this.mCheckExpired.setChecked(false);
+                } else {
+                    GameActivity.this.mCheckExpired.setChecked(true);
                 }
-                showApplyButton();
+                GameActivity.this.showApplyButton();
             }
         });
-        checkmax_attempts.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.checkmax_attempts.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(mCheckMaxAttempts.isChecked()){
-                    mCheckMaxAttempts.setChecked(false);
-                }else{
-                    mCheckMaxAttempts.setChecked(true);
+                if (GameActivity.this.mCheckMaxAttempts.isChecked()) {
+                    GameActivity.this.mCheckMaxAttempts.setChecked(false);
+                } else {
+                    GameActivity.this.mCheckMaxAttempts.setChecked(true);
                 }
-                showApplyButton();
+                GameActivity.this.showApplyButton();
             }
         });
-
-        close_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.close_filter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(isFilterenabled){
-                    filtersection.setVisibility(View.GONE);
-                    bottommenusection.setVisibility(View.GONE);
-                    assetfilterheading.setVisibility(View.GONE);
-                    header.setVisibility(View.VISIBLE);
-                }else{
-                    filtersection.setVisibility(View.GONE);
-                    catlist.clear();
-                    tagslist.clear();
-                    CATS = "";TAGS = "";
-                    mCheckCompleted.setChecked(false);
-                    mCheckYetToStart.setChecked(false);
-                    mCheckInProgress.setChecked(false);
-                    mCheckExpired.setChecked(false);
-                    mCheckMaxAttempts.setChecked(false);
-                    catFiltered = false; tagfiltered = false;
-                    showApplyButton();
-                    getCourses();
-                    bottommenusection.setVisibility(View.VISIBLE);
+                if (GameActivity.this.isFilterenabled) {
+                    GameActivity.this.filtersection.setVisibility(View.GONE);
+                    GameActivity.this.bottommenusection.setVisibility(View.GONE);
+                    GameActivity.this.assetfilterheading.setVisibility(View.GONE);
+                    GameActivity.this.header.setVisibility(View.VISIBLE);
+                    return;
                 }
-
+                GameActivity.this.filtersection.setVisibility(View.GONE);
+                GameActivity.this.catlist.clear();
+                GameActivity.this.tagslist.clear();
+                GameActivity.this.CATS = "";
+                GameActivity.this.TAGS = "";
+                GameActivity.this.mCheckCompleted.setChecked(false);
+                GameActivity.this.mCheckYetToStart.setChecked(false);
+                GameActivity.this.mCheckInProgress.setChecked(false);
+                GameActivity.this.mCheckExpired.setChecked(false);
+                GameActivity.this.mCheckMaxAttempts.setChecked(false);
+                GameActivity.this.catFiltered = false;
+                GameActivity.this.tagfiltered = false;
+                GameActivity.this.showApplyButton();
+                GameActivity.this.getCourses();
+                GameActivity.this.bottommenusection.setVisibility(View.VISIBLE);
             }
         });
-
-        catselection.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.catselection.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                loadCategorySlider();
-                checkBoxGroupView.setVisibility(View.GONE);
+                GameActivity.this.loadCategorySlider();
+                GameActivity.this.checkBoxGroupView.setVisibility(View.GONE);
             }
         });
-
-        tagselection.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.tagselection.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                loadTagsSlider();
-                checkBoxGroupView.setVisibility(View.GONE);
+                GameActivity.this.loadTagsSlider();
+                GameActivity.this.checkBoxGroupView.setVisibility(View.GONE);
             }
         });
-
-        filterlay.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.filterlay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                toggleselection(3);
-                cattag_recyclerView.setVisibility(View.GONE);
-                checkBoxGroupView.setVisibility(View.VISIBLE);
+                GameActivity.this.toggleselection(3);
+                GameActivity.this.cattag_recyclerView.setVisibility(View.GONE);
+                GameActivity.this.checkBoxGroupView.setVisibility(View.VISIBLE);
             }
         });
-
-        clearfilters.setOnTouchListener(new View.OnTouchListener() {
-            @Override
+        this.clearfilters.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                    clearfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-                    clearfilters.setTextColor(Color.WHITE);
-                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    clearfilters.setBackgroundColor(Color.WHITE);
-                    clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
-                    clearfiltersFunction();
-                    filtersection.setVisibility(View.GONE);
-                    catFiltered= false; tagfiltered = false;
-                    getCourses();
-                    bottommenusection.setVisibility(View.VISIBLE);
+                if (event.getAction() == 0) {
+                    GameActivity.this.clearfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
+                    GameActivity.this.clearfilters.setTextColor(-1);
+                } else if (event.getAction() == 1) {
+                    GameActivity.this.clearfilters.setBackgroundColor(-1);
+                    GameActivity.this.clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+                    GameActivity.this.clearfiltersFunction();
+                    GameActivity.this.filtersection.setVisibility(View.GONE);
+                    GameActivity.this.catFiltered = false;
+                    GameActivity.this.tagfiltered = false;
+                    GameActivity.this.getCourses();
+                    GameActivity.this.bottommenusection.setVisibility(View.VISIBLE);
                 }
                 return true;
             }
         });
-
-        applyfilters.setOnTouchListener(new View.OnTouchListener() {
-            @Override
+        this.applyfilters.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                    applyfilters.setBackgroundColor(Color.WHITE);
-                    applyfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
-                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    applyfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-                    applyfilters.setTextColor(Color.WHITE);
-                    getCoursesbyIDs();
-                    filtersection.setVisibility(View.GONE);
-                    header.setVisibility(View.INVISIBLE);
-                    assetfilterheading.setVisibility(View.VISIBLE);
-                    String htmlString="<u>"+getResources().getString(R.string.clearfilter)+"</u>";
-                    filtered_text.setText(Html.fromHtml(htmlString));
-                    isFilterenabled = true;
-                    bottommenusection.setVisibility(View.GONE);
+                if (event.getAction() == 0) {
+                    GameActivity.this.applyfilters.setBackgroundColor(-1);
+                    GameActivity.this.applyfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
+                } else if (event.getAction() == 1) {
+                    GameActivity.this.applyfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
+                    GameActivity.this.applyfilters.setTextColor(-1);
+                    GameActivity.this.getCoursesbyIDs();
+                    GameActivity.this.filtersection.setVisibility(View.GONE);
+                    GameActivity.this.header.setVisibility(View.INVISIBLE);
+                    GameActivity.this.assetfilterheading.setVisibility(View.VISIBLE);
+                    GameActivity.this.filtered_text.setText(Html.fromHtml("<u>" + GameActivity.this.getResources().getString(R.string.clearfilter) + "</u>"));
+                    GameActivity.this.isFilterenabled = true;
+                    GameActivity.this.bottommenusection.setVisibility(View.GONE);
                 }
                 return true;
             }
         });
-
-        clear_assetfilter.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.clear_assetfilter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                filtersection.setVisibility(View.GONE);
-                catlist.clear();
-                tagslist.clear();
-                CATS = "";TAGS = "";
-                assetfilterheading.setVisibility(View.GONE);
-                header.setVisibility(View.VISIBLE);
-                isFilterenabled = false;
-                clearfiltersFunction();
-                bottommenusection.setVisibility(View.VISIBLE);
-                getListOfCourses();
+                GameActivity.this.filtersection.setVisibility(View.GONE);
+                GameActivity.this.catlist.clear();
+                GameActivity.this.tagslist.clear();
+                GameActivity.this.CATS = "";
+                GameActivity.this.TAGS = "";
+                GameActivity.this.assetfilterheading.setVisibility(View.GONE);
+                GameActivity.this.header.setVisibility(View.VISIBLE);
+                GameActivity.this.isFilterenabled = false;
+                GameActivity.this.clearfiltersFunction();
+                GameActivity.this.bottommenusection.setVisibility(View.VISIBLE);
+                GameActivity.this.getListOfCourses();
             }
         });
-
-        expandfilter.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.expandfilter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                filtersection.setVisibility(View.VISIBLE);
-                catlist.clear();
-                tagslist.clear();
-                digitalAssetsMasterCategoryLists = courseCatTagFilterRepository.getAllCategory(CATS);
-                digitalAssetsMasterTagsLists = courseCatTagFilterRepository.getAllTags(TAGS);
-                cattag_recyclerView.setVisibility(View.VISIBLE);
-                checkBoxGroupView.setVisibility(View.GONE);
-                loadCategorySlider();
-                bottommenusection.setVisibility(View.GONE);
+                GameActivity.this.filtersection.setVisibility(View.VISIBLE);
+                GameActivity.this.catlist.clear();
+                GameActivity.this.tagslist.clear();
+                GameActivity.this.digitalAssetsMasterCategoryLists = GameActivity.this.courseCatTagFilterRepository.getAllCategory(GameActivity.this.CATS);
+                GameActivity.this.digitalAssetsMasterTagsLists = GameActivity.this.courseCatTagFilterRepository.getAllTags(GameActivity.this.TAGS);
+                GameActivity.this.cattag_recyclerView.setVisibility(View.VISIBLE);
+                GameActivity.this.checkBoxGroupView.setVisibility(View.GONE);
+                GameActivity.this.loadCategorySlider();
+                GameActivity.this.bottommenusection.setVisibility(View.GONE);
             }
         });
-
-        clear_assetfilter_img.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.clear_assetfilter_img.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                bottommenusection.setVisibility(View.GONE);
-                assetfilterheading.setVisibility(View.GONE);
-                header.setVisibility(View.VISIBLE);
-                filtersection.setVisibility(View.VISIBLE);
-
+                GameActivity.this.bottommenusection.setVisibility(View.GONE);
+                GameActivity.this.assetfilterheading.setVisibility(View.GONE);
+                GameActivity.this.header.setVisibility(View.VISIBLE);
+                GameActivity.this.filtersection.setVisibility(View.VISIBLE);
             }
         });
-
-        filterheadingtext.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.filterheadingtext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
             }
         });
-
-        filtered_text.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.filtered_text.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                filtersection.setVisibility(View.GONE);
-                catlist.clear();
-                tagslist.clear();
-                CATS = "";TAGS = "";
-                assetfilterheading.setVisibility(View.GONE);
-                header.setVisibility(View.VISIBLE);
-                isFilterenabled = false;
-                clearfiltersFunction();
-                bottommenusection.setVisibility(View.VISIBLE);
-                getListOfCourses();
+                GameActivity.this.filtersection.setVisibility(View.GONE);
+                GameActivity.this.catlist.clear();
+                GameActivity.this.tagslist.clear();
+                GameActivity.this.CATS = "";
+                GameActivity.this.TAGS = "";
+                GameActivity.this.assetfilterheading.setVisibility(View.GONE);
+                GameActivity.this.header.setVisibility(View.VISIBLE);
+                GameActivity.this.isFilterenabled = false;
+                GameActivity.this.clearfiltersFunction();
+                GameActivity.this.bottommenusection.setVisibility(View.VISIBLE);
+                GameActivity.this.getListOfCourses();
             }
         });
-
-
-        /*mCourseFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.mCheckCompleted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                GameActivity.this.showApplyButton();
+            }
+        });
+        this.mCheckYetToStart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                GameActivity.this.showApplyButton();
+            }
+        });
+        this.mCheckInProgress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                GameActivity.this.showApplyButton();
+            }
+        });
+        this.mCheckExpired.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                GameActivity.this.showApplyButton();
+            }
+        });
+        this.mCheckMaxAttempts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                GameActivity.this.showApplyButton();
+            }
+        });
+        this.settings.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(checkBoxGroupView.getVisibility() == View.VISIBLE){
-                    checkBoxGroupView.setVisibility(View.GONE);
-                    bottomheader.setVisibility(View.GONE);
-                }
-                else{
-                    checkBoxGroupView.setVisibility(View.VISIBLE);
-                    bottomheader.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
-        mCheckCompleted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showApplyButton();
-            }
-        });
-
-        mCheckYetToStart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showApplyButton();
-            }
-        });
-        mCheckInProgress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showApplyButton();
-            }
-        });
-        mCheckExpired.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showApplyButton();
-            }
-        });
-        mCheckMaxAttempts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showApplyButton();
-            }
-        });
-
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkUtils.checkIfNetworkAvailable(mContext)) {
-                    messageDialog.showEmailPop(mContext, new View.OnClickListener() {
-                        @Override
+                if (NetworkUtils.checkIfNetworkAvailable(GameActivity.this.mContext)) {
+                    GameActivity.this.messageDialog.showEmailPop(GameActivity.this.mContext, new View.OnClickListener() {
                         public void onClick(View Approve) {
-                            final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            Intent emailIntent = new Intent("android.intent.action.SEND");
                             emailIntent.setType("plain/text");
-                            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Constants.SUPPORT_EMAIL});
-                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, Constants.Foldername+" support");
-                            startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.sendemail)));
-                            messageDialog.dialogDismiss();
+                            emailIntent.putExtra("android.intent.extra.EMAIL", new String[]{Constants.SUPPORT_EMAIL});
+                            emailIntent.putExtra("android.intent.extra.SUBJECT", "SwaaS LMS support");
+                            GameActivity.this.startActivity(Intent.createChooser(emailIntent, GameActivity.this.getResources().getString(R.string.sendemail)));
+                            GameActivity.this.messageDialog.dialogDismiss();
                         }
                     }, new View.OnClickListener() {
-                        @Override
                         public void onClick(View close) {
-                            messageDialog.dialogDismiss();
+                            GameActivity.this.messageDialog.dialogDismiss();
                         }
                     }, true);
-                }else{
-                    Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(GameActivity.this.mContext, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-
-        notificationsec.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.notificationsec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(NetworkUtils.checkIfNetworkAvailable(mContext)) {
-                    /*if(!getResources().getBoolean(R.bool.portrait_only)){
-                        loadPopUpHelpView();
-                    }else {
-                        loadHelpView();
-                    }*/
-                    Intent i = new Intent(mContext,NotificationActivity.class);
-                    startActivity(i);
-                }else{
-                    Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
+                if (NetworkUtils.checkIfNetworkAvailable(GameActivity.this.mContext)) {
+                    GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, NotificationActivity.class));
+                    return;
                 }
+                Toast.makeText(GameActivity.this.mContext, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
         });
-
-        chatviewsec.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.chatviewsec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(NetworkUtils.checkIfNetworkAvailable(mContext)) {
-                    Intent i = new Intent(mContext,NotificationActivity.class);
-                    startActivity(i);
-                }else{
-                    Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
+                if (NetworkUtils.checkIfNetworkAvailable(GameActivity.this.mContext)) {
+                    GameActivity.this.startActivity(new Intent(GameActivity.this.mContext, NotificationActivity.class));
+                    return;
                 }
+                Toast.makeText(GameActivity.this.mContext, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
-        closehelp.setOnClickListener(new View.OnClickListener() {
-            @Override
+        this.closehelp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                recyclerView.setVisibility(View.VISIBLE);
-                helplayout.setVisibility(View.GONE);
+                GameActivity.this.recyclerView.setVisibility(View.VISIBLE);
+                GameActivity.this.helplayout.setVisibility(View.GONE);
             }
         });
-
-        /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SYSTEM_UI_FLAG_HIDE_NAVIGATION) {
-                    // Now I have to check if the user has scrolled down or up.
-                    int currentFirstVisible = grid.findFirstVisibleItemPosition();
-                    if(currentFirstVisible > firstVisibleInListview) {
-                        header.animate().translationY(-(header.getHeight()));
-                        header.setVisibility(View.GONE);
-                    } else {
-                        header.animate().translationY(0f);
-                        header.setVisibility(View.VISIBLE);
-                    }
-
-                    firstVisibleInListview = currentFirstVisible;
-
-                }
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-            }
-        });*/
-
     }
 
-    public void clearfiltersFunction(){
-        catlist.clear();
-        tagslist.clear();
-        CATS = "";TAGS = "";
-        catFiltered = false; tagfiltered = false;
-        mCheckCompleted.setChecked(false);
-        mCheckYetToStart.setChecked(false);
-        mCheckInProgress.setChecked(false);
-        mCheckExpired.setChecked(false);
-        mCheckMaxAttempts.setChecked(false);
+    public void clearfiltersFunction() {
+        this.catlist.clear();
+        this.tagslist.clear();
+        this.CATS = "";
+        this.TAGS = "";
+        this.catFiltered = false;
+        this.tagfiltered = false;
+        this.mCheckCompleted.setChecked(false);
+        this.mCheckYetToStart.setChecked(false);
+        this.mCheckInProgress.setChecked(false);
+        this.mCheckExpired.setChecked(false);
+        this.mCheckMaxAttempts.setChecked(false);
         showApplyButton();
-        isFilterenabled = false;
-        digitalAssetsMasterCategoryLists = courseCatTagFilterRepository.getAllCategory(CATS);
-        digitalAssetsMasterTagsLists = courseCatTagFilterRepository.getAllTags(TAGS);
-        categoryListRecyclerAdapter = new CourseCategoryListAdapter(mContext, digitalAssetsMasterCategoryLists,true);
-        categoryListRecyclerAdapter.notifyDataSetChanged();
-        tagsListRecyclerAdapter = new CourseTagsListAdapter(mContext,digitalAssetsMasterTagsLists,true);
-        tagsListRecyclerAdapter.notifyDataSetChanged();
-        catselection.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-        tagselection.setBackgroundColor(Color.parseColor(Constants.OPAQUE_COLOR));
-        filterlay.setBackgroundColor(Color.parseColor(Constants.OPAQUE_COLOR));
-        cattag_recyclerView.setVisibility(View.VISIBLE);
-        checkBoxGroupView.setVisibility(View.GONE);
-        cattag_recyclerView.setAdapter(categoryListRecyclerAdapter);
+        this.isFilterenabled = false;
+        this.digitalAssetsMasterCategoryLists = this.courseCatTagFilterRepository.getAllCategory(this.CATS);
+        this.digitalAssetsMasterTagsLists = this.courseCatTagFilterRepository.getAllTags(this.TAGS);
+        this.categoryListRecyclerAdapter = new CourseCategoryListAdapterGame(this.mContext, this.digitalAssetsMasterCategoryLists, true);
+        this.categoryListRecyclerAdapter.notifyDataSetChanged();
+        this.tagsListRecyclerAdapter = new CourseTagsListAdapterGame(this.mContext, this.digitalAssetsMasterTagsLists, true);
+        this.tagsListRecyclerAdapter.notifyDataSetChanged();
+        this.catselection.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
+        this.tagselection.setBackgroundColor(Color.parseColor(Constants.OPAQUE_COLOR));
+        this.filterlay.setBackgroundColor(Color.parseColor(Constants.OPAQUE_COLOR));
+        this.cattag_recyclerView.setVisibility(View.VISIBLE);
+        this.checkBoxGroupView.setVisibility(View.GONE);
+        this.cattag_recyclerView.setAdapter(this.categoryListRecyclerAdapter);
     }
 
-    public Set<String> getCategoreyList(final List<CourseModel> coursecategory) {
+    public Set<String> getCategoreyList(List<CourseModel> coursecategory) {
         Set<String> courselist = new HashSet<>();
-        for(final CourseModel coursecat: coursecategory) {
+        for (CourseModel coursecat : coursecategory) {
             courselist.add(coursecat.getCategory_Name());
         }
         return courselist;
     }
 
-    public void loadCoursebyCategory(String categoryName){
-        List<CourseModel> courseAssetscategory= new ArrayList<>();
-        for(CourseModel courseModel: courseModelList){
-            if(categoryName.equalsIgnoreCase(courseModel.getCategory_Name())){
+    public void loadCoursebyCategory(String categoryName) {
+        List<CourseModel> courseAssetscategory = new ArrayList<>();
+        for (CourseModel courseModel : this.courseModelList) {
+            if (categoryName.equalsIgnoreCase(courseModel.getCategory_Name())) {
                 courseAssetscategory.add(courseModel);
             }
         }
         setUpRecyclerView();
-        courseListAdapter = new CourseListAdapter(mContext,courseAssetscategory);
-        recyclerView.setAdapter(courseListAdapter);
+        this.courseListAdapter = new CourseListAdapterGame(this.mContext, courseAssetscategory);
+        this.recyclerView.setAdapter(this.courseListAdapter);
     }
 
-    public void loadCoursebyTags(String tagName){
-        List<CourseModel> courseAssetsTags= new ArrayList<>();
-        for(CourseModel courseModel: courseModelList){
-            //courseModel.getCourse_Tags().replace("^","#");
-            if(courseModel.getCourse_Tags()!= null && !courseModel.getCourse_Tags().isEmpty()) {
-                if (courseModel.getCourse_Tags().contains(tagName)) {
-                    courseAssetsTags.add(courseModel);
-                }
+    public void loadCoursebyTags(String tagName) {
+        List<CourseModel> courseAssetsTags = new ArrayList<>();
+        for (CourseModel courseModel : this.courseModelList) {
+            if (courseModel.getCourse_Tags() != null && !courseModel.getCourse_Tags().isEmpty() && courseModel.getCourse_Tags().contains(tagName)) {
+                courseAssetsTags.add(courseModel);
             }
         }
         setUpRecyclerView();
-        courseListAdapter = new CourseListAdapter(mContext,courseAssetsTags);
-        recyclerView.setAdapter(courseListAdapter);
+        this.courseListAdapter = new CourseListAdapterGame(this.mContext, courseAssetsTags);
+        this.recyclerView.setAdapter(this.courseListAdapter);
     }
 
-    public void getListOfCourses(){
-        if (!isFinishing()){
+    public void getListOfCourses() {
+        if (!isFinishing()) {
             dismissProgressDialog();
         }
-        if(NetworkUtils.checkIfNetworkAvailable(mContext)) {
-            PreferenceUtils.setNWEAvisible(mContext, false);
-            PreferenceUtils.setVisibleActivityName(mContext,"Course");
-            if (!isFinishing()){
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            PreferenceUtils.setNWEAvisible(this.mContext, false);
+            PreferenceUtils.setVisibleActivityName(this.mContext, "Course");
+            if (!isFinishing()) {
                 showProgressDialog();
             }
             Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
             LPCourseService userService = retrofitAPI.create(LPCourseService.class);
-
-            //String offsetFromUtc = CommonUtils.getUtcOffset();
             String offsetFromUtc = CommonUtils.getUtcOffsetincluded10k();
             Log.d("getUTC", offsetFromUtc);
-            int CompanyId = PreferenceUtils.getCompnayId(mContext);
+            int CompanyId = PreferenceUtils.getCompnayId(this.mContext);
+            Log.d(UserTrackertableRepository.CompanyId, String.valueOf(CompanyId));
             Log.d("CompanyId", String.valueOf(CompanyId));
             String SubdomainName = PreferenceUtils.getSubdomainName(mContext);
             int UserId = PreferenceUtils.getUserId(mContext);
             Call call = userService.getAvailableKACourses(SubdomainName, CompanyId, UserId, offsetFromUtc);
             call.enqueue(new Callback<ArrayList<CourseModel>>() {
-
-                @Override
-                public void onResponse(Response<ArrayList<CourseModel>> response, Retrofit retrofit) {
+                public void onResponse(Response<ArrayList<CourseModel>> response, Retrofit retrofit3) {
                     ArrayList<CourseModel> courseListModel = response.body();
-                    if (courseListModel != null && courseListModel.size() > 0) {
-                        showhideemptystate(false,"",0);
-                        courseModelList = courseListModel;
-                        //courseListTempRepository.courseListBulkInsert(courseModelList);
-                        icon_search.setVisibility(View.VISIBLE);
-                        expandfilter.setVisibility(View.VISIBLE);
-                        getCourses();
-                        insertintocategoreytagstable();
-                    } else {
-                        showhideemptystate(true,getResources().getString(R.string.emptyDashboard),Constants.NORESULTSNUM);
-                        recyclerView.setVisibility(View.GONE);
-                        icon_search.setVisibility(View.INVISIBLE);
-                        expandfilter.setVisibility(View.GONE);
-                        if (!isFinishing()){
-                            dismissProgressDialog();
+                    if (courseListModel == null || courseListModel.size() <= 0) {
+                        GameActivity.this.showhideemptystate(true, GameActivity.this.getResources().getString(R.string.emptyDashboard), 2);
+                        GameActivity.this.recyclerView.setVisibility(View.GONE);
+                        GameActivity.this.icon_search.setVisibility(View.INVISIBLE);
+                        GameActivity.this.expandfilter.setVisibility(View.GONE);
+                        if (!GameActivity.this.isFinishing()) {
+                            GameActivity.this.dismissProgressDialog();
+                            return;
                         }
+                        return;
                     }
+                    GameActivity.this.showhideemptystate(false, "", 0);
+                    GameActivity.this.courseModelList = courseListModel;
+                    GameActivity.this.icon_search.setVisibility(View.VISIBLE);
+                    GameActivity.this.expandfilter.setVisibility(View.VISIBLE);
+                    GameActivity.this.getCourses();
+                    GameActivity.this.insertintocategoreytagstable();
                 }
 
-                @Override
                 public void onFailure(Throwable t) {
                     Log.d(t.toString(), "Error");
-                    showhideemptystate(true,getResources().getString(R.string.error_message),Constants.INTERNETERRORNUM);
-                    if (!isFinishing()){
-                        dismissProgressDialog();
+                    GameActivity.this.showhideemptystate(true, GameActivity.this.getResources().getString(R.string.error_message), 1);
+                    if (!GameActivity.this.isFinishing()) {
+                        GameActivity.this.dismissProgressDialog();
                     }
                 }
             });
-
-        }else{
-            Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
-            showhideemptystate(true,getResources().getString(R.string.error_message),Constants.INTERNETERRORNUM);
-            recyclerView.setVisibility(View.GONE);
-            if (!isFinishing()){
-                dismissProgressDialog();
-            }
+            return;
+        }
+        Toast.makeText(this.mContext, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+        showhideemptystate(true, getResources().getString(R.string.error_message), 1);
+        this.recyclerView.setVisibility(View.GONE);
+        if (!isFinishing()) {
+            dismissProgressDialog();
         }
     }
 
-    @Override
-    protected void onResume() {
+    /* access modifiers changed from: protected */
+    public void onResume() {
         super.onResume();
         getListOfCourses();
         getnotificationcount();
-        if(isFilterenabled){
-
-        }else{
-            filtersection.setVisibility(View.GONE);
-            catlist.clear();
-            tagslist.clear();
-            CATS = "";
-            TAGS = "";
-            catFiltered = false; tagfiltered = false;
-            assetfilterheading.setVisibility(View.GONE);
-            header.setVisibility(View.VISIBLE);
-            isFilterenabled = false;
+        if (!this.isFilterenabled) {
+            this.filtersection.setVisibility(View.GONE);
+            this.catlist.clear();
+            this.tagslist.clear();
+            this.CATS = "";
+            this.TAGS = "";
+            this.catFiltered = false;
+            this.tagfiltered = false;
+            this.assetfilterheading.setVisibility(View.GONE);
+            this.header.setVisibility(View.VISIBLE);
+            this.isFilterenabled = false;
             clearfiltersFunction();
-            bottommenusection.setVisibility(View.VISIBLE);
+            this.bottommenusection.setVisibility(View.VISIBLE);
         }
-
-        uploadActivity.insertUserTracking("LP",latitude,longitude);
-        uploadActivity = new UploadActivity(mContext);
-        if(NetworkUtils.checkIfNetworkAvailable(mContext)){
-            uploadActivity.uploadTrackingTable();
+        this.uploadActivity.insertUserTracking("LP", this.latitude, this.longitude);
+        this.uploadActivity = new UploadActivity(this.mContext);
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            this.uploadActivity.uploadTrackingTable();
+        } else {
+            this.emptyimage.setImageResource(R.drawable.interenet_error_image);
+            TextView textView = this.emptymessage;
+            textView.setText(getString(R.string.oops_no_result) + getString(R.string.enable_network));
         }
-        else
-        {
-            emptyimage.setImageResource(R.drawable.interenet_error_image);
-            emptymessage.setText(getString(R.string.oops_no_result) +getString(R.string.enable_network));
-        }
-
         checkForAppUpdates();
-
-
-
     }
 
     private void checkForAppUpdates() {
-        Gson gsonget = new Gson();
-        User userobj = gsonget.fromJson(PreferenceUtils.getUser(GameActivity.this), User.class);
-        if(TextUtils.isEmpty(PreferenceUtils.getCompanyCode(mContext))){
-            PreferenceUtils.setCompanyCode(mContext,userobj.getCompany_Code());
+        User userobj = (User) new Gson().fromJson(PreferenceUtils.getUser(this), User.class);
+        if (TextUtils.isEmpty(PreferenceUtils.getCompanyCode(this.mContext))) {
+            PreferenceUtils.setCompanyCode(this.mContext, userobj.getCompany_Code());
         }
-        PackageManager packageManager = this.getPackageManager();
         try {
-            packageInfo = packageManager.getPackageInfo(this.getPackageName(), 0);
-
+            this.packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e1) {
             Log.d("DashboardActivity", e1.getMessage());
         }
-        if (packageInfo != null) {
+        if (this.packageInfo != null) {
             getLatestAppVersionFromAPI();
         }
-
     }
 
     private void getLatestAppVersionFromAPI() {
         if (NetworkUtils.checkIfNetworkAvailable(this)) {
-            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
-            AppInfoService appInfoService = retrofitAPI.create(AppInfoService.class);
-            Call call = appInfoService.getLatestAppVersion(PreferenceUtils.getCompanyCode(mContext), Constants.OS_NAME);
-            call.enqueue(new Callback<APIResponse<AppInfo>>() {
-                @Override
-                public void onResponse(Response<APIResponse<AppInfo>> response, Retrofit retrofit) {
+            ((AppInfoService) RetrofitAPIBuilder.getInstance().create(AppInfoService.class)).getLatestAppVersion(PreferenceUtils.getCompanyCode(this.mContext), Constants.OS_NAME).enqueue(new Callback<APIResponse<AppInfo>>() {
+                public void onResponse(Response<APIResponse<AppInfo>> response, Retrofit retrofit3) {
                     APIResponse apiResponse = response.body();
                     List<AppInfo> appInfo = null;
-                    if (apiResponse != null)
+                    if (apiResponse != null) {
                         appInfo = apiResponse.getResultDetails();
-                    if (appInfo != null && appInfo.size() > 0 &&
-                            appInfo.get(0).isUpgradeRequired() == 1) {
-                        if (Double.valueOf(packageInfo.versionCode) < Double.valueOf(appInfo.get(0).getVersion())) {
-                            PreferenceUtils.setIsForUpdateVersion(GameActivity.this, appInfo.get(0).getVersion());
-                            PreferenceUtils.setIsForUpdateAvailable(GameActivity.this, true);
-                            showForceUpdateAlert();
-                        }
+                    }
+                    if (appInfo != null && appInfo.size() > 0 && appInfo.get(0).isUpgradeRequired() == 1 && Double.valueOf((double) GameActivity.this.packageInfo.versionCode).doubleValue() < Double.valueOf(appInfo.get(0).getVersion()).doubleValue()) {
+                        PreferenceUtils.setIsForUpdateVersion(GameActivity.this, appInfo.get(0).getVersion());
+                        PreferenceUtils.setIsForUpdateAvailable(GameActivity.this, true);
+                        GameActivity.this.showForceUpdateAlert();
                     }
                 }
 
-                @Override
                 public void onFailure(Throwable t) {
                     Log.d("Error", "Getting version from API" + t.getMessage());
                 }
             });
+        } else if (!PreferenceUtils.getIsForUpdateAvailable(this)) {
         } else {
-            if (PreferenceUtils.getIsForUpdateAvailable(GameActivity.this)) {
-                if (packageInfo.versionCode < Integer.parseInt(PreferenceUtils.getIsForUpdateVersion(GameActivity.this))) {
-                    showForceUpdateAlert();
-                } else {
-                    PreferenceUtils.setIsForUpdateAvailable(GameActivity.this, false);
-                    //checkAppUpgrade();
-                }
-            }/*else{
-                checkAppUpgrade();
-            }*/
+            if (this.packageInfo.versionCode < Integer.parseInt(PreferenceUtils.getIsForUpdateVersion(this))) {
+                showForceUpdateAlert();
+            } else {
+                PreferenceUtils.setIsForUpdateAvailable(this, false);
+            }
         }
     }
 
-    private void showForceUpdateAlert() {
-
-        new iOSDialogBuilder(mContext)
-                .setTitle("New Version Available")
-                .setSubtitle(getResources().getString(R.string.update_alert))
-                .setBoldPositiveLabel(false)
-                .setCancelable(false)
-                .setSingleButtonView(true)
-                .setPositiveListener("",null)
-                .setNegativeListener("",null)
-                .setSinglePositiveListener("UPDATE", new iOSDialogClickListener() {
-                    @Override
-                    public void onClick(iOSDialog dialog) {
-                        dialog.dismiss();
-                        Intent viewIntent = new Intent("android.intent.action.VIEW",
-                                Uri.parse(Constants.APP_URL));
-                        startActivity(viewIntent);
-                    }
-                })
-                .build().show();
-
+    /* access modifiers changed from: private */
+    public void showForceUpdateAlert() {
+        new iOSDialogBuilder(this.mContext).setTitle("New Version Available").setSubtitle(getResources().getString(R.string.update_alert)).setBoldPositiveLabel(false).setCancelable(false).setSingleButtonView(true).setPositiveListener("", (iOSDialogClickListener) null).setNegativeListener("", (iOSDialogClickListener) null).setSinglePositiveListener("UPDATE", new iOSDialogClickListener() {
+            public void onClick(iOSDialog dialog) {
+                dialog.dismiss();
+                GameActivity.this.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(Constants.APP_URL)));
+            }
+        }).build().show();
     }
 
-
-    @Override
     public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
-    public void getCourses(){
-        if(!isFilterenabled) {
-            //courseModelList = courseListTempRepository.getAllCourses();
-            if(courseModelList.size() > 0) {
-                showhideemptystate(false,"",0);
-                recyclerView.setVisibility(View.VISIBLE);
-                courseListAdapter = new CourseListAdapter(mContext, courseModelList);
-                recyclerView.setAdapter(courseListAdapter);
+    public void getCourses() {
+        if (!this.isFilterenabled) {
+            if (this.courseModelList.size() > 0) {
+                showhideemptystate(false, "", 0);
+                this.recyclerView.setVisibility(View.VISIBLE);
+                this.courseModelListgame.clear();
+                for (int i = 0; i < this.courseModelList.size(); i++) {
+                    if (this.courseModelList.get(i).getIs_Game_Course() == 1 && this.courseModelList.get(i).getGame_Id() != 0) {
+                        this.courseModelListgame.add(this.courseModelList.get(i));
+                    }
+                }
+                this.courseListAdapter = new CourseListAdapterGame(this.mContext, this.courseModelListgame);
+                new SectionedRecyclerViewAdapter();
+                List<SectionedGridRecyclerViewAdapter.Section> sections = new ArrayList<>();
+                if (this.courseModelListgame.size() > 0) {
+                    for (int i2 = 0; i2 < this.courseModelListgame.size(); i2++) {
+                        if (i2 == 0) {
+                            sections.add(new SectionedGridRecyclerViewAdapter.Section(0, this.courseModelListgame.get(0).Category_Name));
+                        }
+                        if (i2 + 1 < this.courseModelListgame.size() && this.courseModelListgame.get(i2).getGame_Id() != this.courseModelListgame.get(i2 + 1).getGame_Id()) {
+                            sections.add(new SectionedGridRecyclerViewAdapter.Section(i2 + 1, this.courseModelListgame.get(i2 + 1).getGame_Name()));
+                        }
+                    }
+                }
+                SectionedGridRecyclerViewAdapter mSectionedAdapter = new SectionedGridRecyclerViewAdapter(this.mContext, R.layout.section, R.id.section_text, this.recyclerView, this.courseListAdapter);
+                mSectionedAdapter.setSections((SectionedGridRecyclerViewAdapter.Section[]) sections.toArray(new SectionedGridRecyclerViewAdapter.Section[sections.size()]));
+                this.recyclerView.setAdapter(mSectionedAdapter);
                 if (!isFinishing()) {
                     dismissProgressDialog();
                 }
-            }else{
-                showhideemptystate(true,getResources().getString(R.string.emptyDashboard),Constants.EMPTYLISTNUM);
-                recyclerView.setVisibility(View.GONE);
+            } else {
+                showhideemptystate(true, getResources().getString(R.string.emptyDashboard), 3);
+                this.recyclerView.setVisibility(View.GONE);
             }
             loadadapterclick();
-        }else{
-            getCoursesbyIDs();
-            //getfilteres();
+            return;
         }
+        getCoursesbyIDs();
     }
 
-    public void loadadapterclick(){
-
-        courseListAdapter.setOnItemClickListener(new CourseListAdapter.MyClickListener() {
-            @Override
-            //public void onItemClick(int courseId, boolean isSequenceEnabled) {
+    public void loadadapterclick() {
+        this.courseListAdapter.setOnItemClickListener(new CourseListAdapterGame.MyClickListener() {
             public void onItemClick(int courseId) {
-                if(NetworkUtils.isNetworkAvailable()) {
+                if (NetworkUtils.isNetworkAvailable()) {
                     CourseModel courseModel = new CourseModel();
-                    for (CourseModel course : courseModelList) {
+                    Iterator<CourseModel> it = GameActivity.this.courseModelList.iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            break;
+                        }
+                        CourseModel course = it.next();
                         if (courseId == course.getCourse_Id()) {
                             courseModel = course;
                             break;
                         }
                     }
-                    if (!courseModel.getPrerequisite().equalsIgnoreCase("") &&
-                            courseModel.getCourse_Status_Value() == 0) {
-                        ShowPreRequsite(courseModel.getPrerequisite());
-                    } else if(courseModel.getCourse_Status_Value() == Constants.COURSE_EXPIRED) {
-                        if(courseModel.isCourseExtend()){
-                            if(courseModel.getAutoExtendDays() < courseModel.getExtendLimits()){
-                                ShowCourseExtendpopup(courseModel);
-                            }else{
-                                gotosectionActivity(courseModel);
-                            }
-                        }else{
-                            gotosectionActivity(courseModel);
+                    if (!courseModel.getPrerequisite().equalsIgnoreCase("") && courseModel.getCourse_Status_Value() == 0) {
+                        GameActivity.this.ShowPreRequsite(courseModel.getPrerequisite());
+                    } else if (courseModel.getCourse_Status_Value() == 4) {
+                        if (!courseModel.isCourseExtend()) {
+                            GameActivity.this.gotosectionActivity(courseModel);
+                        } else if (courseModel.getAutoExtendDays() < courseModel.getExtendLimits()) {
+                            GameActivity.this.ShowCourseExtendpopup(courseModel);
+                        } else {
+                            GameActivity.this.gotosectionActivity(courseModel);
                         }
-                    }else if(courseModel.getCourse_Status_Value() != Constants.COURSE_EXPIRED) {
-                        if(courseModel.getIsCourseRestart() == 1) {
-                            courseCheckListRestartUpdate(courseModel);
-                            gotosectionActivity(courseModel);
-                        }else{
-                            gotosectionActivity(courseModel);
-                        }
-                    }else {
-                        gotosectionActivity(courseModel);
+                    } else if (courseModel.getCourse_Status_Value() == 4) {
+                        GameActivity.this.gotosectionActivity(courseModel);
+                    } else if (courseModel.getIsCourseRestart() == 1) {
+                        GameActivity.this.courseCheckListRestartUpdate(courseModel);
+                        GameActivity.this.gotosectionActivity(courseModel);
+                    } else {
+                        GameActivity.this.gotosectionActivity(courseModel);
                     }
-                }else{
-                    Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(GameActivity.this.mContext, GameActivity.this.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    public void gotosectionActivity(CourseModel courseModel){
-        Intent intent = new Intent(mContext, SectionActivity.class);
-        intent.putExtra(Constants.Course_Id, courseModel.getCourse_Id());
-        intent.putExtra(Constants.Publish_Id, courseModel.getPublish_Id());
-        intent.putExtra(Constants.Course_Name, courseModel.getCourse_Name());
+    public void gotosectionActivity(CourseModel courseModel) {
+        Intent intent = new Intent(this.mContext, SectionActivity.class);
+        intent.putExtra("Course_Id", courseModel.getCourse_Id());
+        intent.putExtra("Publish_Id", courseModel.getPublish_Id());
+        intent.putExtra("Course_Name", courseModel.getCourse_Name());
         intent.putExtra(Constants.Course_Description, courseModel.getCourse_Description());
         intent.putExtra(Constants.Course_Thumbnail, courseModel.getCourse_Image_URL());
         intent.putExtra(Constants.Course_Status, courseModel.getCourse_Status_String());
         intent.putExtra("Course_Status_INT", courseModel.getCourse_Status_Value());
-        intent.putExtra("Cats",courseModel.getCategory_Name());
-        intent.putExtra("Tags",courseModel.getCourse_Tags());
+        intent.putExtra("Cats", courseModel.getCategory_Name());
+        intent.putExtra("Tags", courseModel.getCourse_Tags());
         Bundle bundle = new Bundle();
-        bundle.putSerializable("value", courseModel);
+        bundle.putSerializable(AbstractEvent.VALUE, courseModel);
         intent.putExtras(bundle);
-        intent.putExtra(Constants.Is_From_DashBoard,false);
-        //intent.putExtra(Constants.ISSEQUENCEENABLED,isSequenceEnabled);
+        intent.putExtra(Constants.Is_From_DashBoard, false);
+        intent.putExtra("isgame", true);
         startActivity(intent);
     }
 
-    public void ShowCourseExtendpopup(final CourseModel courseModel){
-        messageDialog.ShowCourseExtend(mContext, getString(R.string.extend_course), new View.OnClickListener() {
-            @Override
+    public void ShowCourseExtendpopup(final CourseModel courseModel) {
+        this.messageDialog.ShowCourseExtend(this.mContext, getString(R.string.extend_course), new View.OnClickListener() {
             public void onClick(View Approve) {
-                requestExtentDateForUsers(courseModel);
-                messageDialog.dialogDismiss();
+                GameActivity.this.requestExtentDateForUsers(courseModel);
+                GameActivity.this.messageDialog.dialogDismiss();
             }
         }, new View.OnClickListener() {
-            @Override
             public void onClick(View close) {
-                messageDialog.dialogDismiss();
-                gotosectionActivity(courseModel);
+                GameActivity.this.messageDialog.dialogDismiss();
+                GameActivity.this.gotosectionActivity(courseModel);
             }
         }, true);
     }
 
-    public void requestExtentDateForUsers(final CourseModel courseModel){
-        if(NetworkUtils.checkIfNetworkAvailable(mContext)){
-            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
-            LPCourseService userService = retrofitAPI.create(LPCourseService.class);
-
+    public void requestExtentDateForUsers(final CourseModel courseModel) {
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
             String offsetFromUtc = CommonUtils.getUtcOffsetincluded10k();
-            int CompanyId = PreferenceUtils.getCompnayId(mContext);
-            String SubdomainName = PreferenceUtils.getSubdomainName(mContext);
+            int CompanyId = PreferenceUtils.getCompnayId(this.mContext);
+            String SubdomainName = PreferenceUtils.getSubdomainName(this.mContext);
             CourseExtendModel c = new CourseExtendModel();
             c.setCompanyId(CompanyId);
             c.setCourseId(courseModel.getCourse_Id());
@@ -1379,537 +1206,459 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
             c.setLocalTimeZone(offsetFromUtc);
             c.setOffsetValue(offsetFromUtc);
             c.setSubdomainName(SubdomainName);
-
-            Call call = userService.LPCourseAutoExtentDateForUsers(c);
-            call.enqueue(new Callback<String>() {
-
-                @Override
-                public void onResponse(Response<String> response, Retrofit retrofit) {
+            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).LPCourseAutoExtentDateForUsers(c).enqueue(new Callback<String>() {
+                public void onResponse(Response<String> response, Retrofit retrofit3) {
                     String courseListModel = response.body();
-                    if(courseListModel != null){
-                        if(courseListModel.equals("Success")){
-                            gotosectionActivity(courseModel);
-                        }
+                    if (courseListModel != null && courseListModel.equals("Success")) {
+                        GameActivity.this.gotosectionActivity(courseModel);
                     }
-
                 }
 
-                @Override
                 public void onFailure(Throwable t) {
                     Log.d(t.toString(), "Error");
                 }
             });
-        }else{
-
         }
     }
 
-    public void courseCheckListRestartUpdate(final CourseModel courseModel){
-        if(NetworkUtils.checkIfNetworkAvailable(mContext)){
-            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
-            LPCourseService userService = retrofitAPI.create(LPCourseService.class);
-
-            int CompanyId = PreferenceUtils.getCompnayId(mContext);
-            String SubdomainName = PreferenceUtils.getSubdomainName(mContext);
-            int UserId = PreferenceUtils.getUserId(mContext);
-
+    public void courseCheckListRestartUpdate(CourseModel courseModel) {
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            int CompanyId = PreferenceUtils.getCompnayId(this.mContext);
+            String SubdomainName = PreferenceUtils.getSubdomainName(this.mContext);
+            int UserId = PreferenceUtils.getUserId(this.mContext);
             CourseExtendModel c = new CourseExtendModel();
             c.setCompanyId(CompanyId);
             c.setCourseId(courseModel.getCourse_Id());
             c.setUser_Id(UserId);
             c.setSubdomainName(SubdomainName);
-
-            Call call = userService.CourseCheckListRestartUpdate(CompanyId,courseModel.getCourse_Id(),UserId,SubdomainName);
-            call.enqueue(new Callback<String>() {
-
-                @Override
-                public void onResponse(Response<String> response, Retrofit retrofit) {
+            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).CourseCheckListRestartUpdate(CompanyId, courseModel.getCourse_Id(), UserId, SubdomainName).enqueue(new Callback<String>() {
+                public void onResponse(Response<String> response, Retrofit retrofit3) {
                     String courseListModel = response.body();
-                    if(courseListModel != null){
-                        if(courseListModel.equals("Success")){
-                            //gotosectionActivity(courseModel);
-                        }
+                    if (courseListModel != null) {
+                        courseListModel.equals("Success");
                     }
-
                 }
 
-                @Override
                 public void onFailure(Throwable t) {
                     Log.d(t.toString(), "Error");
                 }
             });
-        }else{
-
         }
     }
 
     public void showProgressDialog() {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(getResources().getString(R.string.loading));
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        mProgressDialog.setIndeterminate(false);
-        mProgressDialog.show();
+        this.mProgressDialog = new ProgressDialog(this);
+        this.mProgressDialog.setMessage(getResources().getString(R.string.loading));
+        this.mProgressDialog.setCancelable(false);
+        this.mProgressDialog.setProgressStyle(16973854);
+        this.mProgressDialog.setIndeterminate(false);
+        this.mProgressDialog.show();
     }
 
     public void dismissProgressDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+        if (this.mProgressDialog != null) {
+            this.mProgressDialog.dismiss();
         }
     }
 
-    public void ShowPreRequsite(String premessage){
-        /*messageDialog.ShowPreRequsite(mContext, premessage, new View.OnClickListener() {
-            @Override
+    public void ShowPreRequsite(String premessage) {
+        this.messageDialog.showCustomAlertMessageDialog(this.mContext, "Pre Requsite", getResources().getString(R.string.prerequsitebefore) + " '" + premessage + "' " + getResources().getString(R.string.prerequsiteafter), new View.OnClickListener() {
             public void onClick(View Approve) {
-                messageDialog.dialogDismiss();
-            }
-        }, true);*/
-        String message = getResources().getString(R.string.prerequsitebefore)+" '"+ premessage+"' "+
-                getResources().getString(R.string.prerequsiteafter);
-        messageDialog.showCustomAlertMessageDialog(mContext,"Pre Requsite", message, new View.OnClickListener() {
-            @Override
-            public void onClick(View Approve) {
-                messageDialog.dialogDismiss();
+                GameActivity.this.messageDialog.dialogDismiss();
             }
         }, true);
     }
 
     private void loadFilteredList(List<CourseModel> csmodel) {
-        if (!isFinishing() || mProgressDialog != null) {
+        if (!isFinishing() || this.mProgressDialog != null) {
             dismissProgressDialog();
         }
-        isFilterenabled = true;
+        this.isFilterenabled = true;
         int countchecked = 0;
-        final ArrayList<CourseModel> filteredCourse = new ArrayList<CourseModel>();
-        completed_checked = mCheckCompleted.isChecked();
-        yet_to_start_checked = mCheckYetToStart.isChecked();
-        in_progress_checked = mCheckInProgress.isChecked();
-        expired = mCheckExpired.isChecked();
-        max_attempts_reached = mCheckMaxAttempts.isChecked();
-        if(!completed_checked && !yet_to_start_checked && !in_progress_checked && !expired && !max_attempts_reached){
-            courseListAdapter = new CourseListAdapter(mContext,csmodel);
-            recyclerView.setAdapter(courseListAdapter);
-            mFilteredCountStatus.setVisibility(View.INVISIBLE);
-        } else {
-            if (completed_checked) {
+        ArrayList<CourseModel> filteredCourse = new ArrayList<>();
+        this.completed_checked = this.mCheckCompleted.isChecked();
+        this.yet_to_start_checked = this.mCheckYetToStart.isChecked();
+        this.in_progress_checked = this.mCheckInProgress.isChecked();
+        this.expired = this.mCheckExpired.isChecked();
+        this.max_attempts_reached = this.mCheckMaxAttempts.isChecked();
+        if (this.completed_checked || this.yet_to_start_checked || this.in_progress_checked || this.expired || this.max_attempts_reached) {
+            if (this.completed_checked) {
                 for (CourseModel courseModel : csmodel) {
                     if (courseModel.getCourse_Status_Value() == 2) {
                         filteredCourse.add(courseModel);
                     }
                 }
-                countchecked++;
+                countchecked = 0 + 1;
             }
-            if (yet_to_start_checked) {
-                for (CourseModel courseModel : csmodel) {
-                    if (courseModel.getCourse_Status_Value() == 0) {
-                        filteredCourse.add(courseModel);
+            if (this.yet_to_start_checked) {
+                for (CourseModel courseModel2 : csmodel) {
+                    if (courseModel2.getCourse_Status_Value() == 0) {
+                        filteredCourse.add(courseModel2);
                     }
                 }
                 countchecked++;
             }
-            if (in_progress_checked) {
-                for (CourseModel courseModel : csmodel) {
-                    if (courseModel.getCourse_Status_Value() == 1) {
-                        filteredCourse.add(courseModel);
+            if (this.in_progress_checked) {
+                for (CourseModel courseModel3 : csmodel) {
+                    if (courseModel3.getCourse_Status_Value() == 1) {
+                        filteredCourse.add(courseModel3);
                     }
                 }
                 countchecked++;
             }
-            if (expired){
-                for (CourseModel courseModel : csmodel) {
-                    if (courseModel.getCourse_Status_Value() == 4) {
-                        filteredCourse.add(courseModel);
+            if (this.expired) {
+                for (CourseModel courseModel4 : csmodel) {
+                    if (courseModel4.getCourse_Status_Value() == 4) {
+                        filteredCourse.add(courseModel4);
                     }
                 }
                 countchecked++;
             }
-            if (max_attempts_reached) {
-                for (CourseModel courseModel : csmodel) {
-                    if (courseModel.getCourse_Status_Value() == 3){
-                        filteredCourse.add(courseModel);
+            if (this.max_attempts_reached) {
+                for (CourseModel courseModel5 : csmodel) {
+                    if (courseModel5.getCourse_Status_Value() == 3) {
+                        filteredCourse.add(courseModel5);
                     }
                 }
-                countchecked++;
+                int countchecked2 = countchecked + 1;
             }
-            /*mFilteredCountStatus.setText(String.valueOf(countchecked));
-            mFilteredCountStatus.setVisibility(View.VISIBLE);*/
-            showhideemptystate(false,"",0);
-            courseListAdapter = new CourseListAdapter(mContext,filteredCourse);
-            recyclerView.setAdapter(courseListAdapter);
-            //courseListAdapter.notifyDataSetChanged();
-            if(filteredCourse.size() == 0){
-                showhideemptystate(true,getResources().getString(R.string.no_result),Constants.NORESULTSNUM);
+            showhideemptystate(false, "", 0);
+            this.courseListAdapter = new CourseListAdapterGame(this.mContext, filteredCourse);
+            this.recyclerView.setAdapter(this.courseListAdapter);
+            if (filteredCourse.size() == 0) {
+                showhideemptystate(true, getResources().getString(R.string.no_result), 2);
+                return;
             }
+            return;
         }
+        this.courseListAdapter = new CourseListAdapterGame(this.mContext, csmodel);
+        this.recyclerView.setAdapter(this.courseListAdapter);
+        this.mFilteredCountStatus.setVisibility(View.INVISIBLE);
     }
 
-    public void loadPopUpHelpView(){
+    public void loadPopUpHelpView() {
+        String URL;
         String lan = "";
         String language = Locale.getDefault().getDisplayLanguage();
-        if(language.equalsIgnoreCase("English")){
+        if (language.equalsIgnoreCase("English")) {
             lan = "en-";
-        } else if(language.equalsIgnoreCase("Español")){
+        } else if (language.equalsIgnoreCase("Español")) {
             lan = "es-";
         }
-        String URL = "";
-        if(PreferenceUtils.getSubdomainName(mContext).contains("tacobell")){
-            URL = Constants.COMPANY_BASE_URL+"/HelpFiles/taco/"+lan+"Kanglehelpcourse.htm";
-        }else{
-            URL = Constants.COMPANY_BASE_URL+"/HelpFiles/other/Kanglehelpcourse.html";
+        if (PreferenceUtils.getSubdomainName(this.mContext).contains("tacobell")) {
+            URL = "http://kanglenewqa.kangle.me//HelpFiles/taco/" + lan + "Kanglehelpcourse.htm";
+        } else {
+            URL = "http://kanglenewqa.kangle.me//HelpFiles/other/Kanglehelpcourse.html";
         }
-        //String URL = Constants.COMPANY_BASE_URL+"/HelpFiles/"+lan+"Kanglehelpcourse.htm";
-        messageDialog.Showhelppopup(mContext, new View.OnClickListener() {
-            @Override
+        this.messageDialog.Showhelppopup(this.mContext, new View.OnClickListener() {
             public void onClick(View Approve) {
-                messageDialog.dialogDismiss();
+                GameActivity.this.messageDialog.dialogDismiss();
             }
-        },URL, false);
+        }, URL, false);
     }
 
-    public void loadHelpView(){
-        recyclerView.setVisibility(View.GONE);
-        helplayout.setVisibility(View.VISIBLE);
+    public void loadHelpView() {
+        String URL;
+        this.recyclerView.setVisibility(View.GONE);
+        this.helplayout.setVisibility(View.VISIBLE);
         String lan = "";
         String language = Locale.getDefault().getDisplayLanguage();
-        if(language.equalsIgnoreCase("English")){
+        if (language.equalsIgnoreCase("English")) {
             lan = "en-";
-        } else if(language.equalsIgnoreCase("Español")){
+        } else if (language.equalsIgnoreCase("Español")) {
             lan = "es-";
         }
-        String URL = "";
-        if(PreferenceUtils.getSubdomainName(mContext).contains("tacobell")){
-            URL = Constants.COMPANY_BASE_URL+"/HelpFiles/taco/"+lan+"Kanglehelpcourse.htm";
-        }else{
-            URL = Constants.COMPANY_BASE_URL+"/HelpFiles/other/Kanglehelpcourse.html";
+        if (PreferenceUtils.getSubdomainName(this.mContext).contains("tacobell")) {
+            URL = "http://kanglenewqa.kangle.me//HelpFiles/taco/" + lan + "Kanglehelpcourse.htm";
+        } else {
+            URL = "http://kanglenewqa.kangle.me//HelpFiles/other/Kanglehelpcourse.html";
         }
-        //String URL = Constants.COMPANY_BASE_URL+"/HelpFiles/"+lan+"Kanglehelpcourse.htm";
-        WebSettings settings = helpView.getSettings();
-        settings.setDomStorageEnabled(true);
-        helpView.getSettings().setJavaScriptEnabled(true);
-        helpView.getSettings().setLoadWithOverviewMode(true);
-        helpView.getSettings().setUseWideViewPort(true);
-        helpView.getSettings().setBuiltInZoomControls(true);
-        helpView.setWebViewClient(new WebViewClient(){
-
-            @Override
+        this.helpView.getSettings().setDomStorageEnabled(true);
+        this.helpView.getSettings().setJavaScriptEnabled(true);
+        this.helpView.getSettings().setLoadWithOverviewMode(true);
+        this.helpView.getSettings().setUseWideViewPort(true);
+        this.helpView.getSettings().setBuiltInZoomControls(true);
+        this.helpView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
             }
-            @Override
-            public void onPageFinished(WebView view, final String url) {
+
+            public void onPageFinished(WebView view, String url) {
             }
         });
-        helpView.loadUrl(URL);
+        this.helpView.loadUrl(URL);
     }
 
-    //filter Functions
-
-    public void loadCategorySlider(){
-        try{
+    public void loadCategorySlider() {
+        try {
             toggleselection(1);
-            if(tagslist.size()>0){
+            if (this.tagslist.size() > 0) {
                 String tagnames = "";
-                for (String catname : tagslist) {
-                    tagnames =  tagnames + "," + "'" + catname.toString() + "'";
+                for (String catname : this.tagslist) {
+                    tagnames = tagnames + ",'" + catname.toString() + "'";
                 }
                 StringBuilder sb = new StringBuilder(tagnames);
                 sb.deleteCharAt(0);
-                String valuenames = sb.toString().replace("''", "'");
-                List<CourseModel> digitalAssetsMasterCategoryList = courseCatTagFilterRepository.getCategorybySelectedTags(valuenames,CATS);
-                reloadCatSlider(digitalAssetsMasterCategoryList);
-            } else {
-                List<CourseModel> digitalAssetsMasterCategoryList = courseCatTagFilterRepository.getAllCategory(CATS);
-                reloadCatSlider(digitalAssetsMasterCategoryList);
+                reloadCatSlider(this.courseCatTagFilterRepository.getCategorybySelectedTags(sb.toString().replace("''", "'"), this.CATS));
+                return;
             }
-        }catch (Exception e){
-
+            reloadCatSlider(this.courseCatTagFilterRepository.getAllCategory(this.CATS));
+        } catch (Exception e) {
         }
     }
 
-    public void loadTagsSlider(){
-        try{
+    public void loadTagsSlider() {
+        try {
             toggleselection(2);
-            if(catlist.size()>0){
+            if (this.catlist.size() > 0) {
                 String catnames = "";
-                for (String catname : catlist) {
-                    catnames = catnames + "," + "'" + catname.toString() + "'";
+                for (String catname : this.catlist) {
+                    catnames = catnames + ",'" + catname.toString() + "'";
                 }
                 StringBuilder sb = new StringBuilder(catnames);
                 sb.deleteCharAt(0);
-                String valuenames = sb.toString().replace("''", "'");
-                List<CourseModel> digitalAssetsMasterTagsList = courseCatTagFilterRepository.getTagsbySelectedcategorey(valuenames,TAGS);
-                reloadTagSlider(digitalAssetsMasterTagsList);
-            }else{
-                List<CourseModel> digitalAssetsMasterTagsList = courseCatTagFilterRepository.getAllTags(TAGS);
-                reloadTagSlider(digitalAssetsMasterTagsList);
+                reloadTagSlider(this.courseCatTagFilterRepository.getTagsbySelectedcategorey(sb.toString().replace("''", "'"), this.TAGS));
+                return;
             }
-        }catch (Exception e){
-
+            reloadTagSlider(this.courseCatTagFilterRepository.getAllTags(this.TAGS));
+        } catch (Exception e) {
         }
-
     }
 
-    public void reloadCatSlider(List<CourseModel> newmodel){
+    public void reloadCatSlider(List<CourseModel> newmodel) {
         List<CourseModel> catrefresh = new ArrayList<>();
-        List<CourseModel> newrefreshed = new ArrayList<>();
-        for(CourseModel existing : digitalAssetsMasterCategoryLists){
-            if(existing.iscatchecked){
+        new ArrayList();
+        for (CourseModel existing : this.digitalAssetsMasterCategoryLists) {
+            if (existing.iscatchecked) {
                 catrefresh.add(existing);
             }
         }
-        for(CourseModel ne : newmodel){
+        for (CourseModel ne : newmodel) {
             catrefresh.add(ne);
         }
-        emptytagsview.setVisibility(View.GONE);
-        cattag_recyclerView.setVisibility(View.VISIBLE);
-        digitalAssetsMasterCategoryLists = catrefresh;
-        categoryListRecyclerAdapter = new CourseCategoryListAdapter(mContext, digitalAssetsMasterCategoryLists,true);
-        cattag_recyclerView.setAdapter(categoryListRecyclerAdapter);
+        this.emptytagsview.setVisibility(View.GONE);
+        this.cattag_recyclerView.setVisibility(View.VISIBLE);
+        this.digitalAssetsMasterCategoryLists = catrefresh;
+        this.categoryListRecyclerAdapter = new CourseCategoryListAdapterGame(this.mContext, this.digitalAssetsMasterCategoryLists, true);
+        this.cattag_recyclerView.setAdapter(this.categoryListRecyclerAdapter);
     }
 
-    public void reloadTagSlider(List<CourseModel> newmodel){
+    public void reloadTagSlider(List<CourseModel> newmodel) {
         List<CourseModel> tagrefresh = new ArrayList<>();
-        List<CourseModel> newtgrefresh = new ArrayList<>();
-        for(CourseModel existing : digitalAssetsMasterTagsLists){
-            if(existing.istagchecked){
+        new ArrayList();
+        for (CourseModel existing : this.digitalAssetsMasterTagsLists) {
+            if (existing.istagchecked) {
                 tagrefresh.add(existing);
             }
         }
-        for(CourseModel ne : newmodel){
+        for (CourseModel ne : newmodel) {
             tagrefresh.add(ne);
         }
-        digitalAssetsMasterTagsLists = tagrefresh;
-        showtagsView(digitalAssetsMasterTagsLists,true);
+        this.digitalAssetsMasterTagsLists = tagrefresh;
+        showtagsView(this.digitalAssetsMasterTagsLists, true);
     }
 
-    public void showtagsView(List<CourseModel> digitalAssetsMasterTagsList,boolean status){
-        if(digitalAssetsMasterTagsList.size() > 0){
-            emptytagsview.setVisibility(View.GONE);
-            checkBoxGroupView.setVisibility(View.GONE);
-            cattag_recyclerView.setVisibility(View.VISIBLE);
-            tagsListRecyclerAdapter = new CourseTagsListAdapter(mContext,digitalAssetsMasterTagsList,status);
-            cattag_recyclerView.setAdapter(tagsListRecyclerAdapter);
-        }else{
-            cattag_recyclerView.setVisibility(View.GONE);
-            checkBoxGroupView.setVisibility(View.GONE);
-            emptytagsview.setVisibility(View.VISIBLE);
+    public void showtagsView(List<CourseModel> digitalAssetsMasterTagsList, boolean status) {
+        if (digitalAssetsMasterTagsList.size() > 0) {
+            this.emptytagsview.setVisibility(View.GONE);
+            this.checkBoxGroupView.setVisibility(View.GONE);
+            this.cattag_recyclerView.setVisibility(View.VISIBLE);
+            this.tagsListRecyclerAdapter = new CourseTagsListAdapterGame(this.mContext, digitalAssetsMasterTagsList, status);
+            this.cattag_recyclerView.setAdapter(this.tagsListRecyclerAdapter);
+            return;
         }
+        this.cattag_recyclerView.setVisibility(View.GONE);
+        this.checkBoxGroupView.setVisibility(View.GONE);
+        this.emptytagsview.setVisibility(View.VISIBLE);
     }
 
-    public void insertintocategoreytagstable(){
-        List<CourseModel> digitalAssetsListfortags = courseModelList;
+    public void insertintocategoreytagstable() {
+        List<CourseModel> digitalAssetsListfortags = this.courseModelList;
         List<CourseModel> cttags = new ArrayList<>();
         for (CourseModel dig : digitalAssetsListfortags) {
-            if(dig.getCategory_Name() != null && !dig.getCategory_Name().isEmpty()){
-                if(dig.getCourse_Tags() != "" && dig.getCourse_Tags() != null && !dig.getCourse_Tags().isEmpty()) {
-                    String tagsstring = dig.getCourse_Tags().replace("^","#");
-                    String[] tags = tagsstring.split("#");
-                    for (String t : tags) {
-                        CourseModel values = new CourseModel();
-                        values.setCourse_Id(dig.getCourse_Id());
-                        values.setCourse_Category_Id(dig.getCourse_Category_Id());
-                        values.setCourse_Tags(dig.getCourse_Tags());
-                        values.setCategory_Name(dig.getCategory_Name());
-                        values.setTags(t);
-                        cttags.add(values);
-                    }
-                }else{
+            if (dig.getCategory_Name() != null && !dig.getCategory_Name().isEmpty()) {
+                if (dig.getCourse_Tags() == "" || dig.getCourse_Tags() == null || dig.getCourse_Tags().isEmpty()) {
                     CourseModel values = new CourseModel();
                     values.setCourse_Id(dig.getCourse_Id());
                     values.setCourse_Category_Id(dig.getCourse_Category_Id());
                     values.setCourse_Tags(dig.getCourse_Tags());
                     values.setCategory_Name(dig.getCategory_Name());
-                    values.setTags(null);
+                    values.setTags((String) null);
                     cttags.add(values);
+                } else {
+                    for (String t : dig.getCourse_Tags().replace("^", "#").split("#")) {
+                        CourseModel values2 = new CourseModel();
+                        values2.setCourse_Id(dig.getCourse_Id());
+                        values2.setCourse_Category_Id(dig.getCourse_Category_Id());
+                        values2.setCourse_Tags(dig.getCourse_Tags());
+                        values2.setCategory_Name(dig.getCategory_Name());
+                        values2.setTags(t);
+                        cttags.add(values2);
+                    }
                 }
             }
         }
-        courseCatTagFilterRepository.catTagsBulkInsert(cttags);
+        this.courseCatTagFilterRepository.catTagsBulkInsert(cttags);
     }
 
-    public void filteredcatList(CourseModel cat){
-        try{
-            if(cat.iscatchecked()) {
-                catlist.add(cat.getCategory_Name());
-            }else{
-                catlist.remove(cat.getCategory_Name());
+    public void filteredcatList(CourseModel cat) {
+        try {
+            if (cat.iscatchecked()) {
+                this.catlist.add(cat.getCategory_Name());
+            } else {
+                this.catlist.remove(cat.getCategory_Name());
             }
-            if(catlist.size() > 0){
-                catFiltered = true;
-            }else{
-                catFiltered = false;
+            if (this.catlist.size() > 0) {
+                this.catFiltered = true;
+            } else {
+                this.catFiltered = false;
             }
-
-            if(catFiltered){
+            if (this.catFiltered) {
                 String catnames = "";
-                for (String catname : catlist) {
-                    catnames = catnames + "," + "'" + catname.toString() + "'";
+                for (String catname : this.catlist) {
+                    catnames = catnames + ",'" + catname.toString() + "'";
                 }
                 StringBuilder sb = new StringBuilder(catnames);
                 sb.deleteCharAt(0);
-                String valuenames = sb.toString().replace("''", "'");
-                CATS = valuenames;
-            }else{
-                CATS = "";
+                this.CATS = sb.toString().replace("''", "'");
+            } else {
+                this.CATS = "";
             }
             showApplyButton();
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
-    public void filteredtagList(CourseModel cat){
-        try{
-            if(cat.istagchecked()) {
-                tagslist.add(cat.getTags());
-            }else{
-                tagslist.remove(cat.getTags());
+    public void filteredtagList(CourseModel cat) {
+        try {
+            if (cat.istagchecked()) {
+                this.tagslist.add(cat.getTags());
+            } else {
+                this.tagslist.remove(cat.getTags());
             }
-            if(tagslist.size() > 0){
-                tagfiltered = true;
-            }else{
-                tagfiltered = false;
+            if (this.tagslist.size() > 0) {
+                this.tagfiltered = true;
+            } else {
+                this.tagfiltered = false;
             }
-
-            if(tagfiltered) {
+            if (this.tagfiltered) {
                 String tagnames = "";
-                for (String catname : tagslist) {
-                    tagnames = tagnames + "," + "'" + catname.toString() + "'";
+                for (String catname : this.tagslist) {
+                    tagnames = tagnames + ",'" + catname.toString() + "'";
                 }
                 StringBuilder sb = new StringBuilder(tagnames);
                 sb.deleteCharAt(0);
-                String valuenames = sb.toString().replace("''", "'");
-                TAGS = valuenames;
-            }else{
-                TAGS = "";
+                this.TAGS = sb.toString().replace("''", "'");
+            } else {
+                this.TAGS = "";
             }
             showApplyButton();
-        }catch(Exception e){
-
+        } catch (Exception e) {
         }
     }
 
-    public void getCoursesbyIDs(){
-        try{
-            String selectQuery = "SELECT tbl_COURSE_CAT_TAG_MASTER.Course_Id FROM tbl_COURSE_CAT_TAG_MASTER  ";
-            if (CATS.length() > 0 || TAGS.length() > 0) {
-                selectQuery += "WHERE ";
-                if (CATS.length() > 0) {
-                    selectQuery += "tbl_COURSE_CAT_TAG_MASTER.Category_Name in ("+CATS+") ";
+    public void getCoursesbyIDs() {
+        String selectQuery = "SELECT tbl_COURSE_CAT_TAG_MASTER.Course_Id FROM tbl_COURSE_CAT_TAG_MASTER  ";
+        try {
+            if (this.CATS.length() > 0 || this.TAGS.length() > 0) {
+                selectQuery = selectQuery + "WHERE ";
+                if (this.CATS.length() > 0) {
+                    selectQuery = selectQuery + "tbl_COURSE_CAT_TAG_MASTER.Category_Name in (" + this.CATS + ") ";
                 }
-                if (TAGS.length() > 0) {
-                    if (CATS.length() > 0) {
-                        selectQuery += " AND ";
+                if (this.TAGS.length() > 0) {
+                    if (this.CATS.length() > 0) {
+                        selectQuery = selectQuery + " AND ";
                     }
-                    selectQuery += "tbl_COURSE_CAT_TAG_MASTER.Tags in ("+TAGS+") ";
+                    selectQuery = selectQuery + "tbl_COURSE_CAT_TAG_MASTER.Tags in (" + this.TAGS + ") ";
                 }
             }
-            selectQuery += " Group by Course_Id";
-            List<CourseModel> DAIDlist = courseCatTagFilterRepository.getAssetIdbySelectedCatTag(selectQuery);
-            filteredlist(DAIDlist);
-            /*String query = "";
-            if(CATS.length() > 0 && TAGS.length() == 0){
-                query = "select tbl_COURSE_CAT_TAG_MASTER.Course_Id from tbl_COURSE_CAT_TAG_MASTER where " +
-                        "tbl_COURSE_CAT_TAG_MASTER.Category_Name in ("+CATS+") Group by Course_Id";
-            } else if(TAGS.length() > 0 && CATS.length() == 0){
-                query = "select tbl_COURSE_CAT_TAG_MASTER.Course_Id from tbl_COURSE_CAT_TAG_MASTER where " +
-                        "tbl_COURSE_CAT_TAG_MASTER.Tags in ("+TAGS+") Group by Course_Id";
-            } else if(CATS.length() > 0 && TAGS.length() > 0){
-                query = "select tbl_COURSE_CAT_TAG_MASTER.Course_Id from tbl_COURSE_CAT_TAG_MASTER where " +
-                        "tbl_COURSE_CAT_TAG_MASTER.Tags in ("+TAGS+") AND tbl_COURSE_CAT_TAG_MASTER.Category_Name in ("+CATS+") Group by Course_Id";
-            }
-            List<CourseModel> DAIDlist = courseCatTagFilterRepository.getAssetIdbySelectedCatTag(query);
-            filteredlist(DAIDlist);*/
-        }catch(Exception e){
-
+            filteredlist(this.courseCatTagFilterRepository.getAssetIdbySelectedCatTag(selectQuery + " Group by Course_Id"));
+        } catch (Exception e) {
         }
     }
 
-    public void filteredlist(List<CourseModel> DAIDlist){
-        try{
-            if(DAIDlist != null) {
-                if(DAIDlist.size() > 0){
-                    digitalAssetsMasterListfilterd = new ArrayList<>();
+    public void filteredlist(List<CourseModel> DAIDlist) {
+        if (DAIDlist != null) {
+            try {
+                if (DAIDlist.size() > 0) {
+                    this.digitalAssetsMasterListfilterd = new ArrayList();
                     for (CourseModel cms : DAIDlist) {
-                        for (CourseModel cs : courseModelList) {
+                        for (CourseModel cs : this.courseModelList) {
                             if (cms.getCourse_Id() == cs.getCourse_Id()) {
-                                digitalAssetsMasterListfilterd.add(cs);
+                                this.digitalAssetsMasterListfilterd.add(cs);
                             }
                         }
                     }
-                    loadFilteredList(digitalAssetsMasterListfilterd);
+                    loadFilteredList(this.digitalAssetsMasterListfilterd);
                 }
-            }else{
-                loadFilteredList(courseModelList);
+            } catch (Exception e) {
+                Log.e("Exception", e.toString());
             }
-        }catch (Exception e){
-            Log.e("Exception",e.toString());
-        }
-
-    }
-
-    public void showApplyButton(){
-        if(catFiltered || tagfiltered || mCheckCompleted.isChecked() || mCheckYetToStart.isChecked() || mCheckInProgress.isChecked() || mCheckExpired.isChecked()
-                || mCheckMaxAttempts.isChecked()){
-            applyfilters.setVisibility(View.VISIBLE);
-            applyfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
-            applyfilters.setEnabled(true);
-        }else{
-            applyfilters.setBackgroundColor(Color.parseColor(Constants.GREY_COLOR));
-            applyfilters.setEnabled(false);
+        } else {
+            loadFilteredList(this.courseModelList);
         }
     }
 
-    public void toggleselection(int num){
-        cattagmenus.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-        if(num == 1){
-            filterheadingtext.setText(getResources().getString(R.string.category));
-            catselection.setBackgroundColor(Color.WHITE);
-            icon_cats.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-            icon_tags.setColorFilter(Color.WHITE);
-            icon_filter.setColorFilter(Color.WHITE);
-            tagselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-            filterlay.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-        }else if(num == 2){
-            filterheadingtext.setText(getResources().getString(R.string.Tags));
-            tagselection.setBackgroundColor(Color.WHITE);
-            icon_tags.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-            icon_cats.setColorFilter(Color.WHITE);
-            icon_filter.setColorFilter(Color.WHITE);
-            filterlay.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-            catselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-        }else if(num == 3) {
-            emptytagsview.setVisibility(View.GONE);
-            filterheadingtext.setText(getResources().getString(R.string.status));
-            filterlay.setBackgroundColor(Color.WHITE);
-            icon_filter.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
-            icon_tags.setColorFilter(Color.WHITE);
-            icon_cats.setColorFilter(Color.WHITE);
-            catselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
-            tagselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+    public void showApplyButton() {
+        if (this.catFiltered || this.tagfiltered || this.mCheckCompleted.isChecked() || this.mCheckYetToStart.isChecked() || this.mCheckInProgress.isChecked() || this.mCheckExpired.isChecked() || this.mCheckMaxAttempts.isChecked()) {
+            this.applyfilters.setVisibility(View.VISIBLE);
+            this.applyfilters.setBackgroundColor(Color.parseColor(Constants.COMPANY_COLOR));
+            this.applyfilters.setEnabled(true);
+            return;
+        }
+        this.applyfilters.setBackgroundColor(Color.parseColor(Constants.GREY_COLOR));
+        this.applyfilters.setEnabled(false);
+    }
+
+    public void toggleselection(int num) {
+        this.cattagmenus.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+        if (num == 1) {
+            this.filterheadingtext.setText(getResources().getString(R.string.category));
+            this.catselection.setBackgroundColor(-1);
+            this.icon_cats.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+            this.icon_tags.setColorFilter(-1);
+            this.icon_filter.setColorFilter(-1);
+            this.tagselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+            this.filterlay.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+        } else if (num == 2) {
+            this.filterheadingtext.setText(getResources().getString(R.string.Tags));
+            this.tagselection.setBackgroundColor(-1);
+            this.icon_tags.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+            this.icon_cats.setColorFilter(-1);
+            this.icon_filter.setColorFilter(-1);
+            this.filterlay.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+            this.catselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+        } else if (num == 3) {
+            this.emptytagsview.setVisibility(View.GONE);
+            this.filterheadingtext.setText(getResources().getString(R.string.status));
+            this.filterlay.setBackgroundColor(-1);
+            this.icon_filter.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+            this.icon_tags.setColorFilter(-1);
+            this.icon_cats.setColorFilter(-1);
+            this.catselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
+            this.tagselection.setBackgroundColor(Color.parseColor(Constants.CARDBACKGROUND_COLOR));
         }
     }
 
-    public void showhideemptystate(boolean showempty,String message,int type){
-        if(showempty){
-            mEmptyView.setVisibility(View.VISIBLE);
-            if(type == Constants.INTERNETERRORNUM){
-                emptyimage.setVisibility(View.VISIBLE);
-                emptyimage.setImageResource(R.drawable.interenet_error_image);
-                retrybutton.setVisibility(View.VISIBLE);
-            }else if(type == Constants.NORESULTSNUM){
-                emptyimage.setVisibility(View.VISIBLE);
-                emptyimage.setImageResource(R.drawable.no_results);
-                retrybutton.setVisibility(View.GONE);
-            }else if(type == Constants.EMPTYLISTNUM){
-                emptyimage.setVisibility(View.GONE);
-                retrybutton.setVisibility(View.GONE);
+    public void showhideemptystate(boolean showempty, String message, int type) {
+        if (showempty) {
+            this.mEmptyView.setVisibility(View.VISIBLE);
+            if (type == 1) {
+                this.emptyimage.setVisibility(View.VISIBLE);
+                this.emptyimage.setImageResource(R.drawable.interenet_error_image);
+                this.retrybutton.setVisibility(View.VISIBLE);
+            } else if (type == 2) {
+                this.emptyimage.setVisibility(View.VISIBLE);
+                this.emptyimage.setImageResource(R.drawable.no_results);
+                this.retrybutton.setVisibility(View.GONE);
+            } else if (type == 3) {
+                this.emptyimage.setVisibility(View.GONE);
+                this.retrybutton.setVisibility(View.GONE);
             }
-            emptymessage.setText(message.toString());
-        }else{
-            mEmptyView.setVisibility(View.GONE);
+            this.emptymessage.setText(message.toString());
+            return;
         }
+        this.mEmptyView.setVisibility(View.GONE);
     }
 }

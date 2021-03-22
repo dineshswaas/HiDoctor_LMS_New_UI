@@ -8,7 +8,8 @@ public class Constants {
 
     //Testing URL
     // public static final String COMPANY_BASE_URL = "https://loginqa.kangle.me/"; // Https Optional
-   public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
+  // public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
+   public static final String COMPANY_BASE_URL = "http://testlms.kangle.me/"; // Https optional
  //   public static final String COMPANY_BASE_URL = "https://swaasdemos.southeastasia.cloudapp.azure.com";
     //CloudAppURL
  //public static final String COMPANY_BASE_URL ="http://420890fc818b4443bec0523afa61fb2c.cloudapp.net/";
@@ -103,7 +104,7 @@ public class Constants {
     public static  final  int YES_NO_NA_TYPE = 4;
     public static final int SINGLE_CHOICE_BUTTON_TYPE = 5;
 
-    public static String COMPANY_COLOR = "COMPANYCOLOR";
+    public static String COMPANY_COLOR = "#FFFFFF";
     public static String OPAQUE_COLOR = "OPAQUECOLOR";
     public static String TEXT_COLOR = "TEXTCOLOR";
     public static String HEADERBAR_COLOR = "HEADERBARCOLOR";

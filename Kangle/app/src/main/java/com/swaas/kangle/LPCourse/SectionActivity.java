@@ -127,7 +127,8 @@ public class SectionActivity extends AppCompatActivity {
     TextView section_name_text;
     Boolean istimerrunning = false;
     int QuestionLoadCount = 0;
-
+    RelativeLayout leaderboardbtn;
+    Boolean isgame = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +164,7 @@ public class SectionActivity extends AppCompatActivity {
             }
 
         }
+        isgame = Boolean.valueOf(getIntent().getBooleanExtra("isgame", false));
         setUpRecyclerView();
         setthemeforView();
         mTimerText.setText("00:00:00");
@@ -235,6 +237,8 @@ public class SectionActivity extends AppCompatActivity {
         mTimerText = (TextView) findViewById(R.id.question_time_text);
         section_name_text = (TextView) findViewById(R.id.section_name_text);
         section_name_text.setText(CourseName);
+        leaderboardbtn = (RelativeLayout) findViewById(R.id.leaderboardbtn);
+
     }
 
     public void setthemeforView(){
@@ -339,6 +343,7 @@ public class SectionActivity extends AppCompatActivity {
             reportbtn.setAlpha((float) 0.5);
             isbackallowed = true;
         }
+
         else {
             if (Course_Status_INT == Constants.COMPLETED) {
                 if (cs.getEvaluation_Type() == 1) {
@@ -355,6 +360,9 @@ public class SectionActivity extends AppCompatActivity {
                             reportbtn.setEnabled(false);
                             reportbtn.setAlpha((float) 0.5);
                             isbackallowed = true;
+                        }
+                        if (isgame.booleanValue()) {
+                            this.leaderboardbtn.setVisibility(View.VISIBLE);
                         }
                     } else {
                         completion_status.setText(" " + getResources().getString(R.string.pending_for_evaluation));
@@ -373,6 +381,9 @@ public class SectionActivity extends AppCompatActivity {
                         reportbtn.setEnabled(false);
                         reportbtn.setAlpha((float) 0.5);
                         isbackallowed = true;
+                    }
+                    if (isgame.booleanValue()) {
+                        this.leaderboardbtn.setVisibility(View.VISIBLE);
                     }
                 }
                 completecertificate.setVisibility(View.VISIBLE);
@@ -455,6 +466,15 @@ public class SectionActivity extends AppCompatActivity {
     }
     //
     public void onClickListeners(){
+
+        leaderboardbtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(SectionActivity.this.mContext, LeaderboardActivity.class);
+                intent.putExtra("courseid", SectionActivity.this.sectionModelList.get(0).Course_Id);
+                SectionActivity.this.startActivity(intent);
+            }
+        });
+
         companylogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <RelativeLayout android:orientation="horizontal" android:id="@+id/tabsection3" android:background="@color/black" android:visibility="visible" android:layout_width="match_parent" android:layout_height="35dp" android:layout_below="@+id/top10">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/my_list2" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/rank" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Rank"/>
+                <View android:layout_gravity="bottom" android:id="@+id/my_list_view2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/group_list2" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/name" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Name"/>
+                <View android:gravity="bottom" android:id="@+id/my_grplist_view2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/percentage2" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/perecentage" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Percentage"/>
+                <View android:gravity="bottom" android:id="@+id/percentageview2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

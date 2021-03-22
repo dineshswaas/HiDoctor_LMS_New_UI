@@ -583,7 +583,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                     Toast.makeText(CourseListActivity.this, getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
                 Intent i = new Intent(mContext,GameActivity.class);
-                //Intent i = new Intent(mContext,NotificationActivity.class);
+               // Intent i = new Intent(mContext,HangmanGame.class);
                 startActivity(i);
                 finish();
             }

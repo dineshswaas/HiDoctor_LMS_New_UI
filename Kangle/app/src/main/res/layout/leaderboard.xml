@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:orientation="horizontal" android:id="@+id/header" android:background="@color/colorPrimary" android:visibility="visible" android:layout_width="match_parent" android:layout_height="50dp">
+        <ImageView android:layout_gravity="center" android:id="@+id/companylogo" android:layout_width="30dp" android:layout_height="30dp" android:src="@drawable/ic_arrow_back_white_36dp"/>
+        <TextView android:textAppearance="@style/caption_text_bold" android:textSize="25dp" android:textColor="@color/white" android:gravity="center_vertical" android:id="@+id/report_label" android:visibility="visible" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_marginLeft="10dp" android:text="Leader Board" android:maxLines="1"/>
+        <ImageView android:layout_width="@dimen/dimen_40" android:layout_height="match_parent" android:src="@drawable/baseline_emoji_events_white_36" android:tint="@color/white"/>
+    </LinearLayout>
+    <TextView android:textSize="@dimen/dimen_25" android:textColor="@color/black" android:id="@+id/gamename" android:background="@drawable/rounded_allcorners_grey" android:layout_width="match_parent" android:layout_height="30dp" android:layout_margin="20dp" android:layout_marginTop="20dp" android:text="GAME 1" android:layout_below="@+id/header" android:textAlignment="center"/>
+    <RelativeLayout android:orientation="horizontal" android:id="@+id/tabsection" android:background="@color/black" android:visibility="visible" android:layout_width="match_parent" android:layout_height="35dp" android:layout_below="@+id/gamename">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/my_list" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/my_list_text" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Rank"/>
+                <View android:layout_gravity="bottom" android:id="@+id/my_list_view" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/group_list" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/my_grplist_text" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Name"/>
+                <View android:gravity="bottom" android:id="@+id/my_grplist_view" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/percentage" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/perecentagetext" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Percentage"/>
+                <View android:gravity="bottom" android:id="@+id/percentageview" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout android:orientation="horizontal" android:id="@+id/tabsection1" android:background="@color/black" android:visibility="visible" android:layout_width="match_parent" android:layout_height="35dp" android:layout_below="@+id/tabsection">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/my_list1" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/rank" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Rank"/>
+                <View android:layout_gravity="bottom" android:id="@+id/my_list_view1" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/group_list1" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/name" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Name"/>
+                <View android:gravity="bottom" android:id="@+id/my_grplist_view1" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/percentage1" android:background="@color/white" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/perecentagetext1" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Percentage"/>
+                <View android:gravity="bottom" android:id="@+id/percentageview1" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <TextView android:textSize="@dimen/dimen_25" android:textColor="@color/black" android:id="@+id/top10" android:layout_width="match_parent" android:layout_height="30dp" android:layout_margin="20dp" android:layout_marginTop="20dp" android:text="TOP 10 Particpants" android:layout_below="@+id/tabsection1" android:textAlignment="center"/>
+    <RelativeLayout android:orientation="horizontal" android:id="@+id/tabsection3" android:background="@color/black" android:visibility="visible" android:layout_width="match_parent" android:layout_height="35dp" android:layout_below="@+id/top10">
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/my_list2" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/my_list_text2" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Rank"/>
+                <View android:layout_gravity="bottom" android:id="@+id/my_list_view2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/group_list2" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/my_grplist_text2" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Name"/>
+                <View android:gravity="bottom" android:id="@+id/my_grplist_view2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/percentage2" android:background="@color/grey" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="1dp" android:layout_weight="1">
+                <TextView android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/perecentagetext2" android:layout_width="wrap_content" android:layout_height="47dp" android:text="Percentage"/>
+                <View android:gravity="bottom" android:id="@+id/percentageview2" android:background="@color/black" android:layout_width="match_parent" android:layout_height="match_parent"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView android:id="@+id/listleader" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@+id/tabsection3"/>
+</RelativeLayout>

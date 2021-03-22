@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/activity_asset_list" android:layout_width="fill_parent" android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:orientation="horizontal" android:id="@id/header" android:background="@color/colorPrimary" android:layout_width="fill_parent" android:layout_height="60.0dip" android:baselineAligned="false">
+        <RelativeLayout android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="0.4">
+            <ImageView android:id="@id/companylogo" android:layout_width="fill_parent" android:layout_height="fill_parent" android:contentDescription="" android:paddingEnd="10.0dip" />
+        </RelativeLayout>
+        <RelativeLayout android:id="@id/headersection" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="0.65">
+            <ImageView android:id="@id/settings" android:visibility="gone" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="10.0dip" android:src="@drawable/ic_mail_outline_white_24dp" android:layout_toLeftOf="@id/icon_expandslider" />
+            <RelativeLayout android:id="@id/chatviewsec" android:layout_width="35.0dip" android:layout_height="fill_parent" android:layout_toLeftOf="@id/notificationsec">
+                <ImageView android:id="@id/chatview" android:visibility="visible" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="10.0dip" android:src="@drawable/ic_forum_white_36" />
+                <TextView android:textColor="@color/white" android:id="@id/chatcount" android:background="@drawable/rounded_allcorners_amber" android:padding="3.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0dip" android:text="10" android:layout_alignParentRight="true" />
+            </RelativeLayout>
+            <RelativeLayout android:id="@id/notificationsec" android:layout_width="35.0dip" android:layout_height="fill_parent" android:layout_toLeftOf="@id/settings">
+                <ImageView android:id="@id/notification" android:visibility="visible" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="10.0dip" android:src="@drawable/ic_notifications_white_24dp" />
+                <TextView android:textColor="@color/white" android:id="@id/notificationcount" android:background="@drawable/rounded_allcorners_amber" android:padding="3.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0dip" android:text="10" android:layout_alignParentRight="true" />
+            </RelativeLayout>
+            <ImageView android:id="@id/icon_expandslider" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="10.0dip" android:src="@mipmap/filter_outline" android:layout_toLeftOf="@id/icon_search" android:layout_centerVertical="true" />
+            <ImageView android:id="@id/icon_search" android:visibility="visible" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginTop="15.0dip" android:layout_marginRight="10.0dip" android:src="@drawable/ic_search_white_24dp" android:layout_alignParentRight="true" />
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout android:gravity="center" android:orientation="horizontal" android:id="@id/searchlayout" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="60.0dip">
+        <RelativeLayout android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_weight="0.4" />
+        <RelativeLayout android:layout_width="0.0dip" android:layout_height="40.0dip" android:layout_weight="0.65">
+            <android.support.v7.widget.SearchView android:id="@id/searchtext" android:background="@drawable/rounded_edittext" android:clickable="true" android:layout_width="fill_parent" android:layout_height="40.0dip" android:layout_marginRight="3.0dip" android:layout_toLeftOf="@id/closesearch" app:iconifiedByDefault="false" />
+            <ImageView android:id="@id/closesearch" android:layout_width="30.0dip" android:layout_height="fill_parent" android:layout_marginRight="5.0dip" android:src="@drawable/nok" android:layout_alignParentRight="true" />
+        </RelativeLayout>
+    </LinearLayout>
+    <RelativeLayout android:orientation="horizontal" android:id="@id/bottomheader" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/header" />
+
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="40dp"
+       android:background="@drawable/circular_taco_blue_background"
+       android:id="@+id/gamesectionview"
+       android:layout_below="@id/bottomheader"
+       >
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="match_parent"
+           android:text="GAME SECTION"
+           android:gravity="center"
+           android:layout_centerInParent="true"
+           android:textSize="18sp"
+           android:textStyle="bold"
+           />
+       <ImageView
+           android:layout_width="40dp"
+           android:layout_height="40dp"
+           android:id="@+id/gameexpandbutton"
+           android:layout_alignParentEnd="true"
+           android:src="@drawable/ic_keyboard_arrow_down_black_36dp"
+           />
+   </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/gamesectionview"
+        android:id="@+id/gameview"
+        >
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/hangman"
+            android:src="@mipmap/hearthangman"
+            />
+
+    </RelativeLayout>
+
+
+
+    <com.swaas.kangle.EmptyRecyclerView android:id="@id/recyclerView" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/bottommenusection" android:layout_below="@id/gameview" />
+    <RelativeLayout android:gravity="center" android:layout_gravity="center" android:id="@id/empty_view" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/bottommenusection" android:layout_below="@id/cat_tag_section"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@id/user_empty_list" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <ImageView android:id="@id/emptyimage" android:visibility="gone" android:layout_width="50.0dip" android:layout_height="50.0dip" android:src="@drawable/interenet_error_image" />
+            <TextView android:textSize="17.0sp" android:textColor="@color/black" android:gravity="center" android:layout_gravity="center" android:id="@id/emptymessage" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginTop="5.0dip" android:layout_marginRight="10.0dip" android:text="@string/emptyDashboard" />
+            <TextView android:textColor="@color/white" android:id="@id/retrybutton" android:background="@drawable/rounded_black_button" android:padding="10.0dip" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Retry" />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/helplayout" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_below="@id/bottomheader">
+        <RelativeLayout android:id="@id/closelayout" android:background="@color/black" android:layout_width="fill_parent" android:layout_height="50.0dip">
+            <TextView android:textSize="18.0sp" android:textStyle="bold" android:textColor="@color/white" android:gravity="center_horizontal" android:id="@id/closehelp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15.0dip" android:text="@string/close" android:layout_alignParentRight="true" android:layout_marginEnd="10.0dip" />
+        </RelativeLayout>
+        <WebView android:id="@id/helpview" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_below="@id/closelayout" />
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/filtersection" android:background="@color/white" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/bottommenusection">
+        <RelativeLayout android:id="@id/filterheading" android:background="@color/topbar" android:layout_width="fill_parent" android:layout_height="60.0dip">
+            <TextView android:textSize="18.0dip" android:textColor="@color/white" android:gravity="center_vertical" android:id="@id/filterheadingtext" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_margin="5.0dip" android:text="Filter" />
+            <ImageView android:id="@id/close_filter" android:layout_width="30.0dip" android:layout_height="60.0dip" android:layout_marginTop="3.0dip" android:layout_marginRight="2.0dip" android:src="@drawable/nok" android:layout_alignParentRight="true" android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+        <LinearLayout android:id="@id/filtercontent" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/buttonsaction" android:layout_below="@id/filterheading">
+            <LinearLayout android:orientation="vertical" android:id="@id/cattagmenus" android:background="@color/grey" android:layout_width="60.0dip" android:layout_height="fill_parent">
+                <RelativeLayout android:gravity="center" android:id="@id/catselection" android:layout_width="fill_parent" android:layout_height="60.0dip">
+                    <RelativeLayout android:gravity="center" android:layout_width="fill_parent" android:layout_height="fill_parent">
+                        <ImageView android:id="@id/icon_cats" android:layout_width="35.0dip" android:layout_height="35.0dip" android:src="@drawable/ic_category" android:tint="@color/white" />
+                        <TextView android:textColor="@color/white" android:gravity="center" android:id="@id/cat_filtered_count" android:background="@drawable/rounded_allcorners_blue" android:visibility="gone" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="20.0dip" android:layout_marginTop="10.0dip" android:layout_marginRight="2.0dip" android:text="0" />
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout android:gravity="center" android:id="@id/tagselection" android:layout_width="fill_parent" android:layout_height="60.0dip">
+                    <RelativeLayout android:gravity="center" android:layout_width="fill_parent" android:layout_height="fill_parent">
+                        <ImageView android:id="@id/icon_tags" android:layout_width="35.0dip" android:layout_height="35.0dip" android:src="@drawable/ic_tag" android:tint="@color/white" />
+                        <TextView android:textColor="@color/white" android:gravity="center" android:id="@id/tags_filtered_count" android:background="@drawable/rounded_allcorners_blue" android:visibility="gone" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="20.0dip" android:layout_marginTop="10.0dip" android:layout_marginRight="2.0dip" android:text="0" />
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout android:gravity="center" android:id="@id/filterlay" android:layout_width="fill_parent" android:layout_height="60.0dip">
+                    <RelativeLayout android:gravity="center" android:layout_width="wrap_content" android:layout_height="fill_parent">
+                        <ImageView android:id="@id/icon_filter" android:layout_width="35.0dip" android:layout_height="35.0dip" android:src="@drawable/ic_fltrtype" android:tint="@color/white" />
+                        <TextView android:textColor="@color/white" android:gravity="center" android:id="@id/label_filtered_count" android:background="@drawable/rounded_allcorners_blue" android:visibility="gone" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="20.0dip" android:layout_marginTop="10.0dip" android:layout_marginRight="2.0dip" android:text="0" />
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+            <View android:background="@color/white" android:layout_width="1.0dip" android:layout_height="fill_parent" android:layout_marginRight="5.0dip" />
+            <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_toRightOf="@id/cattagmenus">
+                <com.swaas.kangle.EmptyRecyclerView android:id="@id/cattag_recyclerView" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+                <RelativeLayout android:orientation="vertical" android:id="@id/check_box" android:background="@color/white" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <RelativeLayout android:gravity="center" android:id="@id/checkInProgress" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                        <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="@color/black" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/in_progress" android:layout_alignParentLeft="true" />
+                        <CheckBox android:id="@id/check_in_progress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+                        <View android:background="@color/grey" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_marginTop="5.0dip" android:layout_below="@id/check_in_progress" />
+                    </RelativeLayout>
+                    <RelativeLayout android:id="@id/checkyettostart" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/checkInProgress">
+                        <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="@color/black" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/yet_to_start" android:layout_alignParentLeft="true" />
+                        <CheckBox android:id="@id/check_yet_to_start" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+                        <View android:background="@color/grey" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_marginTop="5.0dip" android:layout_below="@id/check_yet_to_start" />
+                    </RelativeLayout>
+                    <RelativeLayout android:id="@id/checkcompleted" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/checkyettostart">
+                        <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="@color/black" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/completed_course" android:layout_alignParentLeft="true" />
+                        <CheckBox android:id="@id/check_completed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+                        <View android:background="@color/grey" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_marginTop="5.0dip" android:layout_below="@id/check_completed" />
+                    </RelativeLayout>
+                    <RelativeLayout android:gravity="center" android:id="@id/checkexpired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/checkcompleted">
+                        <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="@color/black" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/expired_shortened" android:layout_alignParentLeft="true" />
+                        <CheckBox android:id="@id/check_expired" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+                        <View android:background="@color/grey" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_marginTop="5.0dip" android:layout_below="@id/check_expired" />
+                    </RelativeLayout>
+                    <RelativeLayout android:id="@id/checkmax_attempts" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/checkexpired">
+                        <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="@color/black" android:padding="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/max_attempts_reached_shortened" android:layout_alignParentLeft="true" />
+                        <CheckBox android:id="@id/max_attempts" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+                        <View android:background="@color/grey" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_marginTop="5.0dip" android:layout_below="@id/max_attempts" />
+                    </RelativeLayout>
+                </RelativeLayout>
+                <TextView android:gravity="center" android:id="@id/emptytagsview" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="@string/no_tags_available" />
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:id="@id/buttonsaction" android:layout_width="fill_parent" android:layout_height="50.0dip" android:layout_alignParentBottom="true">
+            <TextView android:textSize="15.0dip" android:gravity="center" android:id="@id/clearfilters" android:layout_width="0.0dip" android:layout_height="fill_parent" android:text="@string/reset" android:layout_weight="1.0" />
+            <TextView android:textSize="15.0dip" android:textColor="@color/white" android:gravity="center" android:id="@id/applyfilters" android:background="@color/grey" android:visibility="visible" android:layout_width="0.0dip" android:layout_height="fill_parent" android:text="@string/apply" android:layout_weight="1.0" />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/assetfilterheading" android:background="@color/topbar" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="60.0dip">
+        <TextView android:textSize="18.0dip" android:textColor="@color/white" android:gravity="center_vertical" android:id="@id/filtered_text" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_margin="5.0dip" android:text="Filtered" android:maxLines="1" android:layout_toLeftOf="@id/clear_assetfilter_img" />
+        <TextView android:textSize="18.0dip" android:textColor="@color/white" android:gravity="center_vertical" android:id="@id/clear_assetfilter" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_margin="5.0dip" android:text="@string/clear" android:layout_alignParentRight="true" />
+        <RelativeLayout android:id="@id/clear_assetfilter_img" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_centerVertical="true" android:layout_alignParentEnd="true">
+            <ImageView android:gravity="center" android:id="@id/tickfilter" android:layout_width="30.0dip" android:layout_height="fill_parent" android:src="@mipmap/filter_outline" android:tint="@color/white" />
+            <ImageView android:gravity="center" android:background="@drawable/completed" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="15.0dip" android:layout_marginTop="5.0dip" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout android:id="@id/bottommenusection" android:background="@color/white" android:layout_width="fill_parent" android:layout_height="50.0dip" android:layout_alignParentBottom="true">
+        <View android:background="@color/checklist_darkgrey" android:layout_width="fill_parent" android:layout_height="0.5dip" />
+        <LinearLayout android:orientation="horizontal" android:id="@id/bottommenus" android:layout_width="fill_parent" android:layout_height="fill_parent" android:weightSum="6.0">
+            <RelativeLayout android:gravity="center" android:id="@id/lpcourse" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/coursesecimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos0" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/courses_icn" android:tint="@color/checklist_darkgrey" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:id="@id/coursetext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/coursetitle" android:layout_below="@id/coursesecimage" />
+            </RelativeLayout>
+            <RelativeLayout android:gravity="center" android:id="@id/gamepage" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/gameimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos01" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/game_image" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/colorPrimary" android:gravity="center" android:id="@+id/gametext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="GAME" android:layout_below="@id/gameimage" />
+            </RelativeLayout>
+            <RelativeLayout android:gravity="center" android:id="@id/assetpage" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/assetsecimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos1" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/ic_assets_icn" android:tint="@color/checklist_darkgrey" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:id="@id/assettext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/assets" android:layout_below="@id/assetsecimage" />
+            </RelativeLayout>
+            <RelativeLayout android:gravity="center" android:id="@id/chklistpage" android:visibility="visible" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/chklistimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos2" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/ic_checklist_icn" android:tint="@color/checklist_darkgrey" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:id="@id/checklisttext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/checklisttitle" android:layout_below="@id/chklistimage" />
+            </RelativeLayout>
+            <RelativeLayout android:gravity="center" android:id="@id/reports" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/reportsecimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos3" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/ic_task_icn" android:tint="@color/checklist_darkgrey" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:id="@id/tasktext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/Task" android:layout_below="@id/reportsecimage" />
+            </RelativeLayout>
+            <RelativeLayout android:gravity="center" android:id="@id/profilepage" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:id="@id/profileimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/pos4" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/ic_more" android:tint="@color/checklist_darkgrey" />
+                </LinearLayout>
+                <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/moremenulabel" android:layout_below="@id/profileimage" android:textAllCaps="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

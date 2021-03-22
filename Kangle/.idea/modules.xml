@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HiDoctor_LMS_New_UI_1-Kangle.iml" filepath="$PROJECT_DIR$/.idea/modules/HiDoctor_LMS_New_UI_1-Kangle.iml" group="Kangle" />
-      <module fileurl="file://$PROJECT_DIR$/Kangle.iml" filepath="$PROJECT_DIR$/Kangle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle-VideoPlayer.iml" filepath="$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle-VideoPlayer.iml" group="Kangle/VideoPlayer" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Kangle-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Kangle-app.iml" group="Kangle/app" />
-      <module fileurl="file://$PROJECT_DIR$/VideoPlayer/VideoPlayer.iml" filepath="$PROJECT_DIR$/VideoPlayer/VideoPlayer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Kangle.iml" filepath="$PROJECT_DIR$/.idea/modules/Kangle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle.VideoPlayer.iml" filepath="$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle.VideoPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Kangle.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Kangle.app.iml" />
     </modules>
   </component>
 </project>

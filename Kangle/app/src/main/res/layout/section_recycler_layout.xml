@@ -554,6 +554,10 @@
 
 
                 </android.support.v7.widget.CardView>
+                <RelativeLayout android:id="@+id/leaderboardbtn" android:background="@drawable/leaderbordroundcorner" android:visibility="gone" android:layout_width="match_parent" android:layout_height="30dp" android:layout_marginStart="30dp" android:layout_marginEnd="30dp">
+                    <ImageView android:layout_width="30dp" android:layout_height="match_parent" android:src="@drawable/baseline_emoji_events_white_36" android:tint="@color/white" android:layout_toRightOf="@+id/leader" android:layout_marginStart="-25dp"/>
+                    <TextView android:textAppearance="@style/caption_text_bold" android:textSize="25sp" android:textColor="@color/white" android:id="@+id/leader" android:paddingRight="30dp" android:layout_width="wrap_content" android:layout_height="30dp" android:text="LeaderBoard" android:layout_centerInParent="true"/>
+                </RelativeLayout>
 
                 <com.swaas.kangle.EmptyRecyclerView
                     android:id="@+id/recyclerView"

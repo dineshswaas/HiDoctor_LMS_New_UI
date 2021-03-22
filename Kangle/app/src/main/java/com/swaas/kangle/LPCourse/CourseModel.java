@@ -76,6 +76,37 @@ public class CourseModel implements Serializable {
     public String Minimum_Duration;
     public List<CourseSectionProgressModel> sectionDetails;
 
+    public int Game_Id;
+    public String Game_Name;
+    public int Is_Game_Course;
+
+    public boolean isIs_Print_Certificate() {
+        return Is_Print_Certificate;
+    }
+
+    public int getGame_Id() {
+        return Game_Id;
+    }
+
+    public void setGame_Id(int game_Id) {
+        Game_Id = game_Id;
+    }
+
+    public String getGame_Name() {
+        return Game_Name;
+    }
+
+    public void setGame_Name(String game_Name) {
+        Game_Name = game_Name;
+    }
+
+    public int getIs_Game_Course() {
+        return Is_Game_Course;
+    }
+
+    public void setIs_Game_Course(int is_Game_Course) {
+        Is_Game_Course = is_Game_Course;
+    }
 
     public int getCourse_Id() {
         return Course_Id;

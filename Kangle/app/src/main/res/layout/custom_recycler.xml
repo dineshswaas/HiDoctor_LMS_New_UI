@@ -190,9 +190,61 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        android:layout_below="@+id/bottomheader"
+        android:layout_below="@+id/expandgame"
         android:layout_above="@+id/bottommenusection"/>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/gamesectionview"
+        android:visibility="gone"
+        android:background="@drawable/hangmankeys"
+        android:layout_below="@id/header"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="GAME SECTION"
+            android:textColor="@color/tacobellbackground"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="20sp"
+            />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/gameexpandbutton"
+            android:src="@drawable/ic_keyboard_arrow_down_black_36dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:id="@+id/expandgame"
+        android:visibility="gone"
+        android:background="@drawable/background_corner_radius"
+        android:layout_below="@id/gamesectionview"
+        >
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/hangman"
+            android:layout_marginTop="5dp"
+            android:src="@mipmap/hearthangman"
+            android:layout_marginStart="15dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Hangman"
+            android:textStyle="bold"
+            android:gravity="top"
+            android:textColor="@color/white"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="5dp"
+            android:textSize="18sp"
+            android:layout_below="@id/hangman"/>
+    </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
@@ -774,7 +826,7 @@
                             android:layout_width="36dp"
                             android:layout_height="36dp"
                             android:src="@drawable/courses_icn"
-                            android:tint="@color/colorPrimary"/>
+                            />
 
                     </LinearLayout>
 

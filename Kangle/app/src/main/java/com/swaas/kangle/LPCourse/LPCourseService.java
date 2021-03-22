@@ -4,6 +4,7 @@ import com.swaas.kangle.CheckList.model.UserforCourseChecklist;
 import com.swaas.kangle.LPCourse.model.AnwerUploadModel;
 import com.swaas.kangle.LPCourse.model.LPCourseReportModel;
 import com.swaas.kangle.LPCourse.model.LPCourseReportSummaryModel;
+import com.swaas.kangle.LPCourse.model.LeaderBoardModel;
 import com.swaas.kangle.LPCourse.model.QuestionBaseModel;
 
 import java.util.ArrayList;
@@ -20,115 +21,62 @@ import retrofit.http.Path;
  */
 
 public interface LPCourseService {
+    @POST("LPCourseAPI/CourseCheckListRestartUpdate/{companyId}/{courseId}/{userId}/{subdomainName}")
+    Call<String> CourseCheckListRestartUpdate(@Path("companyId") int i, @Path("courseId") int i2, @Path("userId") int i3, @Path("subdomainName") String str);
 
-    @GET("LPCourseAPI/GetAvailableCourses/{subdomain}/{companyId}/{userId}/{utcoffset}")
-    Call<List<CourseModel>> getAvailableCourses(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                @Path("userId") int userId, @Path("utcoffset") String utcoffset);
-
-    @GET("LPCourseAPI/GetAvailableKACourses/{subdomain}/{companyId}/{userId}/{utcoffset}")
-    Call<List<CourseModel>> getAvailableKACourses(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                @Path("userId") int userId, @Path("utcoffset") String utcoffset);
-
-
-
-    @GET("LPCourseAPI/GetSectionDetailsOfCourse/{subdomain}/{companyId}/{userId}/{courseId}/{PublishId}")
-    Call<List<SectionModel>> getSectionDetailsOfCourse(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                       @Path("userId") int userId, @Path("courseId") int courseId,
-                                                       @Path("PublishId") int PublishId);
-
-    @GET("LPCourseAPI/GetKASectionDetailsOfCourse/{subdomain}/{companyId}/{userId}/{courseId}/{PublishId}")
-    Call<List<SectionModel>> getKASectionDetailsOfCourse(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                       @Path("userId") int userId, @Path("courseId") int courseId,
-                                                       @Path("PublishId") int PublishId);
-
-    @GET("LPCourseAPI/GetLPAssetsByCourseId/{subdomain}/{companyId}/{courseId}/{sectionId}")
-    Call<List<CourseAssetModel>> getLPAssetsByCourseId(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                       @Path("courseId") int courseId, @Path("sectionId") int sectionId);
-
-    @POST("LPCourseAPI/InsertLPCourseViewAnalytics/{subdomain}")
-    Call<String> insertLPCourseViewAnalytics(@Path("subdomain") String subdomainname ,
-                                                             @Body CourseAnalyticsModel course);
-
-
-    @POST("LPCourseAPI/InsertAssetMappingMaterialLog/{subdomain}")
-    Call<String> insertAssetMappingMaterialLog(@Path("subdomain") String subdomainname ,
-                                                               @Body CourseAnalyticsModel course);
-
-
-    @POST("LPCourseAPI/insertLPCourseSectionUserExamHeader/{subdomainName}/{courseId}/{courseUserAssignMentId}/" +
-            "{couseUserSectionId}/{publishId}/{userId}/{companyId}/{sectionId}")
-    Call<String> insertLPCourseSectionUserExamHeader(@Path("subdomainName") String subdomainname ,
-                                                     @Path("courseId") int courseId,
-                                                     @Path("courseUserAssignMentId") int courseUserAssignMentId,
-                                                     @Path("couseUserSectionId") int couseUserSectionId,
-                                                     @Path("publishId") int PublishId,
-                                                     @Path("userId") int userId,
-                                                     @Path("companyId") int companyId,
-                                                     @Path("sectionId") int sectionId);
-
-
-
-    @GET("LPCourseAPI/getLPQuestionAnswerDetails/{subdomain}/{companyId}/{userId}/{courseId}/{sectionId}/{PublishId}")
-    Call<List<QuestionBaseModel>> getLPQuestionAnswerDetails(@Path("subdomain") String subdomainname , @Path("companyId") int companyId,
-                                                             @Path("userId") int userId, @Path("courseId") int courseId, @Path("sectionId") int sectionId,
-                                                             @Path("PublishId") int PublishId);
-
-
-    @POST("LPCourseAPI/insertLPCourseResponse/{subdomainName}/{companyId}/{userId}/{questionLoadCount}/{isLastQuestion}/{isTimeOut}")
-    Call<String> insertTestCourseResponse(@Path("subdomainName") String subdomainname , @Path("companyId") int companyId,
-                                          @Path("userId") int userId,@Path("questionLoadCount") int questionLoadCount,@Path("isLastQuestion") boolean isLastQuestion,@Path("isTimeOut") boolean isTimeOut, @Body AnwerUploadModel answermodel);
-
-
-
-
-    @GET("LPCourseAPI/getLPSectionAttemptDetails/{subdomain}/{companyId}/{courseId}/{userId}/{PublishId}/{sectionId}/{utcoffset}")
-    Call<ArrayList<LPCourseReportModel>> getLPSectionAttemptDetails(@Path("subdomain") String subdomainname,
-                                                                    @Path("companyId") int companyId,
-                                                                    @Path("courseId") int courseId,
-                                                                    @Path("userId") int userId,
-                                                                    @Path("PublishId") int PublishId,
-                                                                    @Path("sectionId") int sectionId,
-                                                                    @Path("utcoffset") String utcoffset);
-
-    @GET("LPCourseAPI/GetLPSectionQuestionDetails/{subdomainName}/{courseSectionUserExamId}/{utcoffset}/{companyId}")
-    Call<ArrayList<LPCourseReportSummaryModel>> getLPSectionQuestionDetails(@Path("subdomainName") String subdomainname,
-                                                                            @Path("courseSectionUserExamId") int examId,
-                                                                            @Path("utcoffset") String utcoffset,
-                                                                            @Path("companyId") int companyId);
-
-
-    //Section page api for auto extend
     @POST("LPCourseAPI/LPCourseAutoExtentAttemptsForUsers")
     Call<String> LPCourseAutoExtentAttemptsForUsers(@Body CourseExtendModel courseExtendModel);
 
-    //Course page api for auto extend
     @POST("LPCourseAPI/LPCourseAutoExtentDateForUsers")
     Call<String> LPCourseAutoExtentDateForUsers(@Body CourseExtendModel courseExtendModel);
 
-    //Course page api for checklist restart update
-    @POST("LPCourseAPI/CourseCheckListRestartUpdate/{companyId}/{courseId}/{userId}/{subdomainName}")
-    Call<String> CourseCheckListRestartUpdate(@Path("companyId") int companyId,
-                                              @Path("courseId") int courseId,
-                                              @Path("userId") int userId,
-                                              @Path("subdomainName") String subdomainname);
+    @GET("LPCourseAPI/GetAvailableCourses/{subdomain}/{companyId}/{userId}/{utcoffset}")
+    Call<List<CourseModel>> getAvailableCourses(@Path("subdomain") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("utcoffset") String str2);
 
-    //Course page api for SectionChecklistReport
-    @GET("LPCourseAPI/GetSectionChecklistReportList/{subdomainName}/{companyId}/{userId}/{courseId}/{Section_Id}")
-    Call<ArrayList<UserforCourseChecklist>> getSectionChecklistReportList(@Path("subdomainName") String subdomainname,
-                                                                          @Path("companyId") int companyId,
-                                                                          @Path("userId") int courseId,
-                                                                          @Path("courseId") int userId,
-                                                                          @Path("Section_Id") int PublishId);
+    @GET("LPCourseAPI/GetAvailableKACourses/{subdomain}/{companyId}/{userId}/{utcoffset}")
+    Call<List<CourseModel>> getAvailableKACourses(@Path("subdomain") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("utcoffset") String str2);
 
     @GET("LPCourseAPI/GetCourseChecklistReportList/{subdomainName}/{companyId}/{userId}/{courseId}/{Section_Id}")
-    Call<ArrayList<UserforCourseChecklist>> getCourseChecklistReportList(@Path("subdomainName") String subdomainname,
-                                                                         @Path("companyId") int companyId,
-                                                                         @Path("userId") int courseId,
-                                                                         @Path("courseId") int userId,
-                                                                         @Path("Section_Id") int PublishId);
+    Call<ArrayList<UserforCourseChecklist>> getCourseChecklistReportList(@Path("subdomainName") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("courseId") int i3, @Path("Section_Id") int i4);
+
     @GET("LPCourseAPI/TestEvaluation/{courseId}/{userId}/{companyId}")
-    Call<ArrayList<LPCourseReportSummaryModel>> getCourseFullcourseReportList(@Path("courseId") int userId,
-                                                                              @Path("userId") int courseId,
-                                                                              @Path("companyId") int companyId);
+    Call<ArrayList<LPCourseReportSummaryModel>> getCourseFullcourseReportList(@Path("courseId") int i, @Path("userId") int i2, @Path("companyId") int i3);
+
+    @GET("LPCourseAPI/GetKASectionDetailsOfCourse/{subdomain}/{companyId}/{userId}/{courseId}/{PublishId}")
+    Call<List<SectionModel>> getKASectionDetailsOfCourse(@Path("subdomain") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("courseId") int i3, @Path("PublishId") int i4);
+
+    @GET("LPCourseAPI/GetLPAssetsByCourseId/{subdomain}/{companyId}/{courseId}/{sectionId}")
+    Call<List<CourseAssetModel>> getLPAssetsByCourseId(@Path("subdomain") String str, @Path("companyId") int i, @Path("courseId") int i2, @Path("sectionId") int i3);
+
+    @GET("LPCourseAPI/getLPQuestionAnswerDetails/{subdomain}/{companyId}/{userId}/{courseId}/{sectionId}/{PublishId}")
+    Call<List<QuestionBaseModel>> getLPQuestionAnswerDetails(@Path("subdomain") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("courseId") int i3, @Path("sectionId") int i4, @Path("PublishId") int i5);
+
+    @GET("LPCourseAPI/getLPSectionAttemptDetails/{subdomain}/{companyId}/{courseId}/{userId}/{PublishId}/{sectionId}/{utcoffset}")
+    Call<ArrayList<LPCourseReportModel>> getLPSectionAttemptDetails(@Path("subdomain") String str, @Path("companyId") int i, @Path("courseId") int i2, @Path("userId") int i3, @Path("PublishId") int i4, @Path("sectionId") int i5, @Path("utcoffset") String str2);
+
+    @GET("LPCourseAPI/GetLPSectionQuestionDetails/{subdomainName}/{courseSectionUserExamId}/{utcoffset}/{companyId}")
+    Call<ArrayList<LPCourseReportSummaryModel>> getLPSectionQuestionDetails(@Path("subdomainName") String str, @Path("courseSectionUserExamId") int i, @Path("utcoffset") String str2, @Path("companyId") int i2);
+
+    @GET("LPCourseAPI/GetSectionChecklistReportList/{subdomainName}/{companyId}/{userId}/{courseId}/{Section_Id}")
+    Call<ArrayList<UserforCourseChecklist>> getSectionChecklistReportList(@Path("subdomainName") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("courseId") int i3, @Path("Section_Id") int i4);
+
+    @GET("LPCourseAPI/GetSectionDetailsOfCourse/{subdomain}/{companyId}/{userId}/{courseId}/{PublishId}")
+    Call<List<SectionModel>> getSectionDetailsOfCourse(@Path("subdomain") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("courseId") int i3, @Path("PublishId") int i4);
+
+    @GET("LPCourseAPI/GetLevelWiseLeaderboard/{companyId}/{courseId}")
+    Call<ArrayList<LeaderBoardModel>> getleaderboard(@Path("companyId") int i, @Path("courseId") int i2);
+
+    @POST("LPCourseAPI/InsertAssetMappingMaterialLog/{subdomain}")
+    Call<String> insertAssetMappingMaterialLog(@Path("subdomain") String str, @Body CourseAnalyticsModel courseAnalyticsModel);
+
+    @POST("LPCourseAPI/insertLPCourseSectionUserExamHeader/{subdomainName}/{courseId}/{courseUserAssignMentId}/{couseUserSectionId}/{publishId}/{userId}/{companyId}/{sectionId}")
+    Call<String> insertLPCourseSectionUserExamHeader(@Path("subdomainName") String str, @Path("courseId") int i, @Path("courseUserAssignMentId") int i2, @Path("couseUserSectionId") int i3, @Path("publishId") int i4, @Path("userId") int i5, @Path("companyId") int i6, @Path("sectionId") int i7);
+
+    @POST("LPCourseAPI/InsertLPCourseViewAnalytics/{subdomain}")
+    Call<String> insertLPCourseViewAnalytics(@Path("subdomain") String str, @Body CourseAnalyticsModel courseAnalyticsModel);
+
+    @POST("LPCourseAPI/insertLPCourseResponse/{subdomainName}/{companyId}/{userId}/{questionLoadCount}/{isLastQuestion}/{isTimeOut}")
+    Call<String> insertTestCourseResponse(@Path("subdomainName") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("questionLoadCount") int i3, @Path("isLastQuestion") boolean z, @Path("isTimeOut") boolean z2, @Body AnwerUploadModel anwerUploadModel);
+
 
 }
