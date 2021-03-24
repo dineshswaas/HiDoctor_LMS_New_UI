@@ -8,8 +8,8 @@ public class Constants {
 
     //Testing URL
     // public static final String COMPANY_BASE_URL = "https://loginqa.kangle.me/"; // Https Optional
-  // public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
-   public static final String COMPANY_BASE_URL = "http://testlms.kangle.me/"; // Https optional
+   public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
+  // public static final String COMPANY_BASE_URL = "http://testlms.kangle.me/"; // Https optional
  //   public static final String COMPANY_BASE_URL = "https://swaasdemos.southeastasia.cloudapp.azure.com";
     //CloudAppURL
  //public static final String COMPANY_BASE_URL ="http://420890fc818b4443bec0523afa61fb2c.cloudapp.net/";
@@ -148,4 +148,6 @@ public class Constants {
     public static String DraftId = "DraftId";
     public static String TaskList = "TaskList";
     public static String OS_NAME="ANDROID";
+
+    public static int isgame = 0;
 }

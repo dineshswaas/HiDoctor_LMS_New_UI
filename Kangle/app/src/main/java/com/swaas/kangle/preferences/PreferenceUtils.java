@@ -54,7 +54,7 @@ public class PreferenceUtils {
     private static final String IS_FORCE_UPDATE_VERSION = "force_update_version";
     private static final String QUESTION_ANSWER_LIST = "question_answer_list";
     private static final String Timer = "timer";
-
+    private static final String GAMEACTIVE="gameactive";
     public static boolean getNWEAvisible(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
         boolean mCourseId = sharedPreferences.getBoolean(NWEAvisible,false);
@@ -551,6 +551,20 @@ public class PreferenceUtils {
         SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(Timer,timer);
+        editor.commit();
+    }
+
+    public static int getgameactive(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE, Context.MODE_PRIVATE);
+        int  companyId = sharedPreferences.getInt(GAMEACTIVE, 0);
+        return companyId;
+    }
+
+    public static void setGameactive(Context context, int companyId)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(KANGLE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(GAMEACTIVE, companyId);
         editor.commit();
     }
 

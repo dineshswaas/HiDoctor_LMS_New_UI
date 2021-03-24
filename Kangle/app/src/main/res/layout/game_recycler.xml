@@ -40,6 +40,7 @@
            android:layout_height="match_parent"
            android:text="GAME SECTION"
            android:gravity="center"
+           android:textColor="@color/white"
            android:layout_centerInParent="true"
            android:textSize="18sp"
            android:textStyle="bold"
@@ -48,6 +49,7 @@
            android:layout_width="40dp"
            android:layout_height="40dp"
            android:id="@+id/gameexpandbutton"
+           android:tint="@color/white"
            android:layout_alignParentEnd="true"
            android:src="@drawable/ic_keyboard_arrow_down_black_36dp"
            />
@@ -55,17 +57,31 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="@drawable/rounded_allcorners_bluecolor"
         android:layout_below="@id/gamesectionview"
+        android:layout_marginBottom="10dp"
         android:id="@+id/gameview"
         >
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginTop="5dp"
             android:layout_marginStart="10dp"
             android:id="@+id/hangman"
-            android:src="@mipmap/hearthangman"
+            android:src="@mipmap/hangmanlogo"
             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="Hangman"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_below="@id/hangman"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginStart="5dp"
+            ></TextView>
 
     </RelativeLayout>
 
@@ -163,7 +179,13 @@
         <LinearLayout android:orientation="horizontal" android:id="@id/bottommenus" android:layout_width="fill_parent" android:layout_height="fill_parent" android:weightSum="6.0">
             <RelativeLayout android:gravity="center" android:id="@id/lpcourse" android:layout_width="0.0dip" android:layout_height="fill_parent" android:layout_weight="1.0">
                 <LinearLayout android:gravity="center" android:id="@id/coursesecimage" android:layout_width="fill_parent" android:layout_height="wrap_content">
-                    <ImageView android:id="@id/pos0" android:layout_width="36.0dip" android:layout_height="36.0dip" android:src="@drawable/courses_icn" android:tint="@color/checklist_darkgrey" />
+
+                    <ImageView
+                        android:id="@id/pos0"
+                        android:layout_width="36.0dip"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/courses_icn"
+                        android:tint="@color/checklist_darkgrey" />
                 </LinearLayout>
                 <TextView android:textSize="9.0dip" android:textColor="@color/checklist_darkgrey" android:gravity="center" android:id="@id/coursetext" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/coursetitle" android:layout_below="@id/coursesecimage" />
             </RelativeLayout>

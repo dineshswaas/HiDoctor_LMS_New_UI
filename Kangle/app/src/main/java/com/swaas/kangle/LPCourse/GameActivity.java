@@ -52,6 +52,8 @@ import com.swaas.kangle.CheckList.ChecklistLandingActivity;
 import com.swaas.kangle.CourseWebView;
 import com.swaas.kangle.DashboardActivity;
 import com.swaas.kangle.EmptyRecyclerView;
+import com.swaas.kangle.LPCourse.model.LeaderBoardModel;
+import com.swaas.kangle.LPCourse.model.UserGameAccess;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
 import com.swaas.kangle.Notification.NotificationModel;
@@ -222,6 +224,12 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         setUpRecyclerView();
         initializebottomnavigation();
         bottomnavigationonClickevents();
+        getgameaccess();
+        //gameheader.setVisibility(View.GONE);
+        if(PreferenceUtils.getgameactive(mContext) == 1)
+        {
+            gameheader.setVisibility(View.VISIBLE);
+        }
         setthemeforView();
         if (!NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
             this.emptyimage.setImageResource(R.drawable.no_results);
@@ -237,6 +245,40 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         this.catlist = new ArrayList();
         onClickListeners();
         showApplyButton();
+    }
+
+    public void getgameaccess() {
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            showProgressDialog();
+            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).getusergameaccess(PreferenceUtils.getCompnayId(this.mContext), PreferenceUtils.getUserId(mContext)).enqueue(new Callback<UserGameAccess>() {
+                public void onResponse(Response<UserGameAccess> response, Retrofit retrofit3) {
+                    UserGameAccess userGameAccess = response.body();
+                    if (userGameAccess == null ) {
+                        dismissProgressDialog();
+                        return;
+                    }
+                    else {
+                        dismissProgressDialog();
+                        if(userGameAccess.getIsActive() == 1)
+                        {
+                            PreferenceUtils.setGameactive(mContext,1);
+//                            hangmangame.setVisibility(View.VISIBLE);
+                           // gameheader.setVisibility(View.VISIBLE);
+                        }
+                        else
+                        {
+                            PreferenceUtils.setGameactive(mContext,0);
+                          //  gameheader.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                public void onFailure(Throwable t) {
+                    Log.d(t.toString(), "Error");
+                    dismissProgressDialog();
+                }
+            });
+        }
     }
 
     public void getnotificationcount() {
@@ -351,7 +393,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         }
         this.expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         this.settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-        this.pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+       // this.pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
         this.clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         this.mCheckInProgress.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
         this.mCheckCompleted.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
@@ -437,7 +479,6 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
             }
         }
 
-        gameheader.setVisibility(View.VISIBLE);
         gamesectionview.setVisibility(View.GONE);
         gameexpand.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -456,7 +497,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         hangmangame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(mContext,HangmanGame.class);
+                Intent i = new Intent(mContext,GameCategory.class);
                 startActivity(i);
             }
         });
