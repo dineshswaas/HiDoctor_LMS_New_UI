@@ -225,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         initializebottomnavigation();
         bottomnavigationonClickevents();
         getgameaccess();
-        //gameheader.setVisibility(View.GONE);
+        gameheader.setVisibility(View.GONE);
         if(PreferenceUtils.getgameactive(mContext) == 1)
         {
             gameheader.setVisibility(View.VISIBLE);
@@ -250,16 +250,16 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
     public void getgameaccess() {
         if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
             showProgressDialog();
-            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).getusergameaccess(PreferenceUtils.getCompnayId(this.mContext), PreferenceUtils.getUserId(mContext)).enqueue(new Callback<UserGameAccess>() {
-                public void onResponse(Response<UserGameAccess> response, Retrofit retrofit3) {
-                    UserGameAccess userGameAccess = response.body();
-                    if (userGameAccess == null ) {
+            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).getusergameaccess(PreferenceUtils.getCompnayId(this.mContext), PreferenceUtils.getUserId(mContext)).enqueue(new Callback<ArrayList<UserGameAccess>>() {
+                public void onResponse(Response<ArrayList<UserGameAccess>> response, Retrofit retrofit3) {
+                    ArrayList<UserGameAccess> userGameAccess = response.body();
+                    if (userGameAccess == null && userGameAccess.size() == 0 ) {
                         dismissProgressDialog();
                         return;
                     }
                     else {
                         dismissProgressDialog();
-                        if(userGameAccess.getIsActive() == 1)
+                        if(userGameAccess.get(0).getIsActive() == 1)
                         {
                             PreferenceUtils.setGameactive(mContext,1);
 //                            hangmangame.setVisibility(View.VISIBLE);

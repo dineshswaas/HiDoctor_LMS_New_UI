@@ -56,7 +56,7 @@ public class GameCategory extends AppCompatActivity {
             int CompanyId  = PreferenceUtils.getCompnayId(getApplicationContext());
              int gameid = 1;
             int userId = PreferenceUtils.getUserId(getApplicationContext());
-            Call call = lpService.getgamecategory(99,30667,gameid);
+            Call call = lpService.getgamecategory(CompanyId,userId,gameid);
 
 
             call.enqueue(new Callback<ArrayList<com.swaas.kangle.LPCourse.model.GameCategory>>() {

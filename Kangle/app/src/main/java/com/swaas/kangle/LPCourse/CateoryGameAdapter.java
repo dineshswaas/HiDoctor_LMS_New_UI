@@ -88,7 +88,7 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
             int CompanyId  = PreferenceUtils.getCompnayId(context);
             int gameid = 5;
             int userId = PreferenceUtils.getUserId(context);
-            Call call = lpService.getgamecategoryQuestions(99,30667,gameid);
+            Call call = lpService.getgamecategoryQuestions(CompanyId,userId,gameid);
 
 
             call.enqueue(new Callback<GameCategoryWords>() {

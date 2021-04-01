@@ -71,7 +71,7 @@ public class HangmanGame extends AppCompatActivity {
         idea = findViewById(R.id.ideahangman);
         question = findViewById(R.id.questionhangman);
         newGame();
-
+        lsthint.clear();
         for (int j = 0 ; j < gameCategoryWords.getLsthints().size(); j++)
         {
             if(gameCategoryWords.getLsthints().get(j).getQuestionId().equals(gameCategoryWords.getLstwords().get(i).getQuestionId())) {
@@ -145,7 +145,7 @@ public class HangmanGame extends AppCompatActivity {
             //wordToFind = nextWordToFind();
             i = i + 1;
             lstwords = gameCategoryWords.getLstwords().get(i);
-            wordToFind = lstwords.getQuestionText();
+            wordToFind = lstwords.getQuestionText().trim();
             // word found initialization
             wordFound = new char[wordToFind.length()];
 
@@ -157,6 +157,10 @@ public class HangmanGame extends AppCompatActivity {
             wordTv.setText(wordFoundContent());
             wordToFindTv.setText("You Won");
             wordToFindTv.setVisibility(View.GONE);
+        }
+        else
+        {
+            showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
         }
     }
 
@@ -183,13 +187,13 @@ public class HangmanGame extends AppCompatActivity {
                 nbErrors++;
                 life = life - 1;
                 lifetext.setText(String.valueOf(life));
-             //   Toast.makeText(this, "Try another", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Try another Letter", Toast.LENGTH_SHORT).show();
             }
 
             // c is now a letter entered
             letters.add(c);
         } else {
-            //Toast.makeText(this, "Letter already Entered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Letter already Entered", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -255,8 +259,7 @@ public class HangmanGame extends AppCompatActivity {
 
         } else {
             Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
-
-
+            showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
         }
     }
     public void showgamepopup(String title, String description, String url, final String button) {

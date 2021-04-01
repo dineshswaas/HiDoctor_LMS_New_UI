@@ -83,7 +83,7 @@ public interface LPCourseService {
 
 
     @GET("GameAPI/UserGameAccessAPI/{Company_Id}/{User_Id}")
-    Call<UserGameAccess> getusergameaccess(@Path("Company_Id") int i, @Path("User_Id") int i2);
+    Call<ArrayList<UserGameAccess>> getusergameaccess(@Path("Company_Id") int i, @Path("User_Id") int i2);
 
     @GET("GameAPI/HangmanUserCategoryAPI/{Company_Id}/{User_Id}/{Game_Id}")
     Call<ArrayList<GameCategory>> getgamecategory(@Path("Company_Id") int i, @Path("User_Id") int i2, @Path("Game_Id") int i3);
