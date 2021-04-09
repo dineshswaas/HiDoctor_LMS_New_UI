@@ -1378,13 +1378,11 @@ public class TaskListActivity extends AppCompatActivity {
                     taskpage.setVisibility(View.GONE);
                 }
                 if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                        gamepage.setVisibility(View.VISIBLE);
-                        count += 1;
+                    if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
+                        this.gamepage.setVisibility(View.GONE);
                     } else {
-                        gamepage.setVisibility(View.GONE);
+                        this.gamepage.setVisibility(View.VISIBLE);
+                        count+=1;
                     }
                 }
             }

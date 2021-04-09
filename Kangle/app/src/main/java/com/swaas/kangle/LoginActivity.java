@@ -533,6 +533,8 @@ public class LoginActivity extends AppCompatActivity {
                     List<LandingPageAccess> apiResponse = response.body();
                     if (apiResponse != null) {
                         LandingPageAccess landingpage = new LandingPageAccess();
+                        Gson gsonget = new Gson();
+                        landingpage =  gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
                         if (apiResponse.get(0).getChat().equalsIgnoreCase("y"))
                         {
                             landingpage.setChat("Y");
@@ -541,7 +543,12 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             landingpage.setGame("Y");
                         }
-                        locationPermission();
+                        Gson gson = new Gson();
+                        String landingobj = gson.toJson(landingpage);
+                        PreferenceUtils.setLandingPageAccess(mContext, landingobj);
+                        //
+                        // locationPermission();
+                        getuserinfo();
                     } else {
                         Log.d("retrofit", "error 2");
                         //error
@@ -625,7 +632,8 @@ public class LoginActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String landingobj = gson.toJson(landingpage);
         PreferenceUtils.setLandingPageAccess(mContext, landingobj);
-        locationPermission();
+       // locationPermission();
+        getuserinfo();
     }
 
     public void locationPermission(){

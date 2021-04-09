@@ -393,7 +393,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         }
         this.expandfilter.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
         this.settings.setColorFilter(Color.parseColor(Constants.TOPBARICON_COLOR));
-       // this.pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
+        this.pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
         this.clearfilters.setTextColor(Color.parseColor(Constants.COMPANY_COLOR));
         this.mCheckInProgress.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
         this.mCheckCompleted.setButtonTintList(ColorStateList.valueOf(Color.parseColor(Constants.COMPANY_COLOR)));
@@ -430,7 +430,8 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
         this.taskpage = findViewById(R.id.reports);
         this.profilepage = findViewById(R.id.profilepage);
         this.clear_assetfilter_img = findViewById(R.id.clear_assetfilter_img);
-        this.pos0 = (ImageView) findViewById(R.id.pos0);
+        this.pos0 = (ImageView) findViewById(R.id.pos01);
+       // pos0.setColorFilter(Color.parseColor(Constants.COMPANY_COLOR));
         this.higlighttext = (TextView) findViewById(R.id.higlighttext);
         this.gamepage = findViewById(R.id.gamepage);
     }
@@ -474,7 +475,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
                     this.gamepage.setVisibility(View.GONE);
                 } else {
                     this.gamepage.setVisibility(View.VISIBLE);
-                    count++;
+                    count+=1;
                 }
             }
         }

@@ -56,6 +56,7 @@ import com.swaas.kangle.LPCourse.model.CourseUserAssessDet;
 import com.swaas.kangle.LPCourse.model.CourseUserAssessHeader;
 import com.swaas.kangle.LPCourse.model.QuestionAndAnswerModel;
 import com.swaas.kangle.LPCourse.model.QuestionCourseListModel;
+import com.swaas.kangle.LPCourse.model.UserGameAccess;
 import com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity;
 import com.swaas.kangle.MoreMenuActivity;
 import com.swaas.kangle.Notification.NotificationActivity;
@@ -245,6 +246,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                 }
             }
         }
+        getgameaccess();
 
     }
 
@@ -456,6 +458,8 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         gamepage = findViewById(R.id.gamepage);
     }
 
+
+
     public void bottomnavigationonClickevents(){
         int count = 1;
         if(PreferenceUtils.getLandingPageAccess(mContext) != null) {
@@ -493,6 +497,10 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                         chklistpage.setVisibility(View.GONE);
                     }
                 }
+                else
+                {
+                    chklistpage.setVisibility(View.GONE);
+                }
                 if (!TextUtils.isEmpty(landingobj.getTask()) && landingobj.getTask().equalsIgnoreCase("Y")) {
 
                     if (landingobj.getTask() != null && landingobj.getTask().equalsIgnoreCase("Y")) {
@@ -503,14 +511,16 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                         taskpage.setVisibility(View.GONE);
                     }
                 }
-                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                    if (landingobj.getGame() != null && landingobj.getGame().equalsIgnoreCase("Y")) {
-
-                        gamepage.setVisibility(View.VISIBLE);
-                        count += 1;
+                else
+                {
+                    taskpage.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(landingobj.getGame())) {
+                    if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
+                        this.gamepage.setVisibility(View.GONE);
                     } else {
-                        gamepage.setVisibility(View.GONE);
+                        this.gamepage.setVisibility(View.VISIBLE);
+                        count+=1;
                     }
                 }
             }
@@ -620,7 +630,39 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
         super.onConfigurationChanged(newConfig);
         setUpRecyclerView();
     }
+   public void getgameaccess() {
+        if (NetworkUtils.checkIfNetworkAvailable(this.mContext)) {
+            showProgressDialog();
+            ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).getusergameaccess(PreferenceUtils.getCompnayId(this.mContext), PreferenceUtils.getUserId(mContext)).enqueue(new Callback<ArrayList<UserGameAccess>>() {
+                public void onResponse(Response<ArrayList<UserGameAccess>> response, Retrofit retrofit3) {
+                    ArrayList<UserGameAccess> userGameAccess = response.body();
+                    if (userGameAccess == null && userGameAccess.size() == 0 ) {
+                        dismissProgressDialog();
+                        return;
+                    }
+                    else {
+                        dismissProgressDialog();
+                        if(userGameAccess.get(0).getIsActive() == 1)
+                        {
+                            PreferenceUtils.setGameactive(mContext,1);
+//                            hangmangame.setVisibility(View.VISIBLE);
+                            // gameheader.setVisibility(View.VISIBLE);
+                        }
+                        else
+                        {
+                            PreferenceUtils.setGameactive(mContext,0);
+                            //  gameheader.setVisibility(View.GONE);
+                        }
+                    }
+                }
 
+                public void onFailure(Throwable t) {
+                    Log.d(t.toString(), "Error");
+                    dismissProgressDialog();
+                }
+            });
+        }
+    }
     public void loadSearchdata(String newText){
         msearchcourse = new ArrayList<>();
         msearchcourse = courseModelList;

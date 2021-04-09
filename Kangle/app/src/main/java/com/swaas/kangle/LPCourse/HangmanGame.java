@@ -49,7 +49,7 @@ public class HangmanGame extends AppCompatActivity {
     private char[] wordFound;
     private int nbErrors;
     int next = gameCategoryWords.getLstwords().size();
-    int i = 0;
+    int i = -1;
     // letters already entered by user
     private ArrayList < String > letters = new ArrayList < > ();
     private ImageView img,idea,question;
@@ -83,11 +83,11 @@ public class HangmanGame extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                     hint = 0;
-                    if(lsthint.size() > 0 && hintsize > 1) {
+                    if(lsthint.size() > 1 && hintsize > 0) {
                         showgamepopup("HINT", lsthint.get(0).getHintDescription()
                                 , "", "Next Hint");
                     }
-                    else if(lsthint.size() > 0 && hintsize == 1) {
+                    else if(lsthint.size() == 0 ) {
                         showgamepopup("HINT", lsthint.get(0).getHintDescription()
                                 , "", "OK");
                     }
@@ -131,21 +131,24 @@ public class HangmanGame extends AppCompatActivity {
     public void newGame() {
         nbErrors = 1;
         letters.clear();
-        next = next - 1;
+        hintsize = 0;
         life = 6;
         lifetext.setText(String.valueOf(life));
-        lsthint.clear();
-        for (int j = 0 ; j < gameCategoryWords.getLsthints().size(); j++)
-        {
-            if(gameCategoryWords.getLsthints().get(j).getQuestionId().equals(gameCategoryWords.getLstwords().get(i).getQuestionId())) {
-                lsthint.add(gameCategoryWords.getLsthints().get(j));
-            }
-        }
-        if(next > 0) {
+        next = next - 1;
+        if(next > -1){
             //wordToFind = nextWordToFind();
             i = i + 1;
+
+            lsthint.clear();
+            for (int j = 0 ; j < gameCategoryWords.getLsthints().size(); j++)
+            {
+                if(gameCategoryWords.getLsthints().get(j).getQuestionId().equals(gameCategoryWords.getLstwords().get(i).getQuestionId())) {
+                    lsthint.add(gameCategoryWords.getLsthints().get(j));
+                }
+            }
             lstwords = gameCategoryWords.getLstwords().get(i);
             wordToFind = lstwords.getQuestionText().trim();
+            wordToFind = wordToFind.replace(" ","");
             // word found initialization
             wordFound = new char[wordToFind.length()];
 
@@ -187,13 +190,13 @@ public class HangmanGame extends AppCompatActivity {
                 nbErrors++;
                 life = life - 1;
                 lifetext.setText(String.valueOf(life));
-                Toast.makeText(this, "Try another Letter", Toast.LENGTH_SHORT).show();
+                showgamepopup("Alert","Try another Letter","","OK");
             }
 
             // c is now a letter entered
             letters.add(c);
         } else {
-            Toast.makeText(this, "Letter already Entered", Toast.LENGTH_SHORT).show();
+            showgamepopup("Alert","Letter already Entered","","OK");
         }
     }
 
@@ -235,6 +238,7 @@ public class HangmanGame extends AppCompatActivity {
                    //     show();
                 wordToFindTv.setVisibility(View.VISIBLE);
                 wordToFindTv.setText("You Won");
+                wordTv.setText("");
                 if(next > 0) {
                     showgamepopup("You WON !!", "Well done !!\nPlay next word?", "", "NEXT WORD");
                 }
@@ -244,6 +248,7 @@ public class HangmanGame extends AppCompatActivity {
                 }
             } else {
                 if (nbErrors >= MAX_ERRORS) {
+                    wordTv.setText("");
                    // Toast.makeText(this, "You Lost", Toast.LENGTH_SHORT).show();
                     wordToFindTv.setText("Word to find was: " + wordToFind);
                     wordToFindTv.setVisibility(View.VISIBLE);
@@ -258,7 +263,7 @@ public class HangmanGame extends AppCompatActivity {
             }
 
         } else {
-            Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
             showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
         }
     }
@@ -324,14 +329,15 @@ public class HangmanGame extends AppCompatActivity {
     private void nexthint() {
 
         if(lsthint.size() > 0) {
-            if(hint < hintsize)
+            if(hint < hintsize - 1)
             {
                 showgamepopup("HINT", lsthint.get(hint).getHintDescription()
-                        , "", "OK");
+                        , "", "Next Hint");
+
             }
             else {
                 showgamepopup("HINT", lsthint.get(hint).getHintDescription()
-                        , "", "Next Hint");
+                        , "", "OK");
             }
         }
     }

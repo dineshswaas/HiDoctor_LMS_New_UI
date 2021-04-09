@@ -1,5 +1,6 @@
 package com.swaas.kangle.LPCourse;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.koushikdutta.ion.Ion;
 import com.swaas.kangle.EmptyRecyclerView;
@@ -50,7 +52,7 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
         return new CateoryGameAdapter.GameRecyclerHolder(view,context);
     }
 
-    public void onBindViewHolder(GameRecyclerHolder holder, int position) {
+    public void onBindViewHolder(GameRecyclerHolder holder, @SuppressLint("RecyclerView") final int position) {
         holder.logo.setImageResource(R.mipmap.hangmanlogo);
         if(gameCategoryList.get(position).getCategoryImageURL()!=null) {
             Ion.with(holder.logo).load(gameCategoryList.get(position).getCategoryImageURL());
@@ -59,7 +61,7 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
         holder.touch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getquestions();
+                getquestions(gameCategoryList.get(position).getCategoryId());
 
             }
         });
@@ -78,7 +80,7 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
             mProgressDialog.dismiss();
         }
     }
-    private void getquestions() {
+    private void getquestions(Integer categoryId) {
 
         if(NetworkUtils.checkIfNetworkAvailable(context)){
 
@@ -88,7 +90,7 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
             int CompanyId  = PreferenceUtils.getCompnayId(context);
             int gameid = 5;
             int userId = PreferenceUtils.getUserId(context);
-            Call call = lpService.getgamecategoryQuestions(CompanyId,userId,gameid);
+            Call call = lpService.getgamecategoryQuestions(CompanyId,userId,categoryId);
 
 
             call.enqueue(new Callback<GameCategoryWords>() {
@@ -98,10 +100,19 @@ public class CateoryGameAdapter extends RecyclerView.Adapter<CateoryGameAdapter.
                     GameCategoryWords gameCategories= response.body();
                     if (gameCategories != null && gameCategories.getLstwords().size() > 0) {
                         gameCategoryWords = gameCategories;
+
+                        for(int i = 0 ; i < gameCategories.getLstwords().size() ; i++)
+                        {
+                           if( gameCategories.getLstwords().get(i).getIsActive() != 1)
+                           {
+                               gameCategoryWords.getLstwords().remove(i);
+                           }
+                        }
                         dismissProgressDialog();
                         Intent intent = new Intent(context,HangmanGame.class);
                         context.startActivity(intent);
                     } else {
+                        Toast.makeText(context,"No words available in category",Toast.LENGTH_SHORT).show();
                         //courseListModel is null
                         dismissProgressDialog();
                     }

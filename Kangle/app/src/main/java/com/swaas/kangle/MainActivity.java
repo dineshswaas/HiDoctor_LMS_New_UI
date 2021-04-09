@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
                     List<LandingPageAccess> apiResponse = response.body();
                     if (apiResponse != null) {
                         LandingPageAccess landingpage = new LandingPageAccess();
+                        Gson gsonget = new Gson();
+                        landingpage =  gsonget.fromJson(PreferenceUtils.getLandingPageAccess(mContext), LandingPageAccess.class);
                         if (apiResponse.get(0).getChat().equalsIgnoreCase("y"))
                         {
                             landingpage.setChat("Y");
@@ -154,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
                         {
                             landingpage.setGame("Y");
                         }
+                        Gson gson = new Gson();
+                        String landingobj = gson.toJson(landingpage);
+                        PreferenceUtils.setLandingPageAccess(mContext, landingobj);
+                        SetTheme();
                     } else {
                         Log.d("retrofit", "error 2");
                     }
@@ -222,12 +228,16 @@ public class MainActivity extends AppCompatActivity {
                 landingpage.setReport("Y");
                 landingpage.setReportText(m.getUpdated_label());
             }
+            if(m.getMenu_id() == 13)
+            {
+                landingpage.setGame("Y");
+            }
         }
         Gson gson = new Gson();
         String landingobj = gson.toJson(landingpage);
         PreferenceUtils.setLandingPageAccess(mContext, landingobj);
 
-        SetTheme();
+       // SetTheme();
     }
 
     public void gotoActivity(){

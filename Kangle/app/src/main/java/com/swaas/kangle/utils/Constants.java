@@ -107,7 +107,7 @@ public class Constants {
     public static String COMPANY_COLOR = "#FFFFFF";
     public static String OPAQUE_COLOR = "OPAQUECOLOR";
     public static String TEXT_COLOR = "TEXTCOLOR";
-    public static String HEADERBAR_COLOR = "HEADERBARCOLOR";
+    public static String HEADERBAR_COLOR = "#000000";
     public static String CARDBACKGROUND_COLOR = "CARDBACKGROUNDCOLOR";
 
     public static String COMPLETED_COLOR = "COMPLETED";
