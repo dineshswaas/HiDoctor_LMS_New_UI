@@ -69,7 +69,13 @@ public class GameCategory extends AppCompatActivity {
 
                         if(!isFinishing())
                             dismissProgressDialog();
-
+                        for(int i = 0 ; i < gameCategory.size() ; i++)
+                        {
+                            if( gameCategories.get(i).getIsActive() != 1)
+                            {
+                                gameCategory.remove(i);
+                            }
+                        }
                         categorylist.setLayoutManager(new LinearLayoutManager(mContext, 1, false));
                         cateoryGameAdapter = new CateoryGameAdapter(mContext, gameCategory);
                         categorylist.setAdapter(cateoryGameAdapter);
