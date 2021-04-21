@@ -132,9 +132,9 @@ public class HangmanGame extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd_HHmmss", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        lstattempt.setGameEndTime(currentDateandTime);
+        lstattempt.setGameEndTime(null);
         lstattemptList.add(lstattempt);
         hangmanResponse.setLstattempts(lstattemptList);
         insertresponse(hangmanResponse);
@@ -178,7 +178,7 @@ public class HangmanGame extends AppCompatActivity {
             lstattempt.setUserId(PreferenceUtils.getUserId(getApplicationContext()));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             String currentDateandTime = sdf.format(new Date());
-            lstattempt.setGameStartTime(currentDateandTime);
+            lstattempt.setGameStartTime(null);
 
             lstresponse = new Lstresponse();
             lstresponse.setQuestionId(gameCategoryWords.getLstwords().get(i).getQuestionId());
@@ -294,12 +294,12 @@ public class HangmanGame extends AppCompatActivity {
                 {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
-                    lstattempt.setGameEndTime(currentDateandTime);
+                    lstattempt.setGameEndTime(null);
                     lstresponse.setIsCorrect(1);
                     lstresponse.setNoOfLivesTaken(6 - life);
                     lstresponselist.add(lstresponse);
                     hangmanResponse.setLstresponse(lstresponselist);
-                    lstattempt.setGameEndTime(currentDateandTime);
+                    lstattempt.setGameEndTime(null);
                     lstattemptList.add(lstattempt);
                     hangmanResponse.setLstattempts(lstattemptList);
 
@@ -326,10 +326,10 @@ public class HangmanGame extends AppCompatActivity {
                         lstresponse.setNoOfLivesTaken(6 - life);
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                         String currentDateandTime = sdf.format(new Date());
-                        lstattempt.setGameEndTime(currentDateandTime);
+                        lstattempt.setGameEndTime(null);
                         lstresponselist.add(lstresponse);
                         hangmanResponse.setLstresponse(lstresponselist);
-                        lstattempt.setGameEndTime(currentDateandTime);
+                        lstattempt.setGameEndTime(null);
                         lstattemptList.add(lstattempt);
                         hangmanResponse.setLstattempts(lstattemptList);
 
@@ -345,7 +345,7 @@ public class HangmanGame extends AppCompatActivity {
             showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             String currentDateandTime = sdf.format(new Date());
-            lstattempt.setGameEndTime(currentDateandTime);
+            lstattempt.setGameEndTime(null);
             lstattemptList.add(lstattempt);
             hangmanResponse.setLstattempts(lstattemptList);
         }

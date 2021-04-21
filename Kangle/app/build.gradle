@@ -12,14 +12,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.swaas.HDkangle"
         minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 9
-        versionName "1.4.4"
+        targetSdkVersion 29
+        versionCode 11
+        versionName "2.0"
         multiDexEnabled true
     }
 

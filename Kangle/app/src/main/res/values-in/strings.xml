@@ -2,10 +2,10 @@
     <!--<string name="app_name">SwaaS LMS</string>-->
     <string name="app_name">HiDoctor \n LMS</string>
 
-    <string name="version">v1.4.4(9)</string>
+    <string name="version">v2.0(9)</string>
     <string name="versionCode">9</string>
-    <string name="versionName">1.4.4</string>
-    <string name="versionname">Versi : 1.4.4</string>
+    <string name="versionName">2.0</string>
+    <string name="versionname">Versi : 2.0</string>
     <string name="poweredbyswaas">\u00a9 Didukung Oleh Swaas</string>
 
     <string-array name="Language">
