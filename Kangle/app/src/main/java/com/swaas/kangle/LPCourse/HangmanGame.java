@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,33 +14,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.koushikdutta.ion.Ion;
+import com.swaas.kangle.LPCourse.model.HangmanResponse;
+import com.swaas.kangle.LPCourse.model.Lstattempt;
 import com.swaas.kangle.LPCourse.model.Lsthint;
+import com.swaas.kangle.LPCourse.model.Lstresponse;
 import com.swaas.kangle.LPCourse.model.Lstword;
 import com.swaas.kangle.R;
+import com.swaas.kangle.db.RetrofitAPIBuilder;
+import com.swaas.kangle.playerPart.DigitalAssets;
+import com.swaas.kangle.preferences.PreferenceUtils;
+import com.swaas.kangle.utils.NetworkUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import static com.swaas.kangle.LPCourse.CateoryGameAdapter.gameCategoryWords;
 
 public class HangmanGame extends AppCompatActivity {
 
-    // Java Keywords
-    public static final String[] WORDS = {
-            "ABSTRACT", "ASSERT", "BOOLEAN", "BREAK", "BYTE",
-            "CASE", "CATCH", "CHAR", "CLASS", "CONST",
-            "CONTINUE", "DEFAULT", "DOUBLE", "DO", "ELSE",
-            "ENUM", "EXTENDS", "FALSE", "FINAL", "FINALLY",
-            "FLOAT", "FOR", "GOTO", "IF", "IMPLEMENTS",
-            "IMPORT", "INSTANCEOF", "INT", "INTERFACE",
-            "LONG", "NATIVE", "NEW", "NULL", "PACKAGE",
-            "PRIVATE", "PROTECTED", "PUBLIC", "RETURN",
-            "SHORT", "STATIC", "STRICTFP", "SUPER", "SWITCH",
-            "SYNCHRONIZED", "THIS", "THROW", "THROWS",
-            "TRANSIENT", "TRUE", "TRY", "VOID", "VOLATILE", "WHILE"
-    };
-    public static final Random RANDOM = new Random();
+
 
     // Max errors before user lose
     public static final int MAX_ERRORS = 7;
@@ -60,6 +67,12 @@ public class HangmanGame extends AppCompatActivity {
     private TextView wordToFindTv,lifetext;
     private Lstword lstwords;
     ArrayList<Lsthint> lsthint = new ArrayList<>();
+    public HangmanResponse hangmanResponse = new HangmanResponse();
+    public Lstattempt lstattempt = new Lstattempt();
+    public List<Lstattempt> lstattemptList = new ArrayList();
+    public List<Lstresponse> lstresponselist = new ArrayList();
+
+    public Lstresponse lstresponse = new Lstresponse();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +83,7 @@ public class HangmanGame extends AppCompatActivity {
         lifetext = findViewById(R.id.lifetext);
         idea = findViewById(R.id.ideahangman);
         question = findViewById(R.id.questionhangman);
+        lstattempt =  new Lstattempt();
         newGame();
         lsthint.clear();
         for (int j = 0 ; j < gameCategoryWords.getLsthints().size(); j++)
@@ -87,7 +101,7 @@ public class HangmanGame extends AppCompatActivity {
                         showgamepopup("HINT", lsthint.get(0).getHintDescription()
                                 , "", "Next Hint");
                     }
-                    else if(lsthint.size() == 0 ) {
+                    else if(lsthint.size() == 1 ) {
                         showgamepopup("HINT", lsthint.get(0).getHintDescription()
                                 , "", "OK");
                     }
@@ -116,20 +130,41 @@ public class HangmanGame extends AppCompatActivity {
     }
 
 
-
-    // Method returning randomly next word to find
-    private String nextWordToFind() {
-        return WORDS[RANDOM.nextInt(WORDS.length)];
-    }
-
     @Override
     public void onBackPressed() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        lstattempt.setGameEndTime(currentDateandTime);
+        lstattemptList.add(lstattempt);
+        hangmanResponse.setLstattempts(lstattemptList);
+        insertresponse(hangmanResponse);
         this.finish();
     }
+    public void insertresponse( HangmanResponse hangmanResponse)  {
+        if(NetworkUtils.checkIfNetworkAvailable(getApplicationContext())){
+            Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+            LPCourseService lpService = retrofitAPI.create(LPCourseService.class);
 
+            Call call = lpService.posthangman(PreferenceUtils.getCompnayId(getApplicationContext()),hangmanResponse);
+            call.enqueue(new Callback<String>() {
+
+                @Override
+                public void onResponse(Response<String> response, Retrofit retrofit) {
+
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d(t.toString(),"Error");
+                }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), "no network", Toast.LENGTH_SHORT).show();
+        }
+    }
     // Method for starting a new game
     public void newGame() {
         nbErrors = 1;
+
         letters.clear();
         hintsize = 0;
         life = 6;
@@ -138,7 +173,16 @@ public class HangmanGame extends AppCompatActivity {
         if(next > -1){
             //wordToFind = nextWordToFind();
             i = i + 1;
+            lstattempt.setCategoryId(gameCategoryWords.getLstwords().get(0).getCategoryId());
+            lstattempt.setAttemptNo(gameCategoryWords.getAttemptNumber() + 1);
+            lstattempt.setUserId(PreferenceUtils.getUserId(getApplicationContext()));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            lstattempt.setGameStartTime(currentDateandTime);
 
+            lstresponse = new Lstresponse();
+            lstresponse.setQuestionId(gameCategoryWords.getLstwords().get(i).getQuestionId());
+            lstresponse.setUserId(PreferenceUtils.getUserId(getApplicationContext()));
             lsthint.clear();
             for (int j = 0 ; j < gameCategoryWords.getLsthints().size(); j++)
             {
@@ -241,9 +285,26 @@ public class HangmanGame extends AppCompatActivity {
                 wordTv.setText("");
                 if(next > 0) {
                     showgamepopup("You WON !!", "Well done !!\nPlay next word?", "", "NEXT WORD");
+                    lstresponse.setIsCorrect(1);
+                    lstresponse.setNoOfLivesTaken(6 - life);
+                    lstresponselist.add(lstresponse);
+                    hangmanResponse.setLstresponse(lstresponselist);
                 }
                 else
                 {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    lstattempt.setGameEndTime(currentDateandTime);
+                    lstresponse.setIsCorrect(1);
+                    lstresponse.setNoOfLivesTaken(6 - life);
+                    lstresponselist.add(lstresponse);
+                    hangmanResponse.setLstresponse(lstresponselist);
+                    lstattempt.setGameEndTime(currentDateandTime);
+                    lstattemptList.add(lstattempt);
+                    hangmanResponse.setLstattempts(lstattemptList);
+
+                        insertresponse(hangmanResponse);
+
                     showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
                 }
             } else {
@@ -254,9 +315,26 @@ public class HangmanGame extends AppCompatActivity {
                     wordToFindTv.setVisibility(View.VISIBLE);
                     if(next > 0) {
                         showgamepopup("You Lost !!", "Play next word?", "", "NEXT WORD");
+                        lstresponse.setIsCorrect(0);
+                        lstresponse.setNoOfLivesTaken(6 - life);
+                        lstresponselist.add(lstresponse);
+                        hangmanResponse.setLstresponse(lstresponselist);
                     }
                     else
                     {
+                        lstresponse.setIsCorrect(0);
+                        lstresponse.setNoOfLivesTaken(6 - life);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                        String currentDateandTime = sdf.format(new Date());
+                        lstattempt.setGameEndTime(currentDateandTime);
+                        lstresponselist.add(lstresponse);
+                        hangmanResponse.setLstresponse(lstresponselist);
+                        lstattempt.setGameEndTime(currentDateandTime);
+                        lstattemptList.add(lstattempt);
+                        hangmanResponse.setLstattempts(lstattemptList);
+
+                            insertresponse(hangmanResponse);
+
                         showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
                     }
                 }
@@ -265,6 +343,11 @@ public class HangmanGame extends AppCompatActivity {
         } else {
            // Toast.makeText(this, "Game Over", Toast.LENGTH_SHORT).show();
             showgamepopup("Category Completed", "Well done !!\nPlay next Category.", "", "Play");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            lstattempt.setGameEndTime(currentDateandTime);
+            lstattemptList.add(lstattempt);
+            hangmanResponse.setLstattempts(lstattemptList);
         }
     }
     public void showgamepopup(String title, String description, String url, final String button) {
@@ -317,6 +400,7 @@ public class HangmanGame extends AppCompatActivity {
                 }
                 if(button.toUpperCase().equals("PLAY"))
                 {
+
                     finish();
                 }
             }

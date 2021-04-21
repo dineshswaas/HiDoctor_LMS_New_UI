@@ -19,7 +19,7 @@ public class LPCourseReportSummaryModel implements Serializable {
     private int Attempt_Number;
     private boolean Is_Max;
     private int Record_Status;
-    private int Achieved_Percentage;
+    private float Achieved_Percentage;
     private String Section_Exam_Start_Time;
     private String Section_Exam_End_Time;
     private String Formatted_Section_Exam_Start_Time;
@@ -130,11 +130,11 @@ public class LPCourseReportSummaryModel implements Serializable {
         Record_Status = record_Status;
     }
 
-    public int getAchieved_Percentage() {
+    public float getAchieved_Percentage() {
         return Achieved_Percentage;
     }
 
-    public void setAchieved_Percentage(int achieved_Percentage) {
+    public void setAchieved_Percentage(float achieved_Percentage) {
         Achieved_Percentage = achieved_Percentage;
     }
 

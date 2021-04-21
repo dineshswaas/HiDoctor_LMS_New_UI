@@ -259,7 +259,7 @@ public class GameActivity extends AppCompatActivity implements LocationListener 
                     }
                     else {
                         dismissProgressDialog();
-                        if(userGameAccess.get(0).getIsActive() == 1)
+                        if(userGameAccess.size() > 0 && userGameAccess.get(0).getIsActive() == 1)
                         {
                             PreferenceUtils.setGameactive(mContext,1);
 //                            hangmangame.setVisibility(View.VISIBLE);

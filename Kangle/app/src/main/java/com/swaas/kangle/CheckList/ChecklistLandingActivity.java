@@ -1186,14 +1186,13 @@ public class ChecklistLandingActivity extends AppCompatActivity implements Locat
                 }else{
                     taskpage.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
                     if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
                         this.gamepage.setVisibility(View.GONE);
                     } else {
                         this.gamepage.setVisibility(View.VISIBLE);
                         count+=1;
                     }
-                }
+
             }
         }
 

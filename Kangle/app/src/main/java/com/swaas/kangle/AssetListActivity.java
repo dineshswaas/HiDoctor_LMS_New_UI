@@ -1338,14 +1338,13 @@ public class AssetListActivity extends AppCompatActivity implements LocationList
                 }else{
                     taskpage.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(landingobj.getGame()) && landingobj.getGame().equalsIgnoreCase("Y")) {
+
                     if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
                         this.gamepage.setVisibility(View.GONE);
                     } else {
                         this.gamepage.setVisibility(View.VISIBLE);
                         count+=1;
                     }
-                }
             }else{
                 bottommenusection.setVisibility(View.GONE);
             }

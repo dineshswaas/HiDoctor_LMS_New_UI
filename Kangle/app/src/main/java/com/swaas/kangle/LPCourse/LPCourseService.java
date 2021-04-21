@@ -1,14 +1,18 @@
 package com.swaas.kangle.LPCourse;
 
+import com.google.gson.Gson;
 import com.swaas.kangle.CheckList.model.UserforCourseChecklist;
 import com.swaas.kangle.LPCourse.model.AnwerUploadModel;
 import com.swaas.kangle.LPCourse.model.GameCategory;
 import com.swaas.kangle.LPCourse.model.GameCategoryWords;
+import com.swaas.kangle.LPCourse.model.HangmanResponse;
 import com.swaas.kangle.LPCourse.model.LPCourseReportModel;
 import com.swaas.kangle.LPCourse.model.LPCourseReportSummaryModel;
 import com.swaas.kangle.LPCourse.model.LeaderBoardModel;
 import com.swaas.kangle.LPCourse.model.QuestionBaseModel;
 import com.swaas.kangle.LPCourse.model.UserGameAccess;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,4 +95,7 @@ public interface LPCourseService {
 
     @GET("GameAPI/HangmanCategoryQuestionsAPI/{Company_Id}/{User_Id}/{Category_Id}")
     Call<GameCategoryWords> getgamecategoryQuestions(@Path("Company_Id") int i, @Path("User_Id") int i2, @Path("Category_Id") int i3);
+
+    @POST("GameAPI/HangmanUserResponseAPI/{Company_Id}")
+    Call<String> posthangman(@Path("Company_Id") int str, @Body HangmanResponse hangmanResponse);
 }

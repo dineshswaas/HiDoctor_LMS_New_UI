@@ -515,14 +515,14 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                 {
                     taskpage.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(landingobj.getGame())) {
+
                     if (landingobj.getGame() == null || !landingobj.getGame().equalsIgnoreCase("Y")) {
                         this.gamepage.setVisibility(View.GONE);
                     } else {
                         this.gamepage.setVisibility(View.VISIBLE);
                         count+=1;
                     }
-                }
+
             }
         }
 
@@ -642,7 +642,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                     }
                     else {
                         dismissProgressDialog();
-                        if(userGameAccess.get(0).getIsActive() == 1)
+                        if(userGameAccess != null && userGameAccess.size() > 0 && userGameAccess.get(0).getIsActive() == 1)
                         {
                             PreferenceUtils.setGameactive(mContext,1);
 //                            hangmangame.setVisibility(View.VISIBLE);
