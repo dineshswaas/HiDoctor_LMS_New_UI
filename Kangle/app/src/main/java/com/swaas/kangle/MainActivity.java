@@ -25,6 +25,7 @@ import com.swaas.kangle.API.model.LandingPageAccess;
 import com.swaas.kangle.API.model.User;
 import com.swaas.kangle.API.service.UserService;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.LPCourseService;
 import com.swaas.kangle.db.RetrofitAPIBuilder;
 import com.swaas.kangle.models.MenuModel;
 import com.swaas.kangle.preferences.PreferenceUtils;
@@ -70,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
                         SetTheme();
                       //  Toast.makeText(mContext, mContext.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, CourseListActivity.class);
-                        startActivity(intent);
-                        finish();
+
+                        autopublishapi();
+
                     }
                     //Intent intent = new Intent(MainActivity.this, LandingActivity.class);
                 } else {
@@ -91,6 +92,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void autopublishapi() {
+
+        Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+        LPCourseService userService = retrofitAPI.create(LPCourseService.class);
+        Call call = userService.getautopublish( PreferenceUtils.getCompnayId(mContext),PreferenceUtils.getUserId(mContext));
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Response<Integer> response, Retrofit retrofit) {
+                int apiResponse = response.body();
+                if (apiResponse == 0) {
+                    gotoActivity();
+                } else {
+                    Log.d("retrofit", "error 2");
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("Login", "error");
+                //error
+            }
+        });
+    }
 
 
     @Override
@@ -152,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             landingpage.setChat("Y");
                         }
-                        if (apiResponse.get(0).getGame().equalsIgnoreCase("Y"))
+                        if (apiResponse.get(0).getGame()!= null && apiResponse.get(0).getGame().equalsIgnoreCase("Y"))
                         {
                             landingpage.setGame("Y");
                         }
@@ -275,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void GetThemeDataSuccessCB(boolean Success) {
                 if(Success){
-                    gotoActivity();
+                    autopublishapi();
                 }
             }
 

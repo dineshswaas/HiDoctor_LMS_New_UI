@@ -1,4 +1,4 @@
-package com.swaas.kangle.models;
+    package com.swaas.kangle.models;
 
 import java.io.Serializable;
 import java.util.List;

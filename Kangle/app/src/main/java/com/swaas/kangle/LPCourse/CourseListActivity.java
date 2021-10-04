@@ -636,7 +636,7 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
             ((LPCourseService) RetrofitAPIBuilder.getInstance().create(LPCourseService.class)).getusergameaccess(PreferenceUtils.getCompnayId(this.mContext), PreferenceUtils.getUserId(mContext)).enqueue(new Callback<ArrayList<UserGameAccess>>() {
                 public void onResponse(Response<ArrayList<UserGameAccess>> response, Retrofit retrofit3) {
                     ArrayList<UserGameAccess> userGameAccess = response.body();
-                    if (userGameAccess == null && userGameAccess.size() == 0 ) {
+                    if (userGameAccess == null  ) {
                         dismissProgressDialog();
                         return;
                     }

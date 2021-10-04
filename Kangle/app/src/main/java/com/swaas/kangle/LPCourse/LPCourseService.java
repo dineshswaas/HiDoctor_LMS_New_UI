@@ -85,6 +85,15 @@ public interface LPCourseService {
     @POST("LPCourseAPI/insertLPCourseResponse/{subdomainName}/{companyId}/{userId}/{questionLoadCount}/{isLastQuestion}/{isTimeOut}")
     Call<String> insertTestCourseResponse(@Path("subdomainName") String str, @Path("companyId") int i, @Path("userId") int i2, @Path("questionLoadCount") int i3, @Path("isLastQuestion") boolean z, @Path("isTimeOut") boolean z2, @Body AnwerUploadModel anwerUploadModel);
 
+    // autopublish API
+
+    @GET("LPCourseAPI/GetAutoPublishDetailsAPI/{company_id}/{User_Id}")
+    Call<Integer> getautopublish(@Path("company_id") int i, @Path("User_Id") int i2);
+
+    // coursesectionattemps
+
+    @POST("LPCourseAPI/UpdateCourseSectionAttempts/{Course_Id}/{User_Id}/{Company_Id}")
+    Call<Integer> updateattempt(@Path("Course_Id") int i, @Path("User_Id") int i2, @Path("Company_Id") int i3);
 
     @GET("GameAPI/UserGameAccessAPI/{Company_Id}/{User_Id}")
     Call<ArrayList<UserGameAccess>> getusergameaccess(@Path("Company_Id") int i, @Path("User_Id") int i2);

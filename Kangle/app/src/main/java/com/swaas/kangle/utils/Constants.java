@@ -8,7 +8,7 @@ public class Constants {
 
     //Testing URL
     // public static final String COMPANY_BASE_URL = "https://loginqa.kangle.me/"; // Https Optional
-   //public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
+   public static final String COMPANY_BASE_URL = "http://kanglenewqa.kangle.me/"; // Https optional
    //public static final String COMPANY_BASE_URL = "http://testlms.kangle.me/"; // Https optional
  //   public static final String COMPANY_BASE_URL = "https://swaasdemos.southeastasia.cloudapp.azure.com";
     //CloudAppURL
@@ -19,7 +19,7 @@ public class Constants {
     //Production URL
    //public static final String COMPANY_BASE_URL = "https://login.kangle.me/"; // Https Force
    // public static final String COMPANY_BASE_URL ="http://kanglenew.cloudapp.net"; // Https Force
-   public static final String COMPANY_BASE_URL = "https://swaaslms.kangle.me/"; // Https Force
+  // public static final String COMPANY_BASE_URL = "https://swaaslms.kangle.me/"; // Https Force
 
 
     public static final int REQUEST_PERMISSION_STORAGE = 999;

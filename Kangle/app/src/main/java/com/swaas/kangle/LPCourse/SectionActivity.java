@@ -40,6 +40,7 @@ import com.swaas.kangle.LPCourse.model.QuestionBaseModel;
 import com.swaas.kangle.LPCourse.model.QuestionCourseListModel;
 import com.swaas.kangle.LPCourse.model.QuestionQuestionListModel;
 import com.swaas.kangle.LPCourse.questionbuilder.QuestionActivity;
+import com.swaas.kangle.MainActivity;
 import com.swaas.kangle.R;
 import com.swaas.kangle.db.RetrofitAPIBuilder;
 import com.swaas.kangle.playerPart.AssetPlayerActivity;
@@ -866,6 +867,7 @@ public class SectionActivity extends AppCompatActivity {
                 @Override
                 public void onTakeTestClick(String secname,int section_id, int course_user_assignment_id, int sectionMapId) {
                     selectedSectionName = secname;
+                    updateattempt();
                     insertTestHeaderDetails(section_id,course_user_assignment_id,sectionMapId);
                     if (!istimerrunning) {
                         istimerrunning = true;
@@ -903,6 +905,29 @@ public class SectionActivity extends AppCompatActivity {
         else{
             Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void updateattempt() {
+
+        Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+        LPCourseService userService = retrofitAPI.create(LPCourseService.class);
+        Call call = userService.updateattempt(sectionModelList.get(0).getCourse_Id(),PreferenceUtils.getUserId(mContext),PreferenceUtils.getCompnayId(mContext));
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Response<Integer> response, Retrofit retrofit) {
+                int apiResponse = response.body();
+                if (apiResponse != 0) {
+                    Log.d("update attempt", "success");
+                } else {
+                    Log.d("retrofit", "error 2");
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("Login", "error");
+                //error
+            }
+        });
     }
 
     //included for the purpose of noquestionand for asset pass
