@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<Integer> response, Retrofit retrofit) {
                 int apiResponse = response.body();
-                if (apiResponse == 0) {
+                if (apiResponse != -1) {
                     gotoActivity();
                 } else {
                     Log.d("retrofit", "error 2");
