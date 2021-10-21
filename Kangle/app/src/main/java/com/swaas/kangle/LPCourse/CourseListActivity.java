@@ -1430,13 +1430,36 @@ public class CourseListActivity extends AppCompatActivity implements LocationLis
                     }else {
                         gotosectionActivity(courseModel);
                     }
+
+                    updateattempt(courseId);
                 }else{
                     Toast.makeText(mContext,getResources().getString(R.string.error_message),Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+    private void updateattempt(int courseid) {
 
+        Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+        LPCourseService userService = retrofitAPI.create(LPCourseService.class);
+        Call call = userService.updateattempt(courseid,PreferenceUtils.getUserId(mContext),PreferenceUtils.getCompnayId(mContext));
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Response<Integer> response, Retrofit retrofit) {
+                int apiResponse = response.body();
+                if (apiResponse != 0) {
+                    Log.d("update attempt", "success");
+                } else {
+                    Log.d("retrofit", "error 2");
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("Login", "error");
+                //error
+            }
+        });
+    }
     public void gotosectionActivity(CourseModel courseModel){
         Intent intent = new Intent(mContext, SectionActivity.class);
         intent.putExtra(Constants.Course_Id, courseModel.getCourse_Id());

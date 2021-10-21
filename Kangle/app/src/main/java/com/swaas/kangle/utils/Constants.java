@@ -17,7 +17,7 @@ public class Constants {
   //public static final String COMPANY_BASE_URL = "http://swaastestapp.cloudapp.net:8081/";
 
     //Production URL
-   //public static final String COMPANY_BASE_URL = "https://login.kangle.me/"; // Https Force
+  // public static final String COMPANY_BASE_URL = "https://login.kangle.me/"; // Https Force
    // public static final String COMPANY_BASE_URL ="http://kanglenew.cloudapp.net"; // Https Force
   // public static final String COMPANY_BASE_URL = "https://swaaslms.kangle.me/"; // Https Force
 

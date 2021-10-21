@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         SetTheme();
                       //  Toast.makeText(mContext, mContext.getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
 
-                        autopublishapi();
+                        //autopublishapi();
 
                     }
                     //Intent intent = new Intent(MainActivity.this, LandingActivity.class);
@@ -299,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
             public void GetThemeDataSuccessCB(boolean Success) {
                 if(Success){
                     autopublishapi();
+                   // gotoActivity();
                 }
             }
 

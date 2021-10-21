@@ -539,9 +539,11 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             landingpage.setChat("Y");
                         }
-                        if(apiResponse.get(0).getGame().equalsIgnoreCase("Y"))
+                        if(apiResponse.get(0).getGame() != null)
                         {
-                            landingpage.setGame("Y");
+                            if(apiResponse.get(0).getGame().equalsIgnoreCase("Y")) {
+                                landingpage.setGame("Y");
+                            }
                         }
                         Gson gson = new Gson();
                         String landingobj = gson.toJson(landingpage);

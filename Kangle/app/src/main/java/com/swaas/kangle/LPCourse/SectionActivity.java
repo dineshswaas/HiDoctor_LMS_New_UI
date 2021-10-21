@@ -867,7 +867,7 @@ public class SectionActivity extends AppCompatActivity {
                 @Override
                 public void onTakeTestClick(String secname,int section_id, int course_user_assignment_id, int sectionMapId) {
                     selectedSectionName = secname;
-                    updateattempt();
+                    //updateattempt();
                     insertTestHeaderDetails(section_id,course_user_assignment_id,sectionMapId);
                     if (!istimerrunning) {
                         istimerrunning = true;
@@ -907,28 +907,7 @@ public class SectionActivity extends AppCompatActivity {
         }
     }
 
-    private void updateattempt() {
 
-        Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
-        LPCourseService userService = retrofitAPI.create(LPCourseService.class);
-        Call call = userService.updateattempt(sectionModelList.get(0).getCourse_Id(),PreferenceUtils.getUserId(mContext),PreferenceUtils.getCompnayId(mContext));
-        call.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Response<Integer> response, Retrofit retrofit) {
-                int apiResponse = response.body();
-                if (apiResponse != 0) {
-                    Log.d("update attempt", "success");
-                } else {
-                    Log.d("retrofit", "error 2");
-                }
-            }
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("Login", "error");
-                //error
-            }
-        });
-    }
 
     //included for the purpose of noquestionand for asset pass
     public void insertHeaderDetails(final ArrayList<CourseAssetModel> courseAssetModelList,final int section_id, final int course_user_assignment_id, final int SectionMapId){
