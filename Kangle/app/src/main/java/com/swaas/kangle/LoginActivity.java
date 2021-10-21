@@ -37,6 +37,7 @@ import com.swaas.kangle.API.model.LandingPageAccess;
 import com.swaas.kangle.API.model.User;
 import com.swaas.kangle.API.service.UserService;
 import com.swaas.kangle.LPCourse.CourseListActivity;
+import com.swaas.kangle.LPCourse.LPCourseService;
 import com.swaas.kangle.db.RetrofitAPIBuilder;
 import com.swaas.kangle.models.MenuModel;
 import com.swaas.kangle.models.ThemeModel;
@@ -665,7 +666,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(Success){
                     if(logosucces)
                     {
-                        gotocoursepage();
+                        autopublishapi();
                     }
 
                 }
@@ -678,6 +679,30 @@ public class LoginActivity extends AppCompatActivity {
         });
         t.setTheme();
     }
+    private void autopublishapi() {
+
+        Retrofit retrofitAPI = RetrofitAPIBuilder.getInstance();
+        LPCourseService userService = retrofitAPI.create(LPCourseService.class);
+        Call call = userService.getautopublish( PreferenceUtils.getCompnayId(mContext),PreferenceUtils.getUserId(mContext));
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Response<Integer> response, Retrofit retrofit) {
+                int apiResponse = response.body();
+                if (apiResponse != -1) {
+                    gotocoursepage();
+                } else {
+                    Log.d("retrofit", "error 2");
+                }
+
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("Login", "error");
+                //error
+            }
+        });
+    }
+
 
     public void gotocoursepage(){
         Gson gsonget = new Gson();
