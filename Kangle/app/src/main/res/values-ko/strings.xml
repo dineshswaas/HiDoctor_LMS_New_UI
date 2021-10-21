@@ -4,10 +4,10 @@
     <!--<string name="app_name">SwaaS LMS</string>-->
     <string name="app_name">HiDoctor \n LMS</string>
 
-    <string name="version">v2.0(9)</string>
-    <string name="versionCode">9</string>
-    <string name="versionName">2.0</string>
-    <string name="versionname">버전 : 2.0</string>
+    <string name="version">v2.1(12)</string>
+    <string name="versionCode">12</string>
+    <string name="versionName">2.1</string>
+    <string name="versionname">버전 : 2.1</string>
     <string name="poweredbyswaas">\u00a9 SwaaS에서 제공</string>
 
     <string-array name="Language">

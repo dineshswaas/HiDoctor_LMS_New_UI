@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Kangle.iml" filepath="$PROJECT_DIR$/.idea/modules/Kangle.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle.VideoPlayer.iml" filepath="$PROJECT_DIR$/.idea/modules/VideoPlayer/Kangle.VideoPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Kangle.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Kangle.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KangleOLD.Kangle.iml" filepath="$PROJECT_DIR$/.idea/modules/KangleOLD.Kangle.iml" />
     </modules>
   </component>
 </project>
